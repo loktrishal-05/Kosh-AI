@@ -23,11 +23,11 @@ workbench) · MCP servers (JSON-RPC 2.0) · LangGraph agents. Local Python is 3.
 ## Phases (report Part IV) and status
 | # | Phase | Deliverable / gate | Status |
 |---|-------|--------------------|--------|
-| 0 | Monorepo, Docker Compose, migrations with RLS | `tests/infra/test_rls_isolation.py` | todo |
+| 0 | Monorepo, Docker Compose, migrations with RLS | `tests/infra/test_rls_isolation.py` | **partial**: schema + compose + static RLS checks pass; live cross-tenant test written but **not yet run** (needs Docker/Postgres + `psycopg`) |
 | 1 | **Deterministic engine**: GSTIN Mod-36, GST split, §17(5), TDS 194C/J/H/Q, ITR router, 44AD/ADA/AE, 87A, regimes, refund pathways, Rule 37, 4-way 2B match | 250+ parameterized tests, 100% | **done (182 tests)** |
 | 2 | MCP server mesh (8 servers; start with gstn-nic mock, tally-xml, statutory-rag, incometax) | tools/list + tools/call tests | todo |
 | 3 | 5 agents + effective-dated statutory RAG (LLM calls behind an interface; stubbed offline) | agent eval + loop-cap tests | todo |
-| 4 | Payment drawer: 3-way split, GST escrow, 22-field receipt, 5-ledger posting | split/ledger invariant tests | todo |
+| 4 | Payment drawer: 3-way split, GST escrow, 22-field receipt, 5-ledger posting | split/ledger invariant tests | **core logic done** (split, trust score, balanced ledgers, Tally XML, MDR unbundling); UPI rails/UI + 22-field receipt todo |
 | 5 | e-MOA/e-AOA, Form 16 A/B, Labour Form A/B | generator tests | todo |
 | 6a | HITL gate + mock portal + audit chain + FastAPI gateway (REST, WhatsApp HMAC webhook, JWT roles) | air-gap + e2e demo tests | **done (21 tests)** |
 | 6b | Mock gov-portal UI + CA workbench (Next.js) | e2e demo | todo |
@@ -40,6 +40,11 @@ Small, self-contained chores (fixtures, boilerplate, extra test tables) may be d
 ## Out of scope / needs external input
 Live GSP/ERI/NIC credentials, real WhatsApp (Meta WABA) tokens, real LLM API keys, Class-3 DSC bridge, Account Aggregator.
 These are wired behind interfaces and env vars (`.env.example`) with offline stubs so everything runs and tests locally.
+
+## Known issues in the source report
+- Part III s2.2 settlement example: bank credit Rs 97,820 vs deductions 1,500+270+500+100 = 2,370 (would be Rs 97,630). Engine follows the arithmetic.
+- Tally XML is built to Tally's documented import shape but has not been tested against a live TallyPrime.
+- Tax rates/thresholds (e.g. 194H, slabs) are the report's and AY 2026-27 slabs; re-verify with a CA, especially post Income-tax Act 2025.
 
 ## Statutory caveat
 Rates, thresholds and dates come from the report and must be re-verified by a practising CA before any real use.
