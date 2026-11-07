@@ -29,7 +29,8 @@ workbench) · MCP servers (JSON-RPC 2.0) · LangGraph agents. Local Python is 3.
 | 3 | 5 agents + effective-dated statutory RAG (LLM calls behind an interface; stubbed offline) | agent eval + loop-cap tests | todo |
 | 4 | Payment drawer: 3-way split, GST escrow, 22-field receipt, 5-ledger posting | split/ledger invariant tests | todo |
 | 5 | e-MOA/e-AOA, Form 16 A/B, Labour Form A/B | generator tests | todo |
-| 6 | HITL gate + mock gov portals + CA workbench (Next.js) | air-gap + e2e demo test | todo |
+| 6a | HITL gate + mock portal + audit chain + FastAPI gateway (REST, WhatsApp HMAC webhook, JWT roles) | air-gap + e2e demo tests | **done (21 tests)** |
+| 6b | Mock gov-portal UI + CA workbench (Next.js) | e2e demo | todo |
 | 7 | Production hardening, live GSP/ERI | out of scope (needs licensed credentials) | deferred |
 
 ## Build order & cadence
