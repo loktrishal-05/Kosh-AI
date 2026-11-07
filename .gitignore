@@ -59,3 +59,4 @@ Thumbs.db
 # AI tooling
 .claude/
 .codex/
+.vercel/

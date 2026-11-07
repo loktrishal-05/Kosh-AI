@@ -108,3 +108,17 @@ def test_itr_q7_stcg_flips_to_itr3_and_cash_breach_blocks_presumptive(client):
 def test_refund_pathway_blocks_itr_u(client):
     r = client.get("/api/v1/refund-pathway", headers=hdr(), params={"ay_start_year": 2024, "today": "2026-11-07"}).json()
     assert r["pathway"] == "SEC_119_2B" and r["itr_u_allowed"] is False
+
+
+def test_sandbox_storyline_endpoint_runs_all_agents_and_the_gate():
+    from fastapi.testclient import TestClient
+    from taxsetu_api.main import create_app
+    c = TestClient(create_app(b"s"))
+    assert "TaxSetu AI" in c.get("/").text
+    d = c.get("/api/v1/demo/storyline").json()
+    assert d["simulated"] and [s["agent"] for s in d["steps"]][-1] == "Human gate" and len(d["steps"]) == 6
+    facts = {k: v for s in d["steps"] for k, v in s["facts"]}
+    assert facts["Pay now (net base)"] == "Rs 98000.00" and facts["TDS u/s 194C withheld"] == "Rs 2000.00"
+    assert facts["Wrong OTP"].startswith("REFUSED") and facts["Hash chain intact"] == "True"
+    assert "Rs 1000" in facts["1-digit plate typo, invoice on file"].replace(",", "") and "72000" in facts["Same notice, NO invoice on file"]
+    assert len(c.get("/api/v1/demo/storyline").json()["steps"]) == 6   # fresh gate per call: repeatable, no leaked state

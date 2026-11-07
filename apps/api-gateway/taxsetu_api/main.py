@@ -5,13 +5,16 @@ import os
 from datetime import date, datetime
 from decimal import Decimal
 
+from pathlib import Path
+
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth
+from . import auth, demo
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -40,6 +43,15 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
                 raise HTTPException(403, f"role {c['role']} not permitted")
             return c
         return dep
+
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    def landing():
+        return (Path(__file__).parent / "landing.html").read_text(encoding="utf-8")
+
+    @app.get("/api/v1/demo/storyline", tags=["sandbox"])
+    def demo_storyline():
+        """Runs all five agents + the OTP gate on fake data in one stateless request (fresh in-memory gate per call)."""
+        return demo.storyline()
 
     @app.get("/health")
     def health():

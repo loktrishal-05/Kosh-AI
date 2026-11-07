@@ -1,0 +1,12 @@
+# Render Blueprint: stateful deployment of the API gateway (the Vercel deploy is stateless/serverless).
+services:
+  - type: web
+    name: taxsetu-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: HITL_SIGNING_SECRET
+        generateValue: true
+      - key: PORTAL_MODE
+        value: mock
