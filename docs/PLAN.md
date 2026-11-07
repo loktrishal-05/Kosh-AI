@@ -25,8 +25,8 @@ workbench) · MCP servers (JSON-RPC 2.0) · LangGraph agents. Local Python is 3.
 |---|-------|--------------------|--------|
 | 0 | Monorepo, Docker Compose, migrations with RLS | `tests/infra/test_rls_isolation.py` | **partial**: schema + compose + static RLS checks pass; live cross-tenant test written but **not yet run** (needs Docker/Postgres + `psycopg`) |
 | 1 | **Deterministic engine**: GSTIN Mod-36, GST split, §17(5), TDS 194C/J/H/Q, ITR router, 44AD/ADA/AE, 87A, regimes, refund pathways, Rule 37, 4-way 2B match | 250+ parameterized tests, 100% | **done (182 tests)** |
-| 2 | MCP server mesh (8 servers; start with gstn-nic mock, tally-xml, statutory-rag, incometax) | tools/list + tools/call tests | todo |
-| 3 | 5 agents + effective-dated statutory RAG (LLM calls behind an interface; stubbed offline) | agent eval + loop-cap tests | todo |
+| 2 | MCP server mesh (8 servers; start with gstn-nic mock, tally-xml, statutory-rag, incometax) | tools/list + tools/call tests | **done (mock backends)** - 7 working servers, mca-labour registered but its 3 generators refuse until Phase 5; stdio JSON-RPC, no filing tool can be registered; 25 tests |
+| 3 | 5 agents + effective-dated statutory RAG (LLM calls behind an interface; stubbed offline) | agent eval + loop-cap tests | **done offline** - 5 graph agents, StubLlm, keyword RAG with 2 effective-dated versions; real LLM adapter + pgvector/BM25 still todo; 24 tests |
 | 4 | Payment drawer: 3-way split, GST escrow, 22-field receipt, 5-ledger posting | split/ledger invariant tests | **core logic done** (split, trust score, balanced ledgers, Tally XML, MDR unbundling); UPI rails/UI + 22-field receipt todo |
 | 5 | e-MOA/e-AOA, Form 16 A/B, Labour Form A/B | generator tests | todo |
 | 6a | HITL gate + mock portal + audit chain + FastAPI gateway (REST, WhatsApp HMAC webhook, JWT roles) | air-gap + e2e demo tests | **done (21 tests)** |
