@@ -24,7 +24,7 @@ workbench) · MCP servers (JSON-RPC 2.0) · LangGraph agents. Local Python is 3.
 | # | Phase | Deliverable / gate | Status |
 |---|-------|--------------------|--------|
 | 0 | Monorepo, Docker Compose, migrations with RLS | `tests/infra/test_rls_isolation.py` | todo |
-| 1 | **Deterministic engine**: GSTIN Mod-36, GST split, §17(5), TDS 194C/J/H/Q, ITR router, 44AD/ADA/AE, 87A, regimes, refund pathways, Rule 37, 4-way 2B match | 250+ parameterized tests, 100% | todo |
+| 1 | **Deterministic engine**: GSTIN Mod-36, GST split, §17(5), TDS 194C/J/H/Q, ITR router, 44AD/ADA/AE, 87A, regimes, refund pathways, Rule 37, 4-way 2B match | 250+ parameterized tests, 100% | **done (182 tests)** |
 | 2 | MCP server mesh (8 servers; start with gstn-nic mock, tally-xml, statutory-rag, incometax) | tools/list + tools/call tests | todo |
 | 3 | 5 agents + effective-dated statutory RAG (LLM calls behind an interface; stubbed offline) | agent eval + loop-cap tests | todo |
 | 4 | Payment drawer: 3-way split, GST escrow, 22-field receipt, 5-ledger posting | split/ledger invariant tests | todo |
