@@ -1,0 +1,61 @@
+# Secrets / local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+.pnpm-store/
+
+# Runtime data & uploads (never commit tenant data)
+pgdata/
+minio-data/
+redis-data/
+uploads/
+storage/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs / temp
+*.log
+tmp/
+.tmp/
+
+# Large source documents (kept out to keep the repo small)
+docs/*.pdf
+*.pdf
+!tests/fixtures/**/*.pdf
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# AI tooling
+.claude/
+.codex/
