@@ -1,0 +1,4926 @@
+{
+ "counts": {
+  "classified": 194,
+  "entries": 194,
+  "excluded": 0,
+  "needs_review": 0
+ },
+ "crosscheck": {
+  "agrees": true,
+  "closing_net_worth_direct": "1769078.00",
+  "closing_net_worth_from_books": "1769078.00",
+  "method": "statement_of_affairs",
+  "profit_by_books": "1869078.00",
+  "profit_by_net_worth_change": "1869078.00"
+ },
+ "entity_type": "business",
+ "errors": [],
+ "journal": [
+  {
+   "confidence": 1,
+   "date": "2026-04-01",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "20000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "80000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "30000.00",
+     "ledger": "Debtors",
+     "side": "Dr"
+    },
+    {
+     "amount": "150000.00",
+     "ledger": "Stock-in-Trade",
+     "side": "Dr"
+    },
+    {
+     "amount": "100000.00",
+     "ledger": "Fixed Assets",
+     "side": "Dr"
+    },
+    {
+     "amount": "50000.00",
+     "ledger": "Creditors",
+     "side": "Cr"
+    },
+    {
+     "amount": "330000.00",
+     "ledger": "Capital",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Opening statement of affairs",
+   "source": "opening"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-04-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-04-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-04-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "63100.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "70672.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "7572.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-04-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "150100.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "150100.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-04-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6200.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "6200.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-04-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5200.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "5200.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-04-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1500.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1770.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "270.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-04-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-04-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-04-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "43800.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "43800.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-04-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-04-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "53082.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "53082.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-04-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "226300.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "267034.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "40734.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-04-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "158600.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "187148.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "28548.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-05-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-05-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-05-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "49500.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "55440.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "5940.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-05-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "135700.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "135700.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-05-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3500.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "3500.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-05-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5900.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "5900.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-05-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1400.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1652.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "252.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-05-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-05-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-05-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60600.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "60600.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-05-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-05-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "59370.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "59370.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-05-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "228700.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "269866.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "41166.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-05-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "162200.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "191396.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "29196.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "capital_introduced",
+   "confidence": 0.9,
+   "date": "2026-06-03",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "50000.00",
+     "ledger": "Capital",
+     "side": "Cr"
+    },
+    {
+     "amount": "50000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Capital introduced by owner",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-06-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-06-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-06-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "70400.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "78848.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "8448.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-06-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "136300.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "136300.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-06-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4000.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "4000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-06-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8100.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "8100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-06-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2900.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "3422.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "522.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-06-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-06-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-06-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "22100.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "22100.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-06-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-06-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "54810.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "54810.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-06-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "235100.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "277418.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "42318.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-06-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "165500.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "195290.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "29790.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-07-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-07-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-07-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "43000.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "48160.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "5160.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-07-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "109400.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "109400.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-07-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3100.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "3100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-07-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5500.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "5500.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-07-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2900.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "3422.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "522.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-07-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-07-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-07-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "23200.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "23200.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-07-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-07-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "56856.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "56856.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-07-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "243800.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "287684.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "43884.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-07-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "130700.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "154226.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "23526.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-08-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-08-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "asset_purchase",
+   "confidence": 0.9,
+   "date": "2026-08-09",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "35000.00",
+     "ledger": "Fixed Assets",
+     "side": "Dr"
+    },
+    {
+     "amount": "35000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Purchase of furniture for shop",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-08-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "70200.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "78624.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "8424.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-08-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "143100.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "143100.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-08-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4800.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "4800.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-08-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5400.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "5400.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-08-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "3540.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "540.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-08-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-08-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-08-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "42500.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "42500.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-08-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-08-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "56736.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "56736.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-08-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "259600.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "306328.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "46728.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-08-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "153700.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "181366.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "27666.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-09-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-09-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_received",
+   "confidence": 0.9,
+   "date": "2026-09-06",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "100000.00",
+     "ledger": "Loans",
+     "side": "Cr"
+    },
+    {
+     "amount": "100000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Loan received from bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-09-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "63400.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "71008.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "7608.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-09-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "118400.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "118400.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-09-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3500.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "3500.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-09-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6600.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "6600.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-09-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2700.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "3186.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "486.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-09-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-09-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-09-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24300.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "24300.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-09-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-09-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "45702.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "45702.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-09-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "231100.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "272698.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "41598.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-09-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "130200.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "153636.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "23436.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-10-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-10-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2026-10-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2026-10-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-10-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "51700.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "57904.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "6204.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-10-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "119500.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "119500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-10-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6600.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "6600.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-10-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4100.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "4100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-10-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1200.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1416.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "216.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-10-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-10-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-10-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "58800.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "58800.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-10-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-10-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "52050.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "52050.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-10-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "252400.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "297832.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "45432.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-10-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "143000.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "168740.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "25740.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-11-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-11-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2026-11-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2026-11-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-11-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "54800.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "61376.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "6576.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-11-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "96800.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "96800.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-11-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4300.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "4300.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-11-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4100.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "4100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-11-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1180.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "180.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-11-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-11-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-11-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25500.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "25500.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-11-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-11-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "53796.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "53796.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-11-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "258400.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "304912.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "46512.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-11-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "135500.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "159890.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "24390.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-12-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2026-12-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2026-12-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2026-12-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "asset_sale",
+   "confidence": 0.9,
+   "date": "2026-12-09",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "20000.00",
+     "ledger": "Fixed Assets",
+     "side": "Cr"
+    },
+    {
+     "amount": "20000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Sale of old furniture",
+   "source": "cash_book"
+  },
+  {
+   "category": "asset_sale",
+   "confidence": 1,
+   "date": "2026-12-09",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5000.00",
+     "ledger": "Fixed Assets",
+     "side": "Cr"
+    },
+    {
+     "amount": "5000.00",
+     "ledger": "Loss on Sale of Asset",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Loss on sale of asset: Sale of old furniture",
+   "source": "derived"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2026-12-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "76200.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "85344.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "9144.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2026-12-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "132900.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "132900.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-12-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "7000.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "7000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2026-12-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4400.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "4400.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2026-12-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2800.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "3304.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "504.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2026-12-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2026-12-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2026-12-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "39200.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "39200.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-12-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2026-12-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40620.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "40620.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-12-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "201400.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "237652.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "36252.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2026-12-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "132600.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "156468.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "23868.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2027-01-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2027-01-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2027-01-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2027-01-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2027-01-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "57200.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "64064.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "6864.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2027-01-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "121800.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "121800.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2027-01-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5600.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "5600.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2027-01-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6100.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "6100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2027-01-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1180.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "180.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2027-01-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2027-01-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2027-01-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "33800.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "33800.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2027-01-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2027-01-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "55416.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "55416.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-01-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "200300.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "236354.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "36054.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-01-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "169800.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "200364.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "30564.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2027-02-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2027-02-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2027-02-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2027-02-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2027-02-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "76100.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "85232.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "9132.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2027-02-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "91100.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "91100.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2027-02-14",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6100.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "6100.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity bill paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2027-02-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4300.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "4300.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2027-02-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2400.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "2832.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "432.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2027-02-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2027-02-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2027-02-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "32600.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "32600.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2027-02-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "gst_payment",
+   "confidence": 0.9,
+   "date": "2027-02-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "51972.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "51972.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "GST paid to government",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-02-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "257600.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "303968.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "46368.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-02-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "136000.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "160480.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "24480.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2027-03-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "29500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    },
+    {
+     "amount": "4500.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Shop rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salary and Wages",
+   "confidence": 0.85,
+   "date": "2027-03-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Salary and Wages",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Staff salaries paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_repayment",
+   "confidence": 0.9,
+   "date": "2027-03-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Repayment of loan instalment",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Interest Paid",
+   "confidence": 0.85,
+   "date": "2027-03-07",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "1000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Interest on loan paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_purchase",
+   "confidence": 0.9,
+   "date": "2027-03-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "62900.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "70448.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "7548.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Cash purchases of goods",
+   "source": "cash_book"
+  },
+  {
+   "category": "creditor_payment",
+   "confidence": 0.9,
+   "date": "2027-03-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "109500.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "109500.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Paid to suppliers against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport and Freight",
+   "confidence": 0.85,
+   "date": "2027-03-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8600.00",
+     "ledger": "Transport and Freight",
+     "side": "Dr"
+    },
+    {
+     "amount": "8600.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transport and freight charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Office Expenses",
+   "confidence": 0.85,
+   "date": "2027-03-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1400.00",
+     "ledger": "Office Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "1652.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    },
+    {
+     "amount": "252.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Office expenses",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Bank Charges",
+   "confidence": 0.85,
+   "date": "2027-03-18",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "250.00",
+     "ledger": "Bank Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "250.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Bank charges",
+   "source": "cash_book"
+  },
+  {
+   "category": "drawings",
+   "confidence": 0.9,
+   "date": "2027-03-19",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "40000.00",
+     "ledger": "Drawings",
+     "side": "Dr"
+    },
+    {
+     "amount": "40000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Withdrawn by owner for household use",
+   "source": "cash_book"
+  },
+  {
+   "category": "debtor_receipt",
+   "confidence": 0.9,
+   "date": "2027-03-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "29600.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    },
+    {
+     "amount": "29600.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Received from debtors against bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2027-03-22",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash deposited into bank",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-03-27",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "198100.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "233758.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "35658.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Cash sales for the month",
+   "source": "cash_book"
+  },
+  {
+   "category": "cash_sale",
+   "confidence": 0.9,
+   "date": "2027-03-28",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "164900.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "194582.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "29682.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "UPI and card sales received in bank",
+   "source": "cash_book"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "934324.00",
+     "ledger": "Debtors",
+     "side": "Dr"
+    },
+    {
+     "amount": "791800.00",
+     "ledger": "Sales",
+     "side": "Cr"
+    },
+    {
+     "amount": "142524.00",
+     "ledger": "Output GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Derived credit sales",
+   "source": "derived"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1596600.00",
+     "ledger": "Purchases",
+     "side": "Dr"
+    },
+    {
+     "amount": "191592.00",
+     "ledger": "Input GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "1788192.00",
+     "ledger": "Creditors",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Derived credit purchases",
+   "source": "derived"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2180.00",
+     "ledger": "Discount Allowed",
+     "side": "Dr"
+    },
+    {
+     "amount": "2180.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    }
+   ],
+   "narration": "discount allowed",
+   "source": "derived"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1500.00",
+     "ledger": "Bad Debts",
+     "side": "Dr"
+    },
+    {
+     "amount": "1500.00",
+     "ledger": "Debtors",
+     "side": "Cr"
+    }
+   ],
+   "narration": "bad debts",
+   "source": "derived"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5858.00",
+     "ledger": "Creditors",
+     "side": "Dr"
+    },
+    {
+     "amount": "5858.00",
+     "ledger": "Discount Received",
+     "side": "Cr"
+    }
+   ],
+   "narration": "discount received",
+   "source": "derived"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "338568.00",
+     "ledger": "Output GST",
+     "side": "Dr"
+    },
+    {
+     "amount": "338568.00",
+     "ledger": "Input GST",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Set off input tax credit against output GST",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Outstanding Expenses",
+     "side": "Cr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Closing outstanding_expenses: Electricity Charges",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "11000.00",
+     "ledger": "Depreciation",
+     "side": "Dr"
+    },
+    {
+     "amount": "11000.00",
+     "ledger": "Fixed Assets",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Depreciation",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "150000.00",
+     "ledger": "Trading A/c",
+     "side": "Dr"
+    },
+    {
+     "amount": "150000.00",
+     "ledger": "Stock-in-Trade",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Opening stock to trading",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "182900.00",
+     "ledger": "Stock-in-Trade",
+     "side": "Dr"
+    },
+    {
+     "amount": "182900.00",
+     "ledger": "Trading A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Closing stock",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5367300.00",
+     "ledger": "Sales",
+     "side": "Dr"
+    },
+    {
+     "amount": "5367300.00",
+     "ledger": "Trading A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Sales",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2335100.00",
+     "ledger": "Purchases",
+     "side": "Cr"
+    },
+    {
+     "amount": "2335100.00",
+     "ledger": "Trading A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Purchases",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3065100.00",
+     "ledger": "Trading A/c",
+     "side": "Dr"
+    },
+    {
+     "amount": "3065100.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Gross profit/loss",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1500.00",
+     "ledger": "Bad Debts",
+     "side": "Cr"
+    },
+    {
+     "amount": "1500.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Bad Debts",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Bank Charges",
+     "side": "Cr"
+    },
+    {
+     "amount": "3000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Bank Charges",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "11000.00",
+     "ledger": "Depreciation",
+     "side": "Cr"
+    },
+    {
+     "amount": "11000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Depreciation",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2180.00",
+     "ledger": "Discount Allowed",
+     "side": "Cr"
+    },
+    {
+     "amount": "2180.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Discount Allowed",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5858.00",
+     "ledger": "Discount Received",
+     "side": "Dr"
+    },
+    {
+     "amount": "5858.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Discount Received",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60700.00",
+     "ledger": "Electricity Charges",
+     "side": "Cr"
+    },
+    {
+     "amount": "60700.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Electricity Charges",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Interest Paid",
+     "side": "Cr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Interest Paid",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5000.00",
+     "ledger": "Loss on Sale of Asset",
+     "side": "Cr"
+    },
+    {
+     "amount": "5000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Loss on Sale of Asset",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24200.00",
+     "ledger": "Office Expenses",
+     "side": "Cr"
+    },
+    {
+     "amount": "24200.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Office Expenses",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "300000.00",
+     "ledger": "Rent Paid",
+     "side": "Cr"
+    },
+    {
+     "amount": "300000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Rent Paid",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "720000.00",
+     "ledger": "Salary and Wages",
+     "side": "Cr"
+    },
+    {
+     "amount": "720000.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Salary and Wages",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "68300.00",
+     "ledger": "Transport and Freight",
+     "side": "Cr"
+    },
+    {
+     "amount": "68300.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Transport and Freight",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "1869078.00",
+     "ledger": "Profit & Loss A/c",
+     "side": "Dr"
+    },
+    {
+     "amount": "1869078.00",
+     "ledger": "Capital",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transfer profit/surplus/savings",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "480000.00",
+     "ledger": "Capital",
+     "side": "Dr"
+    },
+    {
+     "amount": "480000.00",
+     "ledger": "Drawings",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transfer drawings",
+   "source": "closing"
+  }
+ ],
+ "ledgers": {
+  "Bad Debts": {
+   "balance": "0.00",
+   "credit": "1500.00",
+   "debit": "1500.00",
+   "side": ""
+  },
+  "Bank": {
+   "balance": "298576.00",
+   "credit": "3211010.00",
+   "debit": "3509586.00",
+   "side": "Dr"
+  },
+  "Bank Charges": {
+   "balance": "0.00",
+   "credit": "3000.00",
+   "debit": "3000.00",
+   "side": ""
+  },
+  "Capital": {
+   "balance": "1769078.00",
+   "credit": "2249078.00",
+   "debit": "480000.00",
+   "side": "Cr"
+  },
+  "Cash": {
+   "balance": "1136828.00",
+   "credit": "2178676.00",
+   "debit": "3315504.00",
+   "side": "Dr"
+  },
+  "Creditors": {
+   "balance": "367734.00",
+   "credit": "1838192.00",
+   "debit": "1470458.00",
+   "side": "Cr"
+  },
+  "Debtors": {
+   "balance": "524644.00",
+   "credit": "439680.00",
+   "debit": "964324.00",
+   "side": "Dr"
+  },
+  "Depreciation": {
+   "balance": "0.00",
+   "credit": "11000.00",
+   "debit": "11000.00",
+   "side": ""
+  },
+  "Discount Allowed": {
+   "balance": "0.00",
+   "credit": "2180.00",
+   "debit": "2180.00",
+   "side": ""
+  },
+  "Discount Received": {
+   "balance": "0.00",
+   "credit": "5858.00",
+   "debit": "5858.00",
+   "side": ""
+  },
+  "Drawings": {
+   "balance": "0.00",
+   "credit": "480000.00",
+   "debit": "480000.00",
+   "side": ""
+  },
+  "Electricity Charges": {
+   "balance": "0.00",
+   "credit": "60700.00",
+   "debit": "60700.00",
+   "side": ""
+  },
+  "Fixed Assets": {
+   "balance": "99000.00",
+   "credit": "36000.00",
+   "debit": "135000.00",
+   "side": "Dr"
+  },
+  "Input GST": {
+   "balance": "0.00",
+   "credit": "338568.00",
+   "debit": "338568.00",
+   "side": ""
+  },
+  "Interest Paid": {
+   "balance": "0.00",
+   "credit": "6000.00",
+   "debit": "6000.00",
+   "side": ""
+  },
+  "Loans": {
+   "balance": "52000.00",
+   "credit": "100000.00",
+   "debit": "48000.00",
+   "side": "Cr"
+  },
+  "Loss on Sale of Asset": {
+   "balance": "0.00",
+   "credit": "5000.00",
+   "debit": "5000.00",
+   "side": ""
+  },
+  "Office Expenses": {
+   "balance": "0.00",
+   "credit": "24200.00",
+   "debit": "24200.00",
+   "side": ""
+  },
+  "Output GST": {
+   "balance": "47136.00",
+   "credit": "966114.00",
+   "debit": "918978.00",
+   "side": "Cr"
+  },
+  "Outstanding Expenses": {
+   "balance": "6000.00",
+   "credit": "6000.00",
+   "debit": "0.00",
+   "side": "Cr"
+  },
+  "Profit & Loss A/c": {
+   "balance": "0.00",
+   "credit": "3070958.00",
+   "debit": "3070958.00",
+   "side": ""
+  },
+  "Purchases": {
+   "balance": "0.00",
+   "credit": "2335100.00",
+   "debit": "2335100.00",
+   "side": ""
+  },
+  "Rent Paid": {
+   "balance": "0.00",
+   "credit": "300000.00",
+   "debit": "300000.00",
+   "side": ""
+  },
+  "Salary and Wages": {
+   "balance": "0.00",
+   "credit": "720000.00",
+   "debit": "720000.00",
+   "side": ""
+  },
+  "Sales": {
+   "balance": "0.00",
+   "credit": "5367300.00",
+   "debit": "5367300.00",
+   "side": ""
+  },
+  "Stock-in-Trade": {
+   "balance": "182900.00",
+   "credit": "150000.00",
+   "debit": "332900.00",
+   "side": "Dr"
+  },
+  "Trading A/c": {
+   "balance": "0.00",
+   "credit": "5550200.00",
+   "debit": "5550200.00",
+   "side": ""
+  },
+  "Transport and Freight": {
+   "balance": "0.00",
+   "credit": "68300.00",
+   "debit": "68300.00",
+   "side": ""
+  }
+ },
+ "name": "Mehta Traders (GST registered)",
+ "period": {
+  "end": "2027-03-31",
+  "start": "2026-04-01"
+ },
+ "questions": [],
+ "statements": {
+  "balance_sheet": {
+   "assets": {
+    "Bank": "298576.00",
+    "Cash": "1136828.00",
+    "Debtors": "524644.00",
+    "Fixed Assets": "99000.00",
+    "Stock-in-Trade": "182900.00"
+   },
+   "balanced": true,
+   "capital": {
+    "closing": "1769078.00",
+    "drawings": "480000.00",
+    "introduced": "50000.00",
+    "net_profit": "1869078.00",
+    "opening": "330000.00"
+   },
+   "liabilities": {
+    "Creditors": "367734.00",
+    "Loans": "52000.00",
+    "Output GST": "47136.00",
+    "Outstanding Expenses": "6000.00"
+   },
+   "total_assets": "2241948.00",
+   "total_liabilities_and_capital": "2241948.00"
+  },
+  "gst": {
+   "credit_carried_forward": "0.00",
+   "input_tax_credit": "338568.00",
+   "output_tax_collected": "966114.00",
+   "paid_to_government": "580410.00",
+   "payable_at_end": "47136.00",
+   "refunds_received": "0.00",
+   "set_off": "338568.00"
+  },
+  "profit_loss": {
+   "expenses": {
+    "Bad Debts": "1500.00",
+    "Bank Charges": "3000.00",
+    "Depreciation": "11000.00",
+    "Discount Allowed": "2180.00",
+    "Electricity Charges": "60700.00",
+    "Interest Paid": "6000.00",
+    "Loss on Sale of Asset": "5000.00",
+    "Office Expenses": "24200.00",
+    "Rent Paid": "300000.00",
+    "Salary and Wages": "720000.00",
+    "Transport and Freight": "68300.00"
+   },
+   "gross_profit": "3065100.00",
+   "net_profit": "1869078.00",
+   "other_income": {
+    "Discount Received": "5858.00"
+   },
+   "total_expenses": "1201880.00",
+   "total_other_income": "5858.00"
+  },
+  "trading": {
+   "closing_stock": "182900.00",
+   "cost_of_goods_sold": "2302200.00",
+   "gross_profit": "3065100.00",
+   "net_purchases": "2335100.00",
+   "net_sales": "5367300.00",
+   "opening_stock": "150000.00",
+   "purchase_returns": "0.00",
+   "purchases": "2335100.00",
+   "sales": "5367300.00",
+   "sales_returns": "0.00"
+  }
+ },
+ "trial_balance": {
+  "balanced": true,
+  "rows": [
+   {
+    "credit": "0.00",
+    "debit": "1500.00",
+    "ledger": "Bad Debts"
+   },
+   {
+    "credit": "0.00",
+    "debit": "298576.00",
+    "ledger": "Bank"
+   },
+   {
+    "credit": "0.00",
+    "debit": "3000.00",
+    "ledger": "Bank Charges"
+   },
+   {
+    "credit": "380000.00",
+    "debit": "0.00",
+    "ledger": "Capital"
+   },
+   {
+    "credit": "0.00",
+    "debit": "1136828.00",
+    "ledger": "Cash"
+   },
+   {
+    "credit": "367734.00",
+    "debit": "0.00",
+    "ledger": "Creditors"
+   },
+   {
+    "credit": "0.00",
+    "debit": "524644.00",
+    "ledger": "Debtors"
+   },
+   {
+    "credit": "0.00",
+    "debit": "11000.00",
+    "ledger": "Depreciation"
+   },
+   {
+    "credit": "0.00",
+    "debit": "2180.00",
+    "ledger": "Discount Allowed"
+   },
+   {
+    "credit": "5858.00",
+    "debit": "0.00",
+    "ledger": "Discount Received"
+   },
+   {
+    "credit": "0.00",
+    "debit": "480000.00",
+    "ledger": "Drawings"
+   },
+   {
+    "credit": "0.00",
+    "debit": "60700.00",
+    "ledger": "Electricity Charges"
+   },
+   {
+    "credit": "0.00",
+    "debit": "99000.00",
+    "ledger": "Fixed Assets"
+   },
+   {
+    "credit": "0.00",
+    "debit": "6000.00",
+    "ledger": "Interest Paid"
+   },
+   {
+    "credit": "52000.00",
+    "debit": "0.00",
+    "ledger": "Loans"
+   },
+   {
+    "credit": "0.00",
+    "debit": "5000.00",
+    "ledger": "Loss on Sale of Asset"
+   },
+   {
+    "credit": "0.00",
+    "debit": "24200.00",
+    "ledger": "Office Expenses"
+   },
+   {
+    "credit": "47136.00",
+    "debit": "0.00",
+    "ledger": "Output GST"
+   },
+   {
+    "credit": "6000.00",
+    "debit": "0.00",
+    "ledger": "Outstanding Expenses"
+   },
+   {
+    "credit": "0.00",
+    "debit": "2335100.00",
+    "ledger": "Purchases"
+   },
+   {
+    "credit": "0.00",
+    "debit": "300000.00",
+    "ledger": "Rent Paid"
+   },
+   {
+    "credit": "0.00",
+    "debit": "720000.00",
+    "ledger": "Salary and Wages"
+   },
+   {
+    "credit": "5367300.00",
+    "debit": "0.00",
+    "ledger": "Sales"
+   },
+   {
+    "credit": "0.00",
+    "debit": "150000.00",
+    "ledger": "Stock-in-Trade"
+   },
+   {
+    "credit": "0.00",
+    "debit": "68300.00",
+    "ledger": "Transport and Freight"
+   }
+  ],
+  "total_credit": "6226028.00",
+  "total_debit": "6226028.00"
+ },
+ "warnings": []
+}

@@ -7,7 +7,7 @@ from taxsetu_engine.single_entry import convert
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "apps" / "ca-workbench-web" / "lib" / "fixtures"
-EXAMPLES = ("business_textbook", "kirana_full_year", "nonprofit_club", "individual_freelancer")
+EXAMPLES = ("business_textbook", "kirana_full_year", "gst_trader_full_year", "nonprofit_club", "individual_freelancer")
 
 
 def build():

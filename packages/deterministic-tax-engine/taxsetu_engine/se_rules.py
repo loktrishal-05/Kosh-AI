@@ -5,9 +5,9 @@ from .tally_classify import HEADS
 
 ASSETS = {"cash": "Cash", "bank": "Bank", "debtors": "Debtors", "stock": "Stock-in-Trade",
           "fixed_assets": "Fixed Assets", "investments": "Investments",
-          "prepaid_expenses": "Prepaid Expenses", "accrued_income": "Accrued Income"}
+          "prepaid_expenses": "Prepaid Expenses", "accrued_income": "Accrued Income", "input_gst": "Input GST"}
 LIABILITIES = {"creditors": "Creditors", "loans": "Loans", "outstanding_expenses": "Outstanding Expenses",
-               "advance_income": "Income Received in Advance"}
+               "advance_income": "Income Received in Advance", "output_gst": "Output GST"}
 ADJUSTMENTS = ("outstanding_expenses", "prepaid_expenses", "accrued_income", "advance_income")
 CAPITAL = {"business": "Capital", "individual": "Net Worth", "nonprofit": "Capital Fund"}
 INCOME = {"cash_sale": "Sales", "interest_income": "Interest Received", "commission_income": "Commission Received",
@@ -18,11 +18,12 @@ INCOME = {"cash_sale": "Sales", "interest_income": "Interest Received", "commiss
 COUNTERS = {**INCOME, "debtor_receipt": "Debtors", "creditor_payment": "Creditors", "cash_purchase": "Purchases",
             "drawings": "Drawings", "asset_purchase": "Fixed Assets", "asset_sale": "Fixed Assets",
             "loan_received": "Loans", "loan_repayment": "Loans", "loan_principal": "Loans",
-            "loan_interest": "Interest Paid", "loan_emi": "Interest Paid", "investment": "Investments"}
+            "loan_interest": "Interest Paid", "loan_emi": "Interest Paid", "investment": "Investments",
+            "gst_payment": "Output GST", "gst_refund": "Input GST"}
 COMMON_RECEIPTS = (("loan_received", r"loan|borrowed"), ("asset_sale", r"sale of old|sold.*(?:furniture|computer|vehicle|machinery|scrap)"),
                    ("interest_income", r"interest"), ("commission_income", r"commission"), ("rent_income", r"rent"))
 RECEIPTS = {
-    "business": (("capital_introduced", r"capital|invested by owner|introduced"),
+    "business": (("capital_introduced", r"capital|invested by owner|introduced"), ("gst_refund", r"gst refund|refund of gst|itc refund"),
                  ("debtor_receipt", r"debtors?|against bills?|against invoice|customer dues|outstanding"),
                  *COMMON_RECEIPTS, ("other_income", r"refund|misc income"), ("cash_sale", r"cash sales?|sales?")),
     "nonprofit": (("corpus_donation", r"corpus|building fund|endowment|life membership"),
@@ -57,7 +58,7 @@ def classify(entry, entity, incoming):
     allowed = {key for key, _ in RECEIPTS[entity]} | {"contra"} if incoming else {
         "asset_purchase", "loan_repayment", "contra", "investment", "loan_principal", "loan_interest", "loan_emi"}
     if not incoming and entity == "business":
-        allowed |= {"creditor_payment", "cash_purchase", "drawings"}
+        allowed |= {"creditor_payment", "cash_purchase", "drawings", "gst_payment"}
     if hint.startswith("expense:") and not incoming and valid_head(hint[8:]):
         return hint, hint[8:], 1, ""
     text = str(entry.get("description") or "") + " " + str(entry.get("party") or "")
@@ -77,7 +78,8 @@ def classify(entry, entity, incoming):
             category = next((key for key, pattern in (("loan_principal", r"principal"), ("loan_interest", r"interest part"),
                             ("loan_emi", r"emi"), ("investment", r"sip|mutual fund|fd|fixed deposit|ppf|shares|gold")) if matches(pattern)), "")
         elif entity == "business":
-            category = next((key for key, pattern in (("creditor_payment", r"suppliers?|creditors?|against bills|dues"),
+            category = next((key for key, pattern in (("gst_payment", r"gst (?:paid|payment|challan|deposited)|(?:paid|payment of|deposit of) gst|gstr[- ]?3b|gst to (?:govt|government)"),
+                            ("creditor_payment", r"suppliers?|creditors?|against bills|dues"),
                             ("cash_purchase", r"purchase of goods|cash purchases?|goods|stock|raw material"),
                             ("drawings", r"owner|household|personal|home|drawings|withdrawn by")) if matches(pattern)), "")
     if category:
@@ -87,6 +89,8 @@ def classify(entry, entity, incoming):
             candidates = {key for key, pattern in RECEIPTS[entity] if matches(pattern)}
             if "asset_sale" in candidates:
                 candidates.discard("cash_sale")
+            if "gst_refund" in candidates:
+                candidates.discard("other_income")
             if "corpus_donation" in candidates:
                 candidates -= {"donation", "subscription"}
             if len(candidates) > 1:

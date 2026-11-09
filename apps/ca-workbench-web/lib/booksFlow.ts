@@ -6,7 +6,7 @@ export interface BooksForm extends Omit<Book, "opening" | "closing"> { opening: 
 export const heads = ["outstanding_expenses", "prepaid_expenses", "accrued_income", "advance_income"] as const;
 const common = ["cash", "bank", "fixed_assets", "loans"];
 export function figureKeys(entity: EntityType, closing = false): string[] {
-  return closing ? [...(entity === "business" ? ["debtors", "creditors", "stock", "discount_allowed", "discount_received", "bad_debts", "sales_returns", "purchase_returns"] : []), "depreciation", ...(entity === "individual" ? ["investments_market_value"] : []), ...heads]
+  return closing ? [...(entity === "business" ? ["debtors", "creditors", "stock", "discount_allowed", "discount_received", "bad_debts", "sales_returns", "purchase_returns", "credit_sales_gst_rate", "credit_purchases_gst_rate"] : []), "depreciation", ...(entity === "individual" ? ["investments_market_value"] : []), ...heads]
     : [...common, ...(entity === "business" ? ["debtors", "creditors", "stock"] : []), ...(entity === "individual" ? ["investments"] : []), "capital", ...heads];
 }
 export function cleanAmount(value: string): string {
@@ -72,7 +72,7 @@ export function glance(result: Pick<Conversion, "statements">, entity: EntityTyp
   return [{ label: "Income", amount: a("income_expense", "total_income") }, { label: "Spending", amount: a("income_expense", "total_expenses") }, signed("Savings", "Savings shortfall", a("income_expense", "savings")), { label: "Net worth at cost - own minus owe", amount: a("net_worth", "closing_at_cost", "net_worth") }, { label: "Net worth at market - using today’s values", amount: a("net_worth", "closing_at_market", "net_worth") }];
 }
 export function explainSource(source: string): string {
-  return ({ opening: "Where you stood at the start, turned into matching records.", cash_book: "This came from your notebook.", derived: "This was not in your notebook: we worked it out from what customers and suppliers were owed at the start and end.", adjustment: "A year-end change for amounts due, paid early or used up.", adjustments: "A year-end change for amounts due, paid early or used up.", closing: "We moved this year’s result into your own share or fund." } as Record<string, string>)[source] || `Worked out for you (${source}).`;
+  return ({ opening: "Where you stood at the start, turned into matching records.", cash_book: "This came from your notebook.", derived: "This was not in your notebook: we worked it out from what customers and suppliers were owed at the start and end, or from the book value of an asset you sold.", adjustment: "A year-end change for amounts due, paid early or used up.", adjustments: "A year-end change for amounts due, paid early or used up.", closing: "We moved this year’s result into your own share or fund." } as Record<string, string>)[source] || `Worked out for you (${source}).`;
 }
 export function journalRows(journal: readonly JournalItem[], filter = "all") {
   return journal.filter(j => filter === "all" || j.source === filter || (filter === "adjustment" && j.source === "adjustments")).flatMap(j => j.lines.map(l => ({ date: j.date, source: j.source, narration: j.narration, ledger: l.ledger, debit: l.side === "Dr" ? l.amount : "0", credit: l.side === "Cr" ? l.amount : "0" })));
@@ -88,6 +88,7 @@ export const statementInfo: Record<string, [string, string]> = {
   receipts_payments: ["Receipts and payments - money in and out", "All cash and bank movements, including opening and closing money."],
   income_expenditure: ["Income and expenditure - earned and used", "The club’s income and spending belonging to this period."],
   income_expense: ["Income and expenses - earned and spent", "Your income, costs and savings for this period."],
+  gst: ["GST - tax collected, paid and carried", "The tax inside your sales and purchases, what you paid the government, and what is left to pay or to claim next time."],
   net_worth: ["Net worth - what you own less what you owe", "Your own share at purchase cost and at current market values."],
 };
 export function plainLabel(key: string): string {
@@ -100,7 +101,7 @@ export function plainLabel(key: string): string {
     .replace(/\bstock-in-trade\b/gi, "unsold goods at purchase cost").replace(/\bsuspense a\/c\b/gi, "temporary category needing your check");
 }
 export function statementRows(statements: Statements, entity: EntityType) {
-  const keys = entity === "business" ? ["trading", "profit_loss", "balance_sheet"] : entity === "nonprofit" ? ["receipts_payments", "income_expenditure", "balance_sheet"] : ["income_expense", "net_worth", "balance_sheet"];
+  const keys = entity === "business" ? ["trading", "profit_loss", ...(statements.gst ? ["gst"] : []), "balance_sheet"] : entity === "nonprofit" ? ["receipts_payments", "income_expenditure", "balance_sheet"] : ["income_expense", "net_worth", "balance_sheet"];
   function flatten(value: Record<string, StatementValue>, prefix = ""): { label: string; amount: string }[] {
     return Object.entries(value).flatMap(([key, v]) => typeof v === "boolean" ? [] : typeof v === "string" ? (isAmount(v) ? [{ label: prefix + plainLabel(key), amount: v }] : []) : flatten(v, prefix + plainLabel(key) + " / "));
   }

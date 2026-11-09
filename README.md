@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-838%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-915%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -420,15 +420,15 @@ default exists only for local development.
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
-| `tests/unit` | 644 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
+| `tests/unit` | 717 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 49 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 51 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
 | `tests/agents` | 41 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
-| `tests/infra` | 29 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
+| `tests/infra` | 31 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 36 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
 | `apps/ca-workbench-web` | 33 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **838 + 33** (+5 opt-in live-Tally tests) | **all passing** |
+| **Total** | **915 + 34** (+5 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -552,6 +552,7 @@ API: `/api/v1/books/sandbox/*` (anonymous: examples, CSV parsing, conversion) an
 | Check | Result |
 |-------|--------|
 | Three hand-computed textbook cases (business, club, individual), figures derived on paper before any code | all match to the paisa |
+| 60 more simulated shops (GST-registered, and with an old asset sold at a loss) whose true tax paid, tax payable and loss on sale only the simulator knows | every figure equals the truth (`tests/unit/test_single_entry_gst_assets.py`) |
 | 30 simulated shops whose true profit and balances only the simulator knows (credit sales and purchases are absent from the cash book) | converted profit, sales, purchases, debtors, creditors, loans, assets and capital all equal the truth |
 | 600 randomised books (200 per entity type) | every invariant holds: balanced journals, trial balance, balance sheet, cross-check |
 | Production (Vercel + Neon), a simulated year: save, correct, convert, close, roll over, export | converted profit is exactly the true profit; two real tenants fully isolated (`scripts/books_e2e.py`, 17 checks) |
@@ -560,8 +561,9 @@ API: `/api/v1/books/sandbox/*` (anonymous: examples, CSV parsing, conversion) an
 
 Real Tally found one defect that no fake could: an ordinary voucher may not post to a ledger under Tally's `Stock-in-Hand` group, so the stock ledger is filed under `Current Assets`.
 
-**Limits, stated plainly.** Not a statutory audit: a practising CA must review before the books are relied on or filed. Profit or loss on the sale of an asset is not
-computed (flagged as a question). Depreciation uses the rate or amount you give. GST is not modelled in this module (the Tally Assistant handles GST invoices).
+**Limits, stated plainly.** Not a statutory audit: a practising CA must review before the books are relied on or filed. Profit or loss on the sale of an asset needs the asset's
+book value from you (otherwise it is asked, not guessed). GST in the books is the simple case: a rate per line (amounts include GST), one rate for credit sales and one for credit purchases,
+input credit set off at year end; reverse charge, composition scheme and GST on discounts/returns are not modelled and nothing is filed. Depreciation uses the rate or amount you give.
 Lines the rules cannot classify are flagged `NEEDS_REVIEW` and listed as questions; closing a period with open questions needs an explicit "I have reviewed".
 Verified on TallyPrime 7.2 Education mode only; Education mode accepts only vouchers dated the 1st or 2nd, so the export check moved each date to the 1st of its month.
 

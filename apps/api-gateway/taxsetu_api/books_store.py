@@ -118,9 +118,10 @@ class PgBooks:
             ids = []
             for e in entries:
                 eid = str(uuid.uuid4())
-                c.execute("INSERT INTO se_entries (entry_id, book_id, tenant_id, entry_date, description, receipt, payment, mode, party, hint)"
-                          " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                          (eid, book_id, tenant, e["date"], e["description"], e["receipt"], e["payment"], e["mode"], e["party"], e["hint"]))
+                c.execute("INSERT INTO se_entries (entry_id, book_id, tenant_id, entry_date, description, receipt, payment, mode, party, hint, gst_rate, book_value)"
+                          " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                          (eid, book_id, tenant, e["date"], e["description"], e["receipt"], e["payment"], e["mode"], e["party"], e["hint"],
+                           e.get("gst_rate") or 0, e.get("book_value") or None))
                 ids.append(eid)
         return [x for x in self.entry_list(tenant, book_id, include_void=True) if x["entry_id"] in set(ids)]
 
@@ -130,10 +131,11 @@ class PgBooks:
         except ValueError:
             return []
         with self.pg.tx(tenant) as c:
-            rows = c.execute("SELECT entry_id::text, book_id::text, seq, entry_date, description, receipt, payment, mode, party, hint, status, void_reason, created_at"
+            rows = c.execute("SELECT entry_id::text, book_id::text, seq, entry_date, description, receipt, payment, mode, party, hint, status, void_reason, created_at, gst_rate, book_value"
                              " FROM se_entries WHERE book_id = %s AND (%s OR status = 'ACTIVE') ORDER BY seq", (book_id, include_void)).fetchall()
         return [{"entry_id": r[0], "book_id": r[1], "seq": r[2], "date": r[3].isoformat(), "description": r[4], "receipt": _money(r[5]), "payment": _money(r[6]),
-                 "mode": r[7], "party": r[8], "hint": r[9], "status": r[10], "void_reason": r[11], "created_at": r[12].isoformat()} for r in rows]
+                 "mode": r[7], "party": r[8], "hint": r[9], "status": r[10], "void_reason": r[11], "created_at": r[12].isoformat(),
+                 "gst_rate": format(r[13].normalize(), "f") if r[13] else "", "book_value": "" if r[14] is None else _money(r[14])} for r in rows]
 
     def entry_void(self, tenant: str, book_id: str, entry_id: str, reason: str) -> bool:
         try:

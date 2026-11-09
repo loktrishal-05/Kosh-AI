@@ -832,6 +832,7 @@
      "Cash": "3000.00",
      "Debtors": "0.00",
      "Fixed Assets": "0.00",
+     "Input GST": "0.00",
      "Investments": "150000.00",
      "Prepaid Expenses": "0.00",
      "Stock-in-Trade": "0.00"
@@ -840,6 +841,7 @@
      "Creditors": "0.00",
      "Income Received in Advance": "0.00",
      "Loans": "120000.00",
+     "Output GST": "0.00",
      "Outstanding Expenses": "0.00"
     },
     "net_worth": "113000.00"

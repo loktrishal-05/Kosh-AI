@@ -19,15 +19,16 @@ EXAMPLES = Path(__file__).parent / "examples"
 EXAMPLE_TITLES = {
     "business_textbook": ("A shop's year, textbook style", "Ravi General Stores: credit sales and purchases are not in the cash book; the conversion finds them."),
     "kirana_full_year": ("A busy kirana store, 12 months", "About 180 cash-book lines with credit customers, suppliers, a loan, a new asset and a bad debt."),
+    "gst_trader_full_year": ("A GST-registered trader, 12 months", "Mehta Traders: sales and purchases include 18% and 12% GST, tax paid monthly, an old piece of furniture sold at a loss."),
     "nonprofit_club": ("A youth club (receipts and payments)", "Sunrise Youth Club: subscriptions in arrears and in advance, a corpus donation, depreciation."),
     "individual_freelancer": ("A freelancer's household", "Income, spending, investments and a home loan; shows savings and net worth."),
 }
 SANDBOX_ENTRIES, BOOK_ENTRIES, TALLY_CHUNK = 1000, 2000, 400
 WRITERS, DECIDERS = ("OWNER", "CA", "CLERK", "EMPLOYEE"), ("OWNER", "CA")
-SIMPLE = ("cash", "bank", "debtors", "creditors", "stock", "fixed_assets", "investments", "loans", "capital")
+SIMPLE = ("cash", "bank", "debtors", "creditors", "stock", "fixed_assets", "investments", "loans", "capital", "input_gst", "output_gst")
 HEADS = ("outstanding_expenses", "prepaid_expenses", "accrued_income", "advance_income")
 CLOSING_SIMPLE = ("debtors", "creditors", "stock", "discount_allowed", "discount_received", "bad_debts", "sales_returns", "purchase_returns",
-                  "depreciation", "depreciation_rate", "investments_market_value")
+                  "depreciation", "depreciation_rate", "investments_market_value", "credit_sales_gst_rate", "credit_purchases_gst_rate")
 
 
 def _num(v, field, allow_negative=False) -> str:
@@ -64,6 +65,18 @@ class EntryIn(BaseModel):
     mode: str = Field(default="cash", pattern="^(cash|bank)$")
     party: str = Field(default="", max_length=80)
     hint: str = Field(default="", max_length=60)
+    gst_rate: str = Field(default="", max_length=8)                         # GST slab in percent; the amount on the line includes the tax
+    book_value: Decimal | None = Field(default=None, ge=0, lt=Decimal("1e13"))     # for the sale of an asset: its cost less depreciation
+
+    @field_validator("book_value", mode="before")
+    @classmethod
+    def blank_book_value(cls, v):
+        return None if v is None or (isinstance(v, str) and not v.strip()) else (v.replace(",", "").strip() if isinstance(v, str) else v)
+
+    @field_validator("gst_rate", mode="before")
+    @classmethod
+    def clean_rate(cls, v):
+        return "" if v is None else str(v).replace("%", "").strip()
 
     @field_validator("receipt", "payment", mode="before")
     @classmethod
@@ -78,8 +91,11 @@ def entry_record(e: EntryIn, i: int) -> dict:
     if (e.receipt > 0) == (e.payment > 0):
         raise HTTPException(422, f"line {i}: enter either money in or money out, not both and not neither")
     q = lambda x: format(x.quantize(Decimal("0.01")), "f")
+    if se._gst_rate(e.gst_rate) is None:
+        raise HTTPException(422, f"line {i}: GST rate must be one of 0, 0.25, 1, 1.5, 3, 5, 12, 18 or 28")
     return {"date": e.date.isoformat(), "description": e.description.strip(), "receipt": q(e.receipt), "payment": q(e.payment),
-            "mode": e.mode, "party": e.party.strip(), "hint": e.hint.strip()}
+            "mode": e.mode, "party": e.party.strip(), "hint": e.hint.strip(), "gst_rate": e.gst_rate,
+            "book_value": "" if e.book_value is None else q(e.book_value)}
 
 
 class BookIn(BaseModel):
@@ -129,7 +145,7 @@ class CsvIn(BaseModel):
 def book_for_convert(book: dict, entries: list) -> dict:
     return {"entity_type": book["entity_type"], "name": book["name"], "period_start": book["period_start"], "period_end": book["period_end"],
             "opening": book.get("opening") or {}, "closing": book.get("closing") or {},
-            "entries": [{k: e.get(k, "") for k in ("date", "description", "receipt", "payment", "mode", "party", "hint")} for e in entries]}
+            "entries": [{k: e.get(k, "") for k in ("date", "description", "receipt", "payment", "mode", "party", "hint", "gst_rate", "book_value")} for e in entries]}
 
 
 def carry_forward(book: dict, result: dict) -> dict:
@@ -139,7 +155,8 @@ def carry_forward(book: dict, result: dict) -> dict:
         return Decimal(0) if not row else (Decimal(row["balance"]) if row["side"] == "Dr" else -Decimal(row["balance"]))
     fmt = lambda x: format(x.quantize(Decimal("0.01")), "f")
     op = {"cash": bal("Cash"), "bank": bal("Bank"), "debtors": bal("Debtors"), "creditors": -bal("Creditors"), "stock": bal("Stock-in-Trade"),
-          "fixed_assets": bal("Fixed Assets"), "investments": bal("Investments"), "loans": -bal("Loans")}
+          "fixed_assets": bal("Fixed Assets"), "investments": bal("Investments"), "loans": -bal("Loans"),
+          "input_gst": bal("Input GST"), "output_gst": -bal("Output GST")}
     out = {k: fmt(v) for k, v in op.items() if v != 0}
     for k in HEADS:
         if (book.get("closing") or {}).get(k):
@@ -182,7 +199,7 @@ def mount(app, *, gate, books, need) -> None:
             try:
                 clean.append(entry_record(EntryIn(date=e.get("date"), description=str(e.get("description", "")), receipt=e.get("receipt") or 0,
                                                   payment=e.get("payment") or 0, mode=e.get("mode") or "cash", party=str(e.get("party", "")),
-                                                  hint=str(e.get("hint", ""))), i))
+                                                  hint=str(e.get("hint", "")), gst_rate=e.get("gst_rate") or "", book_value=e.get("book_value")), i))
             except HTTPException:
                 raise
             except Exception:

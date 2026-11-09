@@ -67,3 +67,12 @@ def test_tenants_cannot_see_or_touch_each_others_books(env):
     assert s.entry_add(other, b["book_id"], [E2]) is None
     assert s.entry_void(other, b["book_id"], e["entry_id"], "nope") is False
     assert s.book_update(other, b["book_id"], "OPEN", opening={"cash": "1"}) is False
+
+
+def test_gst_rate_and_book_value_roundtrip(env):
+    s, nt = env
+    t = nt()
+    b = s.book_add(t, BOOK)
+    s.entry_add(t, b["book_id"], [{**E1, "gst_rate": "18", "book_value": ""}, {**E2, "gst_rate": "", "book_value": "250.00"}])
+    got = s.entry_list(t, b["book_id"])
+    assert [(e["gst_rate"], e["book_value"]) for e in got] == [("18", ""), ("", "250.00")]

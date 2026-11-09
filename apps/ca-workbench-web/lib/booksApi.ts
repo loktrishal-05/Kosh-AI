@@ -1,6 +1,6 @@
 import { call, type Staged } from "./tallyApi.ts";
 export type EntityType = "business" | "individual" | "nonprofit";
-export interface NotebookEntry { date: string; description: string; receipt?: string; payment?: string; mode?: "cash" | "bank"; party?: string; hint?: string }
+export interface NotebookEntry { date: string; description: string; receipt?: string; payment?: string; mode?: "cash" | "bank"; party?: string; hint?: string; gst_rate?: string; book_value?: string }
 export type Figures = Record<string, string | Record<string, string>>;
 export interface Book { name: string; entity_type: EntityType; period_start: string; period_end: string; opening: Figures; closing: Figures; entries: NotebookEntry[] }
 export interface SavedBook extends Omit<Book, "entries"> { book_id: string; status: "OPEN" | "CLOSED"; rolled_from?: string }

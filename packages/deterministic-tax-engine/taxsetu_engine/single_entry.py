@@ -19,6 +19,32 @@ def _amount(value, signed=False):
         return None
 
 
+GST_SLABS = {Decimal(x) for x in ("0", "0.25", "1", "1.5", "3", "5", "12", "18", "28")}
+GST_SALES = {"cash_sale", "commission_income", "rent_income", "other_income", "asset_sale"}      # incoming lines that carry output tax
+GST_BUYS = {"cash_purchase", "asset_purchase"}                                                    # outgoing lines that carry input tax (plus every expense head)
+
+
+def _given(value):
+    return value is not None and str(value).strip() != ""
+
+
+def _gst_rate(value):
+    """Blank means no GST (zero); None means not a GST slab."""
+    if not _given(value):
+        return ZERO
+    try:
+        rate = Decimal(str(value).replace("%", "").strip())
+    except InvalidOperation:
+        return None
+    return rate if rate in GST_SLABS else None
+
+
+def _split(gross, rate):
+    """Cash-book and bill amounts include GST: return (value without tax, tax)."""
+    net = r2(gross * 100 / (100 + rate))
+    return net, gross - net
+
+
 def _date(value):
     for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%y", "%d-%b-%Y", "%d-%m-%Y"):
         try:
@@ -102,6 +128,8 @@ def convert(book: dict) -> dict:
             warnings.append(f"Opening capital supplied {supplied:.2f} differs from statement of affairs {opening_capital:.2f}; using the balancing figure.")
     balances, totals = {}, {}
     income_heads, expense_heads = set(), set()
+    gst_out = gst_in = gst_paid = gst_refunded = gst_setoff = sold_bv = ZERO
+    gst_used = False
     def post(when, narration, source, lines, flags=(), confidence=1, category=""):
         clean = []
         for ledger, value in lines:
@@ -136,6 +164,12 @@ def convert(book: dict) -> dict:
             errors.append(f"Entry {number}: invalid date, mode or receipt/payment (exactly one must be positive).")
             counts["excluded"] += 1
             continue
+        rate = _gst_rate(entry.get("gst_rate"))
+        book_value = _amount(entry.get("book_value")) if _given(entry.get("book_value")) else None
+        if rate is None or (_given(entry.get("book_value")) and book_value is None):
+            errors.append(f"Entry {number}: invalid gst_rate (use 0, 0.25, 1, 1.5, 3, 5, 12, 18 or 28) or book_value (a non-negative amount).")
+            counts["excluded"] += 1
+            continue
         if not start <= when <= end:
             warnings.append(f"Entry {number}: date outside the period; excluded.")
             counts["excluded"] += 1
@@ -148,7 +182,7 @@ def convert(book: dict) -> dict:
         counts["classified"] += 1
         validated.append({"number": number, "entry": entry, "date": when, "mode": mode.title(), "incoming": bool(receipt),
                           "amount": receipt or payment, "category": category, "ledger": ledger,
-                          "confidence": confidence, "flags": flags})
+                          "confidence": confidence, "flags": flags, "rate": rate, "book_value": book_value})
     # Direct arithmetic uses validated cash-book rows, never journal lines or ledger balances.
     direct = {**opening_assets, **{k: -v for k, v in opening_liabilities.items()}}
     movements = {}
@@ -162,6 +196,7 @@ def convert(book: dict) -> dict:
         incoming, mode = row["incoming"], row["mode"]
         signed = value if incoming else -value
         counter = -signed
+        extra, adjust = [], []
         if category == "contra":
             ledger = "Bank" if mode == "Cash" else "Cash"
             twin = next((j for j in range(i + 1, len(validated)) if j not in ignored and
@@ -174,7 +209,31 @@ def convert(book: dict) -> dict:
                 warnings.append(f"Entry {row['number']}: unmatched contra; posted once with both cash/bank sides.")
             direct[ledger] += counter
         else:
-            movements[category] = movements.get(category, ZERO) + value
+            rate, bv = row["rate"], row["book_value"]
+            tax, gst_ledger = ZERO, ""
+            if rate:
+                if entity != "business":
+                    warnings.append(f"Entry {row['number']}: GST rate ignored; GST is kept for businesses only.")
+                elif incoming and category in GST_SALES:
+                    gst_ledger = "Output GST"
+                elif not incoming and (category in GST_BUYS or category.startswith("expense:")):
+                    gst_ledger = "Input GST"
+                else:
+                    warnings.append(f"Entry {row['number']}: GST rate ignored for {category.replace('_', ' ')}; it applies to sales, purchases, expenses and assets.")
+            net = value
+            if gst_ledger:
+                net, tax = _split(value, rate)
+                gst_used = True
+                counter = -net if incoming else net
+                extra.append((gst_ledger, -tax if incoming else tax))
+                direct[gst_ledger] += -tax if incoming else tax
+                if incoming:
+                    gst_out += tax
+                else:
+                    gst_in += tax
+            if bv is not None and category != "asset_sale":
+                warnings.append(f"Entry {row['number']}: book value ignored; it applies only to the sale of an asset.")
+            movements[category] = movements.get(category, ZERO) + net
             cash_heads = receipts if incoming else payments
             cash_heads[ledger] = cash_heads.get(ledger, ZERO) + value
             if ledger in direct:
@@ -185,13 +244,29 @@ def convert(book: dict) -> dict:
                 corpus += value
             elif category == "drawings":
                 drawings += value
+            elif category == "gst_payment":
+                gst_paid += value
+            elif category == "gst_refund":
+                gst_refunded += value
             elif category == "asset_sale":
-                warnings.append(f"Entry {row['number']}: asset sale treated at cost; what is the profit/loss on sale?")
+                if bv is None:
+                    warnings.append(f"Entry {row['number']}: asset sale treated at cost; what is the profit/loss on sale?")
+                    questions.append(f"Entry {row['number']}: what was the book value (cost less depreciation) of the asset sold? Put it in the book value column to see the profit or loss on the sale.")
+                else:
+                    diff = net - bv
+                    sold_bv += bv
+                    if diff:
+                        head = "Profit on Sale of Asset" if diff > 0 else "Loss on Sale of Asset"
+                        (income_heads if diff > 0 else expense_heads).add(head)
+                        adjust = [("Fixed Assets", diff), (head, -diff)]       # the receipt credited Fixed Assets with the price; correct it to the book value
+                        direct["Fixed Assets"] += diff
             elif ledger not in set(ASSETS.values()) | set(LIABILITIES.values()) | {capital, "Drawings", "Purchases", "Sales"}:
                 (income_heads if incoming else expense_heads).add(ledger)
         direct[mode] += signed
-        post(row["date"], str(row["entry"].get("description") or ""), "cash_book", [(ledger, counter), (mode, signed)],
+        post(row["date"], str(row["entry"].get("description") or ""), "cash_book", [(ledger, counter), (mode, signed)] + extra,
              row["flags"], row["confidence"], category)
+        if adjust:
+            post(row["date"], ("Profit" if adjust[0][1] > 0 else "Loss") + " on sale of asset: " + str(row["entry"].get("description") or ""), "derived", adjust, category=category)
     if entity == "business":
         for key, movement, question in (("debtors", "debtor_receipt", "What do customers still owe you at the end of the period?"),
                                         ("creditors", "creditor_payment", "What do you still owe suppliers at the end of the period?")):
@@ -202,11 +277,28 @@ def convert(book: dict) -> dict:
                     warnings.append("Missing closing " + key + "; assumed equal to opening.")
         credit_sales = closing["debtors"] + movements.get("debtor_receipt", ZERO) + sum(closing[k] for k in ("discount_allowed", "bad_debts", "sales_returns")) - opening["debtors"]
         credit_purchases = closing["creditors"] + movements.get("creditor_payment", ZERO) + closing["discount_received"] + closing["purchase_returns"] - opening["creditors"]
-        for label, value, debit, credit in (("credit sales", credit_sales, "Debtors", "Sales"), ("credit purchases", credit_purchases, "Purchases", "Creditors")):
+        cs_rate, cp_rate = _gst_rate(closing_raw.get("credit_sales_gst_rate")), _gst_rate(closing_raw.get("credit_purchases_gst_rate"))
+        if cs_rate is None or cp_rate is None:
+            errors.append("closing: credit sales/purchases GST rate must be 0, 0.25, 1, 1.5, 3, 5, 12, 18 or 28.")
+            cs_rate = cp_rate = ZERO
+        for label, value, rate in (("credit sales", credit_sales, cs_rate), ("credit purchases", credit_purchases, cp_rate)):
             if value < 0:
                 questions.append("ERROR: inconsistent figures produce negative " + label + "; please correct the opening/closing balances.")
+                continue
+            net, tax = _split(value, rate) if rate and value else (value, ZERO)
+            if label == "credit sales":
+                lines = [("Debtors", value), ("Sales", -net), ("Output GST", -tax)]
+                direct["Output GST"] -= tax
+                gst_out += tax
             else:
-                post(end, "Derived " + label, "derived", [(debit, value), (credit, -value)])
+                lines = [("Purchases", net), ("Input GST", tax), ("Creditors", -value)]
+                direct["Input GST"] += tax
+                gst_in += tax
+            gst_used = gst_used or bool(tax)
+            post(end, "Derived " + label, "derived", lines)
+        for label, value, rate in (("sales", credit_sales, cs_rate), ("purchases", credit_purchases, cp_rate)):
+            if gst_used and value > 0 and not rate:
+                questions.append(f"Your cash-book lines carry GST: do your credit {label} carry GST too? If so, give the GST rate on credit {label} so the tax is separated.")
         for key, debit, credit in (("discount_allowed", "Discount Allowed", "Debtors"), ("bad_debts", "Bad Debts", "Debtors"),
                                    ("discount_received", "Creditors", "Discount Received"), ("sales_returns", "Sales Returns", "Debtors"),
                                    ("purchase_returns", "Creditors", "Purchase Returns")):
@@ -222,6 +314,13 @@ def convert(book: dict) -> dict:
         for key in ("debtors", "creditors", "stock"):
             if key in closing_raw:
                 direct[(ASSETS | LIABILITIES)[key]] = closing[key] * (-1 if key == "creditors" else 1)
+    if balances.get("Output GST", ZERO) > 0:
+        questions.append("GST paid to the government is more than GST collected; check the GST rates on your sales lines and your GST payments.")
+    gst_setoff = min(-balances.get("Output GST", ZERO), balances.get("Input GST", ZERO))
+    if gst_setoff > 0:
+        post(end, "Set off input tax credit against output GST", "adjustment", [("Output GST", gst_setoff), ("Input GST", -gst_setoff)])
+    else:
+        gst_setoff = ZERO
     for key in ADJUSTMENTS:
         aggregate = (ASSETS | LIABILITIES)[key]
         asset = key in ASSETS
@@ -238,10 +337,12 @@ def convert(book: dict) -> dict:
     elif closing_raw.get("depreciation_rate") is not None:
         rate = amount(closing_raw["depreciation_rate"], "closing.depreciation_rate")
         try:
-            depreciation = r2((opening["fixed_assets"] + movements.get("asset_purchase", ZERO)) * rate / 100)
+            depreciation = r2(max(opening["fixed_assets"] + movements.get("asset_purchase", ZERO) - sold_bv, ZERO) * rate / 100)
         except InvalidOperation:
             errors.append("Invalid depreciation calculation.")
         warnings.append("additions depreciated for a full year")
+        if sold_bv:
+            warnings.append("assets sold are left out of the depreciation base; give a depreciation amount if you need depreciation up to the date of sale")
     post(end, "Depreciation", "adjustment", [("Depreciation", depreciation), ("Fixed Assets", -depreciation)])
     expense_heads.add("Depreciation")
     direct["Fixed Assets"] -= depreciation
@@ -253,6 +354,10 @@ def convert(book: dict) -> dict:
     total_expenses, total_income = sum(expenses.values(), ZERO), sum(incomes.values(), ZERO)
     statements = result["statements"]
     gross = ZERO
+    if gst_used or gst_paid or gst_refunded or balances.get("Output GST") or balances.get("Input GST"):
+        statements["gst"] = {"output_tax_collected": gst_out, "input_tax_credit": gst_in, "paid_to_government": gst_paid, "refunds_received": gst_refunded,
+                             "set_off": gst_setoff, "payable_at_end": max(-balances.get("Output GST", ZERO), ZERO),
+                             "credit_carried_forward": max(balances.get("Input GST", ZERO), ZERO)}
     if entity == "business":
         sales, purchases = -balances.get("Sales", ZERO), balances.get("Purchases", ZERO)
         sales_returns, purchase_returns = balances.get("Sales Returns", ZERO), -balances.get("Purchase Returns", ZERO)
@@ -331,7 +436,8 @@ def parse_cash_book_csv(text: str) -> dict:
         return result
     aliases = {"date": {"date"}, "description": {"description", "particulars", "narration", "details"},
                "receipt": {"receipt", "in", "received", "credit", "deposit"}, "payment": {"payment", "out", "paid", "debit", "withdrawal"},
-               "mode": {"mode", "type", "cash/bank"}, "party": {"party", "name"}, "hint": {"hint"}, "amount": {"amount", "signed amount"}}
+               "mode": {"mode", "type", "cash/bank"}, "party": {"party", "name"}, "hint": {"hint"}, "amount": {"amount", "signed amount"},
+               "gst_rate": {"gst_rate", "gst rate", "gst %", "gst"}, "book_value": {"book_value", "book value"}}
     header = None
     try:
         for number, row in enumerate(csv.reader(io.StringIO(text.lstrip("\ufeff"))), 1):
@@ -384,7 +490,7 @@ def to_tally(result: dict) -> dict:
         return output
     groups = {"Cash": "Cash-in-Hand", "Bank": "Bank Accounts", "Debtors": "Sundry Debtors", "Creditors": "Sundry Creditors",
               # real TallyPrime 7.2: a ledger under Stock-in-Hand cannot be used in an ordinary voucher, so stock sits under Current Assets
-              "Stock-in-Trade": "Current Assets", "Fixed Assets": "Fixed Assets", "Investments": "Investments",
+              "Input GST": "Duties & Taxes", "Output GST": "Duties & Taxes", "Stock-in-Trade": "Current Assets", "Fixed Assets": "Fixed Assets", "Investments": "Investments",
               "Prepaid Expenses": "Current Assets", "Accrued Income": "Current Assets", "Loans": "Loans (Liability)",
               "Outstanding Expenses": "Current Liabilities", "Income Received in Advance": "Current Liabilities",
               **{h: "Capital Account" for h in ("Capital", "Drawings", "Net Worth", "Capital Fund")},

@@ -5,7 +5,7 @@ import { glance, journalCsv, journalLedgerTotals, journalRows, money, statementR
 
 // The fixtures are the REAL converter output (regenerate with scripts/gen_books_fixtures.py). Every screen's formatting code must cope with all of them.
 const load = (n: string) => JSON.parse(readFileSync(new URL(`./fixtures/books_${n}.json`, import.meta.url), "utf8"));
-const cases = [["business_textbook", "business"], ["kirana_full_year", "business"], ["nonprofit_club", "nonprofit"], ["individual_freelancer", "individual"]] as const;
+const cases = [["business_textbook", "business"], ["kirana_full_year", "business"], ["gst_trader_full_year", "business"], ["nonprofit_club", "nonprofit"], ["individual_freelancer", "individual"]] as const;
 
 for (const [name, entity] of cases) {
   test(`the results screens can render the real converter output: ${name}`, () => {
@@ -13,7 +13,7 @@ for (const [name, entity] of cases) {
     const cards = glance(r, entity);
     assert.ok(cards.length >= 4 && cards.every(c => /^[\d,]*₹?/.test(money(c.amount)) || money(c.amount).startsWith("₹")));
     const tables = statementRows(r.statements, entity);
-    assert.equal(tables.length, 3);
+    assert.equal(tables.length, name.startsWith("gst") ? 4 : 3);
     for (const t of tables) { assert.ok(t.rows.length > 0, t.key); for (const row of t.rows) assert.match(money(row.amount), /^-?₹[\d,]+\.\d{2}$/, `${t.key}/${row.label}`); }
     assert.ok(journalRows(r.journal, "all").length > 0 && journalLedgerTotals(r.journal) && journalCsv(r.journal).split("\n").length > r.journal.length);
     assert.equal(r.trial_balance.balanced && r.statements.balance_sheet.balanced && r.crosscheck.agrees, true);

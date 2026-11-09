@@ -48,7 +48,7 @@ def report(client, t, book):
 # ---- sandbox --------------------------------------------------------------------------------------------------------------------
 def test_sandbox_lists_real_time_examples_and_converts_them(client):
     ex = client.get("/api/v1/books/sandbox/examples").json()["examples"]
-    assert {e["id"] for e in ex} == {"business_textbook", "kirana_full_year", "nonprofit_club", "individual_freelancer"}
+    assert {e["id"] for e in ex} == {"business_textbook", "kirana_full_year", "gst_trader_full_year", "nonprofit_club", "individual_freelancer"}
     book = client.get("/api/v1/books/sandbox/examples/business_textbook").json()["book"]
     r = client.post("/api/v1/books/sandbox/convert", json={"book": book}).json()
     assert r["statements"]["profit_loss"]["net_profit"] == "211000.00" and r["statements"]["balance_sheet"]["balanced"] and r["crosscheck"]["agrees"]
@@ -176,3 +176,28 @@ def test_blank_and_comma_amounts_from_forms_and_spreadsheets_are_accepted(client
     r = add(client, t, b, lines)
     assert r.status_code == 200 and r.json()["added"] == 3, r.text
     assert [e["receipt"] for e in r.json()["entries"]] == ["1500.50", "0.00", "0.00"]
+
+
+def test_gst_rate_and_book_value_are_kept_validated_and_reach_the_report(client):
+    t = str(uuid.uuid4())
+    b = new_book(client, t, name="business_textbook", opening={"cash": "100000", "fixed_assets": "50000"}, closing={"debtors": "0", "creditors": "0", "stock": "0"})
+    bad = add(client, t, b, [{"date": "2026-05-01", "description": "Cash sales", "receipt": "1000", "gst_rate": "7"}])
+    assert bad.status_code == 422 and "GST rate" in bad.text
+    ok = add(client, t, b, [{"date": "2026-05-01", "description": "Cash sales", "receipt": "11800", "gst_rate": "18%"},
+                            {"date": "2026-06-10", "description": "Sale of old computer", "receipt": "20000", "book_value": "30,000"}])
+    assert ok.status_code == 200, ok.text
+    assert [(e["gst_rate"], e["book_value"]) for e in ok.json()["entries"]] == [("18", ""), ("", "30000.00")]
+    r = report(client, t, b)
+    assert r["errors"] == [] and r["crosscheck"]["agrees"] and r["statements"]["gst"]["payable_at_end"] == "1800.00"
+    assert D(r["statements"]["profit_loss"]["net_profit"]) == D("0")                    # sales 10,000 less the 10,000 loss on the computer
+    assert r["statements"]["profit_loss"]["expenses"]["Loss on Sale of Asset"] == "10000.00"
+
+
+def test_csv_with_gst_and_book_value_columns_and_gst_carried_into_the_next_period(client):
+    t = str(uuid.uuid4())
+    b = new_book(client, t, name="business_textbook", opening={"cash": "100000"}, closing={"debtors": "0", "creditors": "0", "stock": "0"})
+    csv = "date,description,receipt,payment,mode,gst rate,book value\n2026-05-01,Cash sales,11800,,cash,18,\n"
+    assert client.post(f"/api/v1/books/{b['book_id']}/entries", headers=tok(t), json={"csv": csv}).status_code == 200
+    assert client.post(f"/api/v1/books/{b['book_id']}/close", headers=tok(t), json={"accept_review": True}).status_code == 200
+    nxt = client.post(f"/api/v1/books/{b['book_id']}/rollover", headers=tok(t), json={}).json()
+    assert nxt["opening"]["output_gst"] == "1800.00" and nxt["opening"]["cash"] == "111800.00"
