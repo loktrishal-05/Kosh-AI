@@ -13,7 +13,7 @@ ZERO = Decimal("0.00")
 
 def _amount(value, signed=False):
     try:
-        amount = d(str(value).replace(",", "").strip())
+        amount = d(("" if value is None else str(value)).replace(",", "").strip() or "0")      # blank cell = zero
         return r2(amount) if amount.is_finite() and (signed or amount >= 0) else None
     except (InvalidOperation, ValueError, TypeError):
         return None
@@ -130,7 +130,7 @@ def convert(book: dict) -> dict:
             errors.append(f"Entry {number}: must be an object.")
             counts["excluded"] += 1
             continue
-        receipt, payment = _amount(entry.get("receipt", "0")), _amount(entry.get("payment", "0"))
+        receipt, payment = _amount(entry.get("receipt") or "0"), _amount(entry.get("payment") or "0")      # a blank spreadsheet cell means zero
         when, mode = _date(entry.get("date")), str(entry.get("mode", "cash")).lower()
         if receipt is None or payment is None or bool(receipt) == bool(payment) or not when or mode not in {"cash", "bank"}:
             errors.append(f"Entry {number}: invalid date, mode or receipt/payment (exactly one must be positive).")

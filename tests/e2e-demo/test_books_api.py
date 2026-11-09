@@ -101,7 +101,14 @@ def test_full_life_cycle_add_correct_close_rollover(client):
     assert client.post(f"/api/v1/books/{b['book_id']}/rollover", headers=tok(t), json={}).status_code == 409                         # only once
     nrep = report(client, t, nxt)
     assert nrep["statements"]["balance_sheet"]["capital"]["opening"] == "309000.00"                                                # last year's closing capital
+    assert any("stock" in q.lower() for q in nrep["questions"])                                                                    # a new period has no closing stock yet: it asks
+    assert client.put(f"/api/v1/books/{nxt['book_id']}/setup", headers=tok(t), json={"closing": {"stock": "75000"}}).status_code == 200
+    quiet = report(client, t, nxt)
+    assert quiet["statements"]["profit_loss"]["net_profit"] == "5000.00"                                                           # last year's accrued rent reverses; still unpaid, so it shows as a credit
+    assert client.put(f"/api/v1/books/{nxt['book_id']}/setup", headers=tok(t), json={"closing": {"stock": "75000", "outstanding_expenses": {"Rent Paid": "5000"}}}).status_code == 200
+    nrep = report(client, t, nxt)
     assert D(nrep["statements"]["balance_sheet"]["total_assets"]) == D("354000.00")                                                # same assets carried over
+    assert nrep["statements"]["balance_sheet"]["capital"]["closing"] == "309000.00" and nrep["statements"]["profit_loss"]["net_profit"] == "0.00"
     log = client.get("/api/v1/audit", headers=tok(t)).json()
     assert log["valid"] and {"BOOK_CREATED", "BOOK_ENTRIES_ADDED", "BOOK_ENTRY_VOIDED", "BOOK_CLOSED", "BOOK_ROLLED_OVER"} <= {e["action"] for e in log["events"]}
 

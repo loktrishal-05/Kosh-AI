@@ -113,3 +113,12 @@ def test_the_converter_is_deterministic_and_does_not_touch_its_input():
     snapshot = json.dumps(book, sort_keys=True)
     a, b = convert(book), convert(book)
     assert json.dumps(book, sort_keys=True) == snapshot and json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+
+
+def test_blank_spreadsheet_cells_mean_zero():
+    base = {"entity_type": "individual", "name": "t", "period_start": "2026-04-01", "period_end": "2027-03-31", "opening": {"cash": "100"}}
+    for blank in ("", None, " ", "0", "0.00"):
+        r = convert({**base, "entries": [{"date": "2026-05-01", "description": "Freelance client payment", "receipt": "500", "payment": blank},
+                                         {"date": "2026-05-02", "description": "House rent", "receipt": blank, "payment": "200"}]})
+        assert not r["errors"], (blank, r["errors"])
+        assert bal(r, "Cash") == m("400")                                         # 100 + 500 - 200

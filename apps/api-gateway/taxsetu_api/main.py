@@ -15,7 +15,7 @@ from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth, demo, store, tally_routes, tally_store
+from . import auth, books_routes, books_store, demo, store, tally_routes, tally_store
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -244,6 +244,7 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
 
     tally_routes.mount(app, secret=secret, gate=gate, who=who, need=need,
                        tally=tally_store.MemoryTally() if drafts is None else tally_store.PgTally(drafts.pg))
+    books_routes.mount(app, gate=gate, need=need, books=books_store.MemoryBooks() if drafts is None else books_store.PgBooks(drafts.pg))
 
     @app.get("/api/v1/audit")
     def audit_log(c: dict = Depends(need("OWNER", "CA"))):
