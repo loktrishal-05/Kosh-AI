@@ -50,7 +50,7 @@ def servers(tmp_path):
             data["content_type"].append(self.headers["Content-Type"])
             if b"<TALLYREQUEST>Export</TALLYREQUEST>" in body:
                 data["exports"].append(body)
-                if b"<ID>Ledger</ID>" in body:
+                if b"<ID>List of Accounts</ID>" in body:
                     raw = (f'<ENVELOPE><LEDGER NAME="Synthetic Ledger"><PARENT>Sundry Creditors</PARENT>'
                            f'<PARTYGSTIN>{GSTIN}</PARTYGSTIN></LEDGER></ENVELOPE>')
                 else:
@@ -238,7 +238,7 @@ def test_selftest_down(servers, caplog):
 def test_selftest_syncs_ledgers(servers):
     assert bridge.selftest(servers["config"], servers["log"]) is True
     assert servers["ledgers"] == [{"ledgers": [{"name": "Synthetic Ledger", "parent": "Sundry Creditors", "gstin": GSTIN}]}]
-    assert b"<TYPE>Collection</TYPE><ID>Ledger</ID>" in servers["exports"][1]
+    assert b"<ID>List of Accounts</ID>" in servers["exports"][1] and b"<ACCOUNTTYPE>Ledgers</ACCOUNTTYPE>" in servers["exports"][1]
 
 
 def test_redaction(servers, tmp_path, capsys):
@@ -350,3 +350,14 @@ def test_network_backoff(servers, monkeypatch):
     monkeypatch.setattr(bridge.time, "sleep", sleep)
     assert bridge.main(["--config", str(s["config_path"]), "run"]) == 0
     assert delays == [15, 30, 60, 120, 240, 300, 300, 300]
+
+
+def test_classic_import_data_envelope_is_accepted_and_empty_import_is_not_success():
+    """Our engine's envelope says 'Import Data'; a reply that created nothing must not be reported as posted."""
+    import importlib.util  # noqa: F401  (module already loaded as `bridge` above)
+    ok = bridge.parse_reply("<RESPONSE><CREATED>2</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS></RESPONSE>")      # no EXCEPTIONS tag (older Tally)
+    assert ok["ok"] and ok["created"] == 2
+    nothing = bridge.parse_reply("<RESPONSE><CREATED>0</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS><EXCEPTIONS>0</EXCEPTIONS></RESPONSE>")
+    assert not nothing["ok"] and "created nothing" in nothing["errors"][0]
+    wrapped = bridge.parse_reply("<ENVELOPE><BODY><DATA><IMPORTRESULT><CREATED>1</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS></IMPORTRESULT></DATA></BODY></ENVELOPE>")
+    assert wrapped["ok"] and wrapped["created"] == 1

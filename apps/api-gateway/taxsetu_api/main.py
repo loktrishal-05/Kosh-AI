@@ -14,7 +14,7 @@ from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth, demo, store
+from . import auth, demo, store, tally_routes, tally_store
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -207,6 +207,9 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
             return gate.authorize(c["tenant_id"], b.draft_id, b.payload_sha256, b.otp_or_signature, c["role"], b.verification_mode)
         except PortalError as e:
             raise HTTPException(409, str(e))
+
+    tally_routes.mount(app, secret=secret, gate=gate, who=who, need=need,
+                       tally=tally_store.MemoryTally() if drafts is None else tally_store.PgTally(drafts.pg))
 
     @app.get("/api/v1/audit")
     def audit_log(c: dict = Depends(need("OWNER", "CA"))):

@@ -30,11 +30,9 @@ def test_voucher_xml():
     draft = purchase(supplier=name, purchase_ledger=name, number="D-1")
     draft = replace(draft, narration="\x00" + "x" * 260)
     root = ET.fromstring(books.voucher_xml(CTX.company, [draft, purchase()]))
-    assert root.findtext("HEADER/VERSION") == "1"
-    assert root.findtext("HEADER/TALLYREQUEST") == "Import"
-    assert root.findtext("HEADER/TYPE") == "Data"
-    assert root.findtext("HEADER/ID") == "Vouchers"
-    assert root.findtext("BODY/DESC/STATICVARIABLES/SVCURRENTCOMPANY") == CTX.company
+    assert root.findtext("HEADER/TALLYREQUEST") == "Import Data"      # the classic shape every Tally version accepts
+    assert root.findtext("BODY/IMPORTDATA/REQUESTDESC/REPORTNAME") == "Vouchers"
+    assert root.findtext("BODY/IMPORTDATA/REQUESTDESC/STATICVARIABLES/SVCURRENTCOMPANY") == CTX.company
     assert len(root.findall(".//REQUESTDATA")) == 1
     vouchers = root.findall(".//REQUESTDATA/TALLYMESSAGE/VOUCHER")
     assert len(vouchers) == 2
@@ -87,7 +85,8 @@ def test_masters_xml():
     assert result[1].findtext("GSTDUTYHEAD") == "Central Tax"
     assert result[2].findtext("ISBILLWISEON") == "Yes"
     assert result[3].findtext("ISBILLWISEON") == "No"
-    assert result[3].findtext("GSTREGISTRATIONTYPE") == "Unregistered/Consumer"
+    assert result[3].find("GSTREGISTRATIONTYPE") is None and result[3].find("PARTYGSTIN") is None      # only party ledgers carry GST registration
+    assert result[2].findtext("GSTREGISTRATIONTYPE") == "Unregistered/Consumer" and result[2].find("PARTYGSTIN") is None      # no empty tags
 
 
 def test_success_response():
@@ -124,7 +123,7 @@ def test_failure_envelope():
 
 
 def test_export_requests():
-    for xml, kind, ident in ((books.export_ledgers_request(CTX.company), "Collection", "Ledger"),
+    for xml, kind, ident in ((books.export_ledgers_request(CTX.company), "Data", "List of Accounts"),
                              (books.export_daybook_request(CTX.company, DAY, DAY), "Data", "Day Book")):
         root = ET.fromstring(xml)
         assert root.findtext("HEADER/TALLYREQUEST") == "Export"

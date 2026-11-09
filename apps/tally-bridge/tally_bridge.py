@@ -131,6 +131,9 @@ def load_config(path):
     return config
 
 
+IMPORT_REQUESTS = ("import", "import data")      # the classic envelope says "Import Data"; the newer HEADER style says "Import"
+
+
 def safe_xml(text):
     if not isinstance(text, str) or len(text.encode("utf-8")) > MAX_XML:
         raise ValueError("XML exceeds 2 MB or is not text")
@@ -157,9 +160,9 @@ def verify_item(item, config):
             return "Invalid signature"
         root = safe_xml(xml)
         requests = root.findall(".//TALLYREQUEST")
-        if root.tag != "ENVELOPE" or root.findtext("HEADER/TALLYREQUEST", "").strip().lower() != "import":
+        if root.tag != "ENVELOPE" or root.findtext("HEADER/TALLYREQUEST", "").strip().lower() not in IMPORT_REQUESTS:
             return "Only an ENVELOPE Import request is allowed"
-        if any((e.text or "").strip().lower() != "import" for e in requests):
+        if any((e.text or "").strip().lower() not in IMPORT_REQUESTS for e in requests):
             return "Delete, Cancel, Execute and other requests are forbidden"
         reports = root.findall(".//REPORTNAME") + root.findall("HEADER/ID")
         if not reports or any((e.text or "").strip().lower() not in ("vouchers", "all masters") for e in reports):
@@ -192,19 +195,25 @@ def parse_reply(raw):
                 lines.append(": ".join(s for s in (status.findtext("CODE", ""), status.findtext("DESC", "")) if s))
             result["errors"] = lines or ["Tally rejected the import"]
             return result
-        response = root if root.tag == "RESPONSE" else root.find(".//RESPONSE")
+        response = root if root.tag in ("RESPONSE", "IMPORTRESULT") else root.find(".//RESPONSE")
+        if response is None:
+            response = root.find(".//IMPORTRESULT")
         if response is None:
             result["errors"] = lines or ["Tally returned no import counters"]
             return result
         counters = {}
         for key in ("CREATED", "ALTERED", "ERRORS", "EXCEPTIONS"):
             value = response.findtext(key)
+            if value is None and key == "EXCEPTIONS":
+                value = "0"                                  # older Tally versions do not send it
             if value is None or not value.strip().isascii() or not value.strip().isdigit():
                 raise ValueError("Invalid import counter")
             counters[key] = int(value)
         result.update(created=counters["CREATED"], altered=counters["ALTERED"])
         if counters["ERRORS"] or counters["EXCEPTIONS"]:
             lines = lines or [f"Tally reported {counters['ERRORS']} errors and {counters['EXCEPTIONS']} exceptions"]
+        if not lines and counters["CREATED"] + counters["ALTERED"] == 0:
+            lines = ["Tally accepted the request but created nothing (already entered?); check the books before retrying"]
         result.update(ok=not lines, errors=lines)
     except (ValueError, TypeError, ET.ParseError, UnicodeError):
         result["errors"] = ["Malformed Tally reply"]
@@ -219,9 +228,15 @@ def export_xml(collection, company=""):
             "</DESC></BODY></ENVELOPE>").encode("utf-8")
 
 
+def ledgers_xml(company):
+    return ("<ENVELOPE><HEADER><VERSION>1</VERSION><TALLYREQUEST>Export</TALLYREQUEST><TYPE>Data</TYPE><ID>List of Accounts</ID></HEADER>"
+            f"<BODY><DESC><STATICVARIABLES><SVCURRENTCOMPANY>{escape(company)}</SVCURRENTCOMPANY>"
+            "<SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT><ACCOUNTTYPE>Ledgers</ACCOUNTTYPE></STATICVARIABLES></DESC></BODY></ENVELOPE>").encode("utf-8")
+
+
 def sync_ledgers(config, log):
     try:
-        root = safe_xml(request(config["tally_url"], export_xml("Ledger", config["company"]), xml=True))
+        root = safe_xml(request(config["tally_url"], ledgers_xml(config["company"]), xml=True))
         if root.findtext("HEADER/STATUS", "").strip() == "0":
             raise ValueError("Ledger export failed")
         ledgers = [{"name": e.get("NAME") or e.findtext("NAME", ""), "parent": e.findtext("PARENT", ""),
