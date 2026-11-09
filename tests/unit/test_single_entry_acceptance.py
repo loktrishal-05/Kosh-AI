@@ -130,3 +130,16 @@ def test_tally_export_never_files_a_ledger_under_stock_in_hand():
     out = to_tally(convert(load("business_textbook.json")))
     parents = {l.name: l.parent for l in out["ledgers"]}
     assert parents["Stock-in-Trade"] == "Current Assets" and "Stock-in-Hand" not in parents.values()
+
+
+def test_fixed_assets_and_investments_keep_their_tally_groups():
+    """Regression: a mid-line comment once swallowed these two map entries, filing them under Indirect Expenses."""
+    import json
+    from pathlib import Path
+    from taxsetu_engine.single_entry import convert, to_tally
+    root = Path(__file__).resolve().parents[2] / "docs" / "samples" / "single_entry"
+    groups = {}
+    for name in ("business_textbook", "individual_freelancer"):
+        out = to_tally(convert(json.loads((root / f"{name}.json").read_text(encoding="utf-8"))))
+        groups.update({l.name: l.parent for l in out["ledgers"]})
+    assert groups["Fixed Assets"] == "Fixed Assets" and groups["Investments"] == "Investments" and groups["Stock-in-Trade"] == "Current Assets"

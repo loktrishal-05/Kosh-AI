@@ -383,7 +383,8 @@ def to_tally(result: dict) -> dict:
     if not isinstance(result, dict) or not isinstance(result.get("journal"), list):
         return output
     groups = {"Cash": "Cash-in-Hand", "Bank": "Bank Accounts", "Debtors": "Sundry Debtors", "Creditors": "Sundry Creditors",
-              "Stock-in-Trade": "Current Assets",   # verified on real TallyPrime 7.2: a ledger under Stock-in-Hand cannot be used in an ordinary voucher "Fixed Assets": "Fixed Assets", "Investments": "Investments",
+              # real TallyPrime 7.2: a ledger under Stock-in-Hand cannot be used in an ordinary voucher, so stock sits under Current Assets
+              "Stock-in-Trade": "Current Assets", "Fixed Assets": "Fixed Assets", "Investments": "Investments",
               "Prepaid Expenses": "Current Assets", "Accrued Income": "Current Assets", "Loans": "Loans (Liability)",
               "Outstanding Expenses": "Current Liabilities", "Income Received in Advance": "Current Liabilities",
               **{h: "Capital Account" for h in ("Capital", "Drawings", "Net Worth", "Capital Fund")},
