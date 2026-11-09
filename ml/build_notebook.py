@@ -64,6 +64,7 @@ for epoch in range(EPOCHS):
         x, y = encode([train[j] for j in order[i:i + BATCH]])
         loss = torch.nn.functional.cross_entropy(model(**x).logits, y)
         loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step(); sched.step(); opt.zero_grad(); total += loss.item()
+        if (i // BATCH) % 100 == 0: print(f"  epoch {epoch + 1} step {i // BATCH}/{len(train) // BATCH}  loss {loss.item():.4f}  ({time.time() - t0:.0f}s)", flush=True)
     acc = np.mean([LABELS[p] == r["label"] for p, r in zip(predict(val), val)])
     print(f"epoch {epoch + 1}/{EPOCHS}  loss {total / (len(train) / BATCH):.4f}  val accuracy {acc:.4f}  ({time.time() - t0:.0f}s)")
 
