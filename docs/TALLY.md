@@ -17,8 +17,20 @@ approves them, and a small program on the Tally PC posts them. The business pays
 | Typical user pain: wrong or blank GSTIN/HSN makes vouchers "uncertain" and drops them from GSTR-1; manual bank reconciliation takes hours; recurring entries are re-keyed monthly. | [Tally data-entry challenges](https://hisabkitab.co/common-challenges-in-tally-data-entry-and-how-automation-solves-them), [GST ledger mistakes](https://suvit.io/post/mistakes-to-avoid-in-tally-gst-ledgers) | These are the first things we automate and check. |
 | The Tally port has no password. | third-party guide | Never expose it to the internet. Only a local bridge talks to it. |
 
-Not verified: every voucher shape below is built from Tally's documented structure but has **not** been run against a live
-TallyPrime. The bridge has a `selftest` and a dry-run mode so the first real install proves it before any data is posted.
+**Verified 2026-11-09 on a real TallyPrime Rel 7.2 (Education mode)**, with the HTTP server on (`Client Server=Both` in `tally.ini`):
+masters and all five voucher types import and read back correctly; the bridge's selftest passes; the full cloud-to-Tally path passes
+(`scripts/tally_e2e.py`, `tests/live`). Real Tally differs from the documentation in ways only a real run reveals:
+
+| Finding | Fix |
+|---------|-----|
+| A `LEDGER` with only a `NAME` attribute is rejected (`EXCEPTIONS 1`, no message); it needs `NAME.LIST/NAME` | `masters_xml` emits it |
+| Replies contain `&#4;`, illegal in XML 1.0, so a strict parser fails the whole document | engine and bridge drop illegal references before parsing |
+| Replies contain tags with the word `ENTITY` (`TEMPPARTYENTITY`) | the DOCTYPE/ENTITY guard now matches real declarations only |
+| `Day Book` over XML returns an empty body | reads use an inline `Voucher` collection (`TSVouchers`) |
+| Import replies are `<RESPONSE>` counters (`CREATED/ALTERED/ERRORS/EXCEPTIONS`); failures carry no text in the reply and `tally.imp` only repeats the summary | parsers handle both shapes; `EXCEPTIONS>0` is failure |
+| Education mode only takes vouchers dated the 1st, 2nd or last day of a month | tests use the 2nd |
+
+Still unverified: other Tally versions, licensed companies, non-ASCII names (may need UTF-16), the Edit Log edition.
 
 ## 2. Architecture
 

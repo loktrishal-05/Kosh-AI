@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-717%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-720%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -390,7 +390,7 @@ python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Script
 pip install pytest httpx uvicorn fastapi "pydantic>=2" \
   -e packages/deterministic-tax-engine -e packages/mcp-servers -e packages/agents -e apps/api-gateway
 
-pytest tests -q                                           # 717 pass (Postgres tests skip if no database is reachable)
+pytest tests -q                                           # 720 pass, 4 live-Tally tests skipped (Postgres tests skip if no database is reachable)
 uvicorn --factory taxsetu_api.main:create_app --port 8000 # then open http://localhost:8000
 ```
 
@@ -427,7 +427,7 @@ default exists only for local development.
 | `tests/infra` | 23 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 34 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
 | `apps/ca-workbench-web` | 13 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **717 + 13** | **all passing** |
+| **Total** | **720 + 13** (+4 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -483,9 +483,15 @@ API (all under `/api/v1/tally`): `sandbox/*` (anonymous, stateless), `entry`, `b
 `setup`, `aliases`, `ledgers`, `bridges` (create, list, revoke), and `bridge/pair|pending|ack|ledgers` for the bridge itself.
 Bridge and pairing tokens use separate machine roles that no human route accepts.
 
-**Honest status.** Everything above is tested against fakes. The XML follows Tally's documented import format, but it has **not been
-run against a live TallyPrime**; the envelope matches Tally's published "XML message formats" page, including its documented success reply
-(`HEADER/STATUS 1`, no counters). Run `python tally_bridge.py selftest` and then `--dry-run` on a test company first.
+**Verified against a real TallyPrime 7.2 (Education mode, 2026-11-09).** The starter chart, party ledgers and all five voucher types
+(payment, receipt, contra, GST purchase, GST sale) were imported into a live test company and read back: the GST purchase of 50,000 + 18%
+is stored as 4,500 CGST + 4,500 SGST with the supplier credited 59,000. The full path (production cloud, approval, bridge, real Tally) passes
+`scripts/tally_e2e.py` with `TALLY_URL` and `E2E_COMPANY` set, and `tests/live` (opt-in via `TALLY_LIVE_COMPANY`) repeats the checks.
+Testing against the real program found four bugs that fakes could not: Tally **rejects a ledger without a `NAME.LIST/NAME` child**;
+it **writes illegal character references (`&#4;`)** that strict XML parsers refuse; our safety check **rejected any reply containing the
+word `ENTITY`** (Tally has such a tag); and the **`Day Book` report returns nothing over XML**, so reads use an inline voucher collection.
+Not covered by a real run: other Tally versions (older Tally.ERP 9, TallyPrime 7.0/7.1), a licensed (non-Education) company, non-English
+ledger names, and the Edit Log edition. Run `python tally_bridge.py selftest` and then `--dry-run` on a test company before real books.
 
 **What has been exercised end to end.** `scripts/tally_e2e.py` drives the deployed API (Vercel + Neon) with the real bridge program and a
 fake Tally on localhost: two real tenants, stage, approve the exact hash, post, ack, audit chain, cross-tenant isolation, bridge
