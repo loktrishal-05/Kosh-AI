@@ -21,6 +21,14 @@ All clients, GSTIN-shaped identifiers (unvalidated checksum), invoices, adjustme
 
 Tally XML is generated in the browser from register values and downloaded as a Blob. Each invoice has purchase and input GST debits and a balancing vendor credit. The XML shape and generic ledger names are **unverified against live TallyPrime**: validate mapping in a test company. No import is performed by this app. All monetary arithmetic uses integer paise; formatting supplies an exact decimal string to Intl.NumberFormat.
 
-`lib/api.ts` exposes the unused `NEXT_PUBLIC_API_BASE` placeholder; there is no backend wiring, authentication or real client data. Tests use Node's built-in runner and strip-types in a single process for restricted sandboxes; no test dependency is required.
+`lib/api.ts` exposes the unused `NEXT_PUBLIC_API_BASE` placeholder for the client matrix. Tests use Node's built-in runner and strip-types in a single process for restricted sandboxes; no test dependency is required.
 
-Verified: `npm test` (5 tests), `npm run typecheck` (strict) and `npm run build` (84 static pages) pass in CI and locally; the UI was exercised in a real browser (filter, client detail, 2B diff). Tally XML is still unverified against a live TallyPrime.
+## Tally Assistant
+
+Open `/tally` to set up suggested ledgers, describe transactions, review bank CSV rows (up to 500 KB), and collect a batch. Demo mode uses anonymous sandbox routes and downloads XML for Tally's Import Data > Vouchers. The sample statement has ten fictional rows. Setup XML is downloaded for the company name entered in step 1.
+
+Connected mode uses temporary admin sign-in with a tenant id and the server's admin key to mint an OWNER token. Only the token is kept in sessionStorage; the admin key is cleared immediately. Entries and setup are staged for explicit approval of their content hash. The local Python bridge in `apps/tally-bridge` collects approved batches; the browser never calls a Tally port. Batch status is checked every five seconds for up to ten minutes. Pairing codes are single use and expire in fifteen minutes.
+
+Browser requests use same-origin `/api/…` URLs. Set the server-side `TAXSETU_API` environment variable to the gateway origin (for example `http://localhost:8000`); it defaults to `https://taxsetu-ai.vercel.app`. Restart/rebuild Next.js after changing it. The connected gateway needs `TAXSETU_ADMIN_KEY` configured and an existing tenant. Live Tally XML imports remain unverified; review entries in a test company first.
+
+Verified locally: `npm test` (13 tests), `npm run typecheck` (strict), and `npm run build` (85 static pages). The new Tally Assistant has not been exercised in a browser or against a live gateway/TallyPrime in this offline worktree.
