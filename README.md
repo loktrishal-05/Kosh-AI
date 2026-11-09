@@ -417,7 +417,7 @@ default exists only for local development.
 ---
 
 ### Signing in (evaluation build)
-The workbench opens on a **sign-in page**. Click **Demo admin**: the username and password fill in on screen and the sign-in carries on by itself, landing on the workbench as "Demo Admin · OWNER (demo)"
+**Open https://taxsetu-workbench.vercel.app** (public: no Vercel account is needed; Vercel's own login only guards the long preview-style addresses). The workbench opens on a **sign-in page**. Click **Demo admin**: the username and password fill in on screen and the sign-in carries on by itself, landing on the workbench as "Demo Admin · OWNER (demo)"
 (you can also type `demo.admin` / `Demo@2026`). One session is shared by the Clients, Books and Tally Assistant pages, and **Sign out** clears it.
 
 ![Demo admin: the details fill in, then it signs in](docs/assets/signin-demo-filled.png)
