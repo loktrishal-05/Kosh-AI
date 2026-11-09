@@ -122,3 +122,11 @@ def test_blank_spreadsheet_cells_mean_zero():
                                          {"date": "2026-05-02", "description": "House rent", "receipt": blank, "payment": "200"}]})
         assert not r["errors"], (blank, r["errors"])
         assert bal(r, "Cash") == m("400")                                         # 100 + 500 - 200
+
+
+def test_tally_export_never_files_a_ledger_under_stock_in_hand():
+    """Real TallyPrime rejects ordinary vouchers that touch a ledger under Stock-in-Hand ("Cannot use 'Stock-in-Trade': Ledger under Stock-in-Hand!")."""
+    from taxsetu_engine.single_entry import to_tally
+    out = to_tally(convert(load("business_textbook.json")))
+    parents = {l.name: l.parent for l in out["ledgers"]}
+    assert parents["Stock-in-Trade"] == "Current Assets" and "Stock-in-Hand" not in parents.values()

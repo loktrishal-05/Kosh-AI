@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-723%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-838%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -38,7 +38,8 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 13. [Testing](#testing)
 14. [Deployment](#deployment)
 15. [Tally Assistant](#tally-assistant)
-16. [Status, limits and roadmap](#status-limits-and-roadmap)
+16. [Books from your notebook](#books-from-your-notebook)
+17. [Status, limits and roadmap](#status-limits-and-roadmap)
 
 ---
 
@@ -419,15 +420,15 @@ default exists only for local development.
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
-| `tests/unit` | 560 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
+| `tests/unit` | 644 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 27 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 49 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
-| `tests/agents` | 34 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
-| `tests/infra` | 23 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
-| `tests/bridge` | 34 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
-| `apps/ca-workbench-web` | 13 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **723 + 13** (+5 opt-in live-Tally tests) | **all passing** |
+| `tests/agents` | 41 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
+| `tests/infra` | 29 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
+| `tests/bridge` | 36 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
+| `apps/ca-workbench-web` | 33 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
+| **Total** | **838 + 33** (+5 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -479,6 +480,12 @@ flowchart LR
 | Bridge | `apps/tally-bridge/` | Runs on the customer PC, dials out only, re-verifies SHA-256 and a per-bridge HMAC, accepts only `Create`/`Alter` imports of Vouchers or Masters for the paired company, journals each post before sending so a crash cannot double-post |
 | UI | `apps/ca-workbench-web/app/tally` | Demo mode (no sign-in, ends in a downloadable Tally file) and connected mode (stage, approve, watch status, pair a bridge) with a glossary for novices |
 
+**AI assist (opt-in).** When the server owner sets `ANTHROPIC_API_KEY`, three things use Claude: reading a typed sentence the keyword rules cannot parse
+("paid sharma twenty five thousand for rent"), suggesting a ledger for the bank rows a person must still check, and reading a supplier bill photo into a purchase
+draft. The AI only **proposes**: every figure is re-validated by code (amounts, dates, GSTIN checksum, GST recomputed, printed total compared), a suggested ledger must
+come from the business's real ledgers and the row stays "needs your check", and nothing is approved without a person. It never runs on the public sandbox routes. The page
+says plainly when AI is off. **Tested with a fake model only; it has not been run against the live Claude API** (no key was available), so evaluate on real bills before relying on it.
+
 API (all under `/api/v1/tally`): `sandbox/*` (anonymous, stateless), `entry`, `bank-statement`, `batches` (stage, list, get, approve, reject),
 `setup`, `aliases`, `ledgers`, `bridges` (create, list, revoke), and `bridge/pair|pending|ack|ledgers` for the bridge itself.
 Bridge and pairing tokens use separate machine roles that no human route accepts.
@@ -514,6 +521,52 @@ e-invoice and multi-company are out of scope.
 
 ---
 
+## Books from your notebook
+
+Many small shops, freelancers and clubs keep only a notebook or cash book: dated money in and money out, with no ledger accounts. **Single entry**
+cannot show profit, what is owed, or what is owned. This module turns such a record into proper **double-entry books** and keeps them over time.
+Method, formulas, classification rules and limits are in [`docs/BOOKS.md`](docs/BOOKS.md).
+
+![Books at a glance](docs/assets/books-at-a-glance.jpg)
+![Statements](docs/assets/books-statements.jpg)
+
+| Who | What they get |
+|-----|---------------|
+| **Business** (shop, trader) | Trading account, Profit and Loss, Balance Sheet. Credit sales and credit purchases that never touched the cash book are **derived** with the total-debtors / total-creditors method (conversion method) |
+| **Club or charity** | Receipts and Payments account, Income and Expenditure (accruals: subscriptions in arrears and in advance, outstanding expenses), Balance Sheet with a Capital Fund; corpus donations go straight to the fund |
+| **Individual** | Income and expense statement, savings, net worth at cost and at market value |
+
+**Checks built in.** Every journal balances; the adjusted trial balance balances; the balance sheet balances; and an **independent cross-check** recomputes
+closing net worth straight from the cash book (without reading the journal) and requires the profit to agree to the paisa.
+
+**Keeping books over time.** Create a book per period, add lines by form or CSV, correct a wrong line by **voiding it with a reason** (nothing is ever deleted),
+close the period (a snapshot of the reports is stored and the period is frozen), roll the balances into the next period, and stage the result for Tally through the
+same approval queue (opening balances become a journal voucher, REMOTEIDs make a retry safe). Every step is in the audit chain. Roles: staff may enter lines;
+owners and CAs correct, close, roll over and export.
+
+API: `/api/v1/books/sandbox/*` (anonymous: examples, CSV parsing, conversion) and `/api/v1/books` (create, list, get, `setup`, `entries`, `entries/{id}/void`,
+`report`, `close`, `rollover`, `tally`). UI: the **Books** page.
+
+**How it was verified.**
+
+| Check | Result |
+|-------|--------|
+| Three hand-computed textbook cases (business, club, individual), figures derived on paper before any code | all match to the paisa |
+| 30 simulated shops whose true profit and balances only the simulator knows (credit sales and purchases are absent from the cash book) | converted profit, sales, purchases, debtors, creditors, loans, assets and capital all equal the truth |
+| 600 randomised books (200 per entity type) | every invariant holds: balanced journals, trial balance, balance sheet, cross-check |
+| Production (Vercel + Neon), a simulated year: save, correct, convert, close, roll over, export | converted profit is exactly the true profit; two real tenants fully isolated (`scripts/books_e2e.py`, 17 checks) |
+| **Real TallyPrime 7.2**: each of the four examples exported into an empty company, then every ledger balance compared with the converter's trial balance | **0 mismatches** across business, club, individual and a 182-line kirana store (`scripts/books_tally_verify.py`) |
+| The results screens run against the real converter output saved as fixtures | UI test fails if the engine's shape changes; a Python test fails if the fixtures are stale |
+
+Real Tally found one defect that no fake could: an ordinary voucher may not post to a ledger under Tally's `Stock-in-Hand` group, so the stock ledger is filed under `Current Assets`.
+
+**Limits, stated plainly.** Not a statutory audit: a practising CA must review before the books are relied on or filed. Profit or loss on the sale of an asset is not
+computed (flagged as a question). Depreciation uses the rate or amount you give. GST is not modelled in this module (the Tally Assistant handles GST invoices).
+Lines the rules cannot classify are flagged `NEEDS_REVIEW` and listed as questions; closing a period with open questions needs an explicit "I have reviewed".
+Verified on TallyPrime 7.2 Education mode only; Education mode accepts only vouchers dated the 1st or 2nd, so the export check moved each date to the 1st of its month.
+
+---
+
 ## Status, limits and roadmap
 
 | Phase | Scope | Status |
@@ -526,7 +579,8 @@ e-invoice and multi-company are out of scope.
 | 0 | Postgres RLS, persistence, compose, CI | ✅ done and tested live (RLS, restart survival, per-tenant audit chain) |
 | 5 | Labour Form A/B · e-MOA / e-AOA · Form 16 | ✅ done on synthetic samples · parsing is for labelled text, not arbitrary PDF layouts; legal text needs CA/CS review |
 | 6b | Next.js CA workbench · mock portal UI | 🟡 workbench + Tally Assistant built; Tally Assistant is wired to the API, the client matrix is still mock data · portal UI todo |
-| 8 | Tally Assistant | 🟡 built and tested end to end on fakes; **never run against a live TallyPrime** (see below) |
+| 8 | Tally Assistant | ✅ verified on a real TallyPrime 7.2 (Education mode) · AI assist built, **not yet run against the live Claude API** |
+| 9 | Books from your notebook (single entry to double entry) | ✅ verified: hand-computed cases, simulated shops, production, and ledger-by-ledger against a real Tally |
 | 7 | Live GSP / ERI integration | ⛔ out of scope (needs licensed credentials) |
 
 **Known limitations — stated plainly**

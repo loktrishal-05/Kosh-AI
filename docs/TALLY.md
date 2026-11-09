@@ -36,6 +36,11 @@ masters and all five voucher types import and read back correctly; the bridge's 
 Also confirmed: a three-month, 36-row bank statement imports in 0.9 s and the Bank Account ledger moves by exactly the statement's net;
 Tally's Profit & Loss matched independent arithmetic (Sales 7,14,750 = 3 x 30,000 + 6,24,750; Purchases 1,50,000).
 
+More real-Tally findings from the single-entry export:
+
+* An ordinary voucher cannot post to a ledger under the `Stock-in-Hand` group ("Cannot use 'Stock-in-Trade': Ledger under Stock-in-Hand!"); the books export files the stock ledger under `Current Assets`.
+* `Journal` vouchers (opening balances, derived credit sales and purchases, year-end adjustments) import and balance correctly: every ledger balance in Tally equals the converter's trial balance on four examples (0 mismatches).
+
 Still unverified: other Tally versions, licensed companies, the Edit Log edition.
 
 ## 2. Architecture
