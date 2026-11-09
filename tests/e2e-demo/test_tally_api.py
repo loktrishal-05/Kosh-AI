@@ -51,6 +51,7 @@ def test_sandbox_understands_a_plain_sentence(client):
     r = client.post("/api/v1/tally/sandbox/entry", json={"text": "Paid 25000 rent to Sharma by cheque yesterday", "today": "2026-04-10"}).json()
     d = r["draft"]
     assert d["vtype"] == "Payment" and r["plain"].startswith("You paid Rs 25,000.00")
+    assert "to Rent Paid" not in r["plain"] and "recorded under Rent Paid" in r["plain"]
     assert sum(Decimal(l["amount"]) for l in d["lines"] if l["side"] == "Dr") == sum(Decimal(l["amount"]) for l in d["lines"] if l["side"] == "Cr")
     assert ET.fromstring(r["xml_preview"]).tag == "ENVELOPE"
 

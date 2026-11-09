@@ -37,7 +37,7 @@ def explain(d) -> str:
     total = max(d.total_dr(), d.total_cr())
     dr = ", ".join(l.ledger for l in d.lines if l.side == "Dr")
     cr = ", ".join(l.ledger for l in d.lines if l.side == "Cr")
-    who = f" {d.party}" if d.party else ""
+    who = f" {d.party}" if d.party and d.party not in {l.ledger for l in d.lines} else ""      # a party that is just the expense ledger is noise
     return {
         "Payment": f"You paid {_inr(total)}{(' to' + who) if who else ''}. Money leaves {cr} and is recorded under {dr}.",
         "Receipt": f"You received {_inr(total)}{(' from' + who) if who else ''}. Money comes into {dr} and is recorded against {cr}.",
