@@ -11,7 +11,7 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from fastapi import Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from taxsetu_engine import single_entry as se
 from taxsetu_engine import tallybooks
 
@@ -64,6 +64,14 @@ class EntryIn(BaseModel):
     mode: str = Field(default="cash", pattern="^(cash|bank)$")
     party: str = Field(default="", max_length=80)
     hint: str = Field(default="", max_length=60)
+
+    @field_validator("receipt", "payment", mode="before")
+    @classmethod
+    def blank_means_zero(cls, v):
+        """A spreadsheet or form leaves the unused side of a line empty; that is zero, not an error. Commas are allowed."""
+        if v is None or (isinstance(v, str) and not v.strip()):
+            return Decimal(0)
+        return v.replace(",", "").strip() if isinstance(v, str) else v
 
 
 def entry_record(e: EntryIn, i: int) -> dict:

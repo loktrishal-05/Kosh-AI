@@ -165,3 +165,14 @@ def test_books_can_be_sent_to_tally_through_the_approval_queue(client):
         assert sum(amounts) == 0, v.findtext("NARRATION")                                                                                # every voucher balances
     nothing_posted = client.get("/api/v1/tally/bridge/pending", headers=tok(t))
     assert nothing_posted.status_code == 403                                                                                              # staged only: nothing reaches Tally unapproved
+
+
+def test_blank_and_comma_amounts_from_forms_and_spreadsheets_are_accepted(client):
+    t = str(uuid.uuid4())
+    b = new_book(client, t)
+    lines = [{"date": "2026-05-01", "description": "Cash sales", "receipt": "1,500.50", "payment": ""},
+             {"date": "2026-05-02", "description": "Shop rent paid", "receipt": "", "payment": "500", "mode": "bank"},
+             {"date": "2026-05-03", "description": "Bank charges", "receipt": None, "payment": " 25 ", "mode": "bank"}]
+    r = add(client, t, b, lines)
+    assert r.status_code == 200 and r.json()["added"] == 3, r.text
+    assert [e["receipt"] for e in r.json()["entries"]] == ["1500.50", "0.00", "0.00"]
