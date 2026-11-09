@@ -1,0 +1,881 @@
+{
+ "counts": {
+  "classified": 11,
+  "entries": 11,
+  "excluded": 0,
+  "needs_review": 0
+ },
+ "crosscheck": {
+  "agrees": true,
+  "closing_net_worth_direct": "102200.00",
+  "closing_net_worth_from_books": "102200.00",
+  "method": "statement_of_affairs",
+  "profit_by_books": "10200.00",
+  "profit_by_net_worth_change": "10200.00"
+ },
+ "entity_type": "nonprofit",
+ "errors": [],
+ "journal": [
+  {
+   "confidence": 1,
+   "date": "2026-04-01",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "46000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "30000.00",
+     "ledger": "Fixed Assets",
+     "side": "Dr"
+    },
+    {
+     "amount": "4000.00",
+     "ledger": "Accrued Income",
+     "side": "Dr"
+    },
+    {
+     "amount": "2000.00",
+     "ledger": "Outstanding Expenses",
+     "side": "Cr"
+    },
+    {
+     "amount": "82000.00",
+     "ledger": "Capital Fund",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Opening statement of affairs",
+   "source": "opening"
+  },
+  {
+   "category": "asset_purchase",
+   "confidence": 0.9,
+   "date": "2026-07-20",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "8000.00",
+     "ledger": "Fixed Assets",
+     "side": "Dr"
+    },
+    {
+     "amount": "8000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Purchase of sports equipment",
+   "source": "cash_book"
+  },
+  {
+   "category": "subscription",
+   "confidence": 0.9,
+   "date": "2026-08-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Subscriptions",
+     "side": "Cr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Member subscriptions received",
+   "source": "cash_book"
+  },
+  {
+   "category": "donation",
+   "confidence": 0.9,
+   "date": "2026-09-15",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Donations",
+     "side": "Cr"
+    },
+    {
+     "amount": "25000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    }
+   ],
+   "narration": "General donations from well-wishers",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Salaries",
+   "confidence": 0.85,
+   "date": "2026-09-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "36000.00",
+     "ledger": "Salaries",
+     "side": "Dr"
+    },
+    {
+     "amount": "36000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Salaries paid to coach and staff",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent Paid",
+   "confidence": 0.85,
+   "date": "2026-09-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24000.00",
+     "ledger": "Rent Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "24000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Hall rent paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "corpus_donation",
+   "confidence": 0.9,
+   "date": "2026-10-02",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "10000.00",
+     "ledger": "Capital Fund",
+     "side": "Cr"
+    },
+    {
+     "amount": "10000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Donation for building corpus fund",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Printing and Stationery",
+   "confidence": 0.85,
+   "date": "2026-11-10",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4000.00",
+     "ledger": "Printing and Stationery",
+     "side": "Dr"
+    },
+    {
+     "amount": "4000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Printing and stationery",
+   "source": "cash_book"
+  },
+  {
+   "category": "interest_income",
+   "confidence": 0.9,
+   "date": "2026-12-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Interest Received",
+     "side": "Cr"
+    },
+    {
+     "amount": "3000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Savings bank interest",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Electricity Charges",
+   "confidence": 0.85,
+   "date": "2026-12-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Electricity Charges",
+     "side": "Dr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity charges paid",
+   "source": "cash_book"
+  },
+  {
+   "category": "event_income",
+   "confidence": 0.9,
+   "date": "2027-01-26",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "12000.00",
+     "ledger": "Event Income",
+     "side": "Cr"
+    },
+    {
+     "amount": "12000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Sports day event receipts",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Program Expenses",
+   "confidence": 0.9,
+   "date": "2027-01-26",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "15000.00",
+     "ledger": "Program Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "15000.00",
+     "ledger": "Cash",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Sports day event expenses",
+   "source": "cash_book"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2000.00",
+     "ledger": "Outstanding Expenses",
+     "side": "Dr"
+    },
+    {
+     "amount": "2000.00",
+     "ledger": "Salaries",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Reverse opening outstanding_expenses: Salaries",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Outstanding Expenses",
+     "side": "Cr"
+    },
+    {
+     "amount": "3000.00",
+     "ledger": "Salaries",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Closing outstanding_expenses: Salaries",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4000.00",
+     "ledger": "Accrued Income",
+     "side": "Cr"
+    },
+    {
+     "amount": "4000.00",
+     "ledger": "Subscriptions",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Reverse opening accrued_income: Subscriptions",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Accrued Income",
+     "side": "Dr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Subscriptions",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Closing accrued_income: Subscriptions",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "2000.00",
+     "ledger": "Income Received in Advance",
+     "side": "Cr"
+    },
+    {
+     "amount": "2000.00",
+     "ledger": "Subscriptions",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Closing advance_income: Subscriptions",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3800.00",
+     "ledger": "Depreciation",
+     "side": "Dr"
+    },
+    {
+     "amount": "3800.00",
+     "ledger": "Fixed Assets",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Depreciation",
+   "source": "adjustment"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3800.00",
+     "ledger": "Depreciation",
+     "side": "Cr"
+    },
+    {
+     "amount": "3800.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Depreciation",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "25000.00",
+     "ledger": "Donations",
+     "side": "Dr"
+    },
+    {
+     "amount": "25000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Donations",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Electricity Charges",
+     "side": "Cr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Electricity Charges",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "12000.00",
+     "ledger": "Event Income",
+     "side": "Dr"
+    },
+    {
+     "amount": "12000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Event Income",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Interest Received",
+     "side": "Dr"
+    },
+    {
+     "amount": "3000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Interest Received",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "4000.00",
+     "ledger": "Printing and Stationery",
+     "side": "Cr"
+    },
+    {
+     "amount": "4000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Printing and Stationery",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "15000.00",
+     "ledger": "Program Expenses",
+     "side": "Cr"
+    },
+    {
+     "amount": "15000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Program Expenses",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24000.00",
+     "ledger": "Rent Paid",
+     "side": "Cr"
+    },
+    {
+     "amount": "24000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Rent Paid",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "37000.00",
+     "ledger": "Salaries",
+     "side": "Cr"
+    },
+    {
+     "amount": "37000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Salaries",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Subscriptions",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Subscriptions",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "10200.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    },
+    {
+     "amount": "10200.00",
+     "ledger": "Capital Fund",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transfer profit/surplus/savings",
+   "source": "closing"
+  }
+ ],
+ "ledgers": {
+  "Accrued Income": {
+   "balance": "6000.00",
+   "credit": "4000.00",
+   "debit": "10000.00",
+   "side": "Dr"
+  },
+  "Bank": {
+   "balance": "51000.00",
+   "credit": "68000.00",
+   "debit": "119000.00",
+   "side": "Dr"
+  },
+  "Capital Fund": {
+   "balance": "102200.00",
+   "credit": "102200.00",
+   "debit": "0.00",
+   "side": "Cr"
+  },
+  "Cash": {
+   "balance": "16000.00",
+   "credit": "25000.00",
+   "debit": "41000.00",
+   "side": "Dr"
+  },
+  "Depreciation": {
+   "balance": "0.00",
+   "credit": "3800.00",
+   "debit": "3800.00",
+   "side": ""
+  },
+  "Donations": {
+   "balance": "0.00",
+   "credit": "25000.00",
+   "debit": "25000.00",
+   "side": ""
+  },
+  "Electricity Charges": {
+   "balance": "0.00",
+   "credit": "6000.00",
+   "debit": "6000.00",
+   "side": ""
+  },
+  "Event Income": {
+   "balance": "0.00",
+   "credit": "12000.00",
+   "debit": "12000.00",
+   "side": ""
+  },
+  "Fixed Assets": {
+   "balance": "34200.00",
+   "credit": "3800.00",
+   "debit": "38000.00",
+   "side": "Dr"
+  },
+  "Income & Expenditure A/c": {
+   "balance": "0.00",
+   "credit": "100000.00",
+   "debit": "100000.00",
+   "side": ""
+  },
+  "Income Received in Advance": {
+   "balance": "2000.00",
+   "credit": "2000.00",
+   "debit": "0.00",
+   "side": "Cr"
+  },
+  "Interest Received": {
+   "balance": "0.00",
+   "credit": "3000.00",
+   "debit": "3000.00",
+   "side": ""
+  },
+  "Outstanding Expenses": {
+   "balance": "3000.00",
+   "credit": "5000.00",
+   "debit": "2000.00",
+   "side": "Cr"
+  },
+  "Printing and Stationery": {
+   "balance": "0.00",
+   "credit": "4000.00",
+   "debit": "4000.00",
+   "side": ""
+  },
+  "Program Expenses": {
+   "balance": "0.00",
+   "credit": "15000.00",
+   "debit": "15000.00",
+   "side": ""
+  },
+  "Rent Paid": {
+   "balance": "0.00",
+   "credit": "24000.00",
+   "debit": "24000.00",
+   "side": ""
+  },
+  "Salaries": {
+   "balance": "0.00",
+   "credit": "39000.00",
+   "debit": "39000.00",
+   "side": ""
+  },
+  "Subscriptions": {
+   "balance": "0.00",
+   "credit": "66000.00",
+   "debit": "66000.00",
+   "side": ""
+  }
+ },
+ "name": "Sunrise Youth Club",
+ "period": {
+  "end": "2027-03-31",
+  "start": "2026-04-01"
+ },
+ "questions": [],
+ "statements": {
+  "balance_sheet": {
+   "assets": {
+    "Accrued Income": "6000.00",
+    "Bank": "51000.00",
+    "Cash": "16000.00",
+    "Fixed Assets": "34200.00"
+   },
+   "balanced": true,
+   "capital_fund": {
+    "closing": "102200.00",
+    "corpus": "10000.00",
+    "opening": "82000.00",
+    "surplus": "10200.00"
+   },
+   "liabilities": {
+    "Income Received in Advance": "2000.00",
+    "Outstanding Expenses": "3000.00"
+   },
+   "total_assets": "107200.00",
+   "total_liabilities_and_capital": "107200.00"
+  },
+  "income_expenditure": {
+   "expenditure": {
+    "Depreciation": "3800.00",
+    "Electricity Charges": "6000.00",
+    "Printing and Stationery": "4000.00",
+    "Program Expenses": "15000.00",
+    "Rent Paid": "24000.00",
+    "Salaries": "37000.00"
+   },
+   "income": {
+    "Donations": "25000.00",
+    "Event Income": "12000.00",
+    "Interest Received": "3000.00",
+    "Subscriptions": "60000.00"
+   },
+   "surplus": "10200.00",
+   "total_expenditure": "89800.00",
+   "total_income": "100000.00"
+  },
+  "receipts_payments": {
+   "balanced": true,
+   "closing": {
+    "bank": "51000.00",
+    "cash": "16000.00"
+   },
+   "opening": {
+    "bank": "46000.00",
+    "cash": "4000.00"
+   },
+   "payments": {
+    "Electricity Charges": "6000.00",
+    "Fixed Assets": "8000.00",
+    "Printing and Stationery": "4000.00",
+    "Program Expenses": "15000.00",
+    "Rent Paid": "24000.00",
+    "Salaries": "36000.00"
+   },
+   "receipts": {
+    "Capital Fund": "10000.00",
+    "Donations": "25000.00",
+    "Event Income": "12000.00",
+    "Interest Received": "3000.00",
+    "Subscriptions": "60000.00"
+   },
+   "total_payments": "160000.00",
+   "total_receipts": "160000.00"
+  }
+ },
+ "trial_balance": {
+  "balanced": true,
+  "rows": [
+   {
+    "credit": "0.00",
+    "debit": "6000.00",
+    "ledger": "Accrued Income"
+   },
+   {
+    "credit": "0.00",
+    "debit": "51000.00",
+    "ledger": "Bank"
+   },
+   {
+    "credit": "92000.00",
+    "debit": "0.00",
+    "ledger": "Capital Fund"
+   },
+   {
+    "credit": "0.00",
+    "debit": "16000.00",
+    "ledger": "Cash"
+   },
+   {
+    "credit": "0.00",
+    "debit": "3800.00",
+    "ledger": "Depreciation"
+   },
+   {
+    "credit": "25000.00",
+    "debit": "0.00",
+    "ledger": "Donations"
+   },
+   {
+    "credit": "0.00",
+    "debit": "6000.00",
+    "ledger": "Electricity Charges"
+   },
+   {
+    "credit": "12000.00",
+    "debit": "0.00",
+    "ledger": "Event Income"
+   },
+   {
+    "credit": "0.00",
+    "debit": "34200.00",
+    "ledger": "Fixed Assets"
+   },
+   {
+    "credit": "2000.00",
+    "debit": "0.00",
+    "ledger": "Income Received in Advance"
+   },
+   {
+    "credit": "3000.00",
+    "debit": "0.00",
+    "ledger": "Interest Received"
+   },
+   {
+    "credit": "3000.00",
+    "debit": "0.00",
+    "ledger": "Outstanding Expenses"
+   },
+   {
+    "credit": "0.00",
+    "debit": "4000.00",
+    "ledger": "Printing and Stationery"
+   },
+   {
+    "credit": "0.00",
+    "debit": "15000.00",
+    "ledger": "Program Expenses"
+   },
+   {
+    "credit": "0.00",
+    "debit": "24000.00",
+    "ledger": "Rent Paid"
+   },
+   {
+    "credit": "0.00",
+    "debit": "37000.00",
+    "ledger": "Salaries"
+   },
+   {
+    "credit": "60000.00",
+    "debit": "0.00",
+    "ledger": "Subscriptions"
+   }
+  ],
+  "total_credit": "197000.00",
+  "total_debit": "197000.00"
+ },
+ "warnings": []
+}

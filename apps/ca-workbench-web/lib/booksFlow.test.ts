@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { bookToForm, defaultPeriod, entriesTotals, explainSource, formToBook, glance, journalCsv, journalLedgerTotals, journalRows, statementRows, type BooksForm } from "./booksFlow.ts";
+import { money, bookToForm, defaultPeriod, entriesTotals, explainSource, formToBook, glance, journalCsv, journalLedgerTotals, journalRows, statementRows, type BooksForm } from "./booksFlow.ts";
 import type { JournalItem } from "./booksApi.ts";
 const form: BooksForm = { name: "Shop", entity_type: "business", period_start: "2026-04-01", period_end: "2027-03-31", opening: { cash: "1,00,000.01", bank: "", investments: "300", outstanding_expenses: [{ head: "Rent", amount: "1,200" }, { head: "", amount: "" }] }, closing: { stock: "2,000", investments_market_value: "800", depreciation: "" }, entries: [{ date: "2026-04-02", description: "Sale", receipt: "1,000.01", payment: "", mode: "cash" }] };
 test("formToBook removes commas and empty figures, converts heads and only sends entity keys", () => {
@@ -61,4 +61,14 @@ test("ledger totals come from exact journal amounts and liabilities can be summe
   assert.deepEqual(journalLedgerTotals(journal).get("Cash"), { debit: 0n, credit: 10001n });
   assert.deepEqual(journalLedgerTotals(journal).get('Rent, "shop"'), { debit: 10001n, credit: 0n });
   assert.equal(glance({ statements: { balance_sheet: { liabilities: { Creditors: "40000.01", Rent: "5000.00" } } } }, "business")[3].amount, "45000.01");
+});
+
+
+test("a text label among the amounts (the individual balance sheet has one) is skipped and money() never throws", () => {
+  const rows = statementRows({ income_expense: { total_income: "100.00" }, net_worth: {}, balance_sheet: { capital: { ledger: "Net Worth", closing: "241000.00" }, balanced: true } } as never, "individual");
+  const sheet = rows.find(r => r.key === "balance_sheet")!.rows.map(r => r.label);
+  assert.ok(sheet.every(l => !/ledger/i.test(l)) && sheet.some(l => /closing/i.test(l)));
+  assert.equal(money("Net Worth"), "Net Worth");
+  assert.equal(money(undefined as never), "");
+  assert.equal(money("-1500.50"), "-₹1,500.50");
 });

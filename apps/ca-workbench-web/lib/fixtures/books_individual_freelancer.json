@@ -1,0 +1,947 @@
+{
+ "counts": {
+  "classified": 17,
+  "entries": 17,
+  "excluded": 0,
+  "needs_review": 0
+ },
+ "crosscheck": {
+  "agrees": true,
+  "closing_net_worth_direct": "241000.00",
+  "closing_net_worth_from_books": "241000.00",
+  "method": "statement_of_affairs",
+  "profit_by_books": "128000.00",
+  "profit_by_net_worth_change": "128000.00"
+ },
+ "entity_type": "individual",
+ "errors": [],
+ "journal": [
+  {
+   "confidence": 1,
+   "date": "2026-04-01",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "3000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "80000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    },
+    {
+     "amount": "150000.00",
+     "ledger": "Investments",
+     "side": "Dr"
+    },
+    {
+     "amount": "120000.00",
+     "ledger": "Loans",
+     "side": "Cr"
+    },
+    {
+     "amount": "113000.00",
+     "ledger": "Net Worth",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Opening statement of affairs",
+   "source": "opening"
+  },
+  {
+   "category": "professional_income",
+   "confidence": 0.9,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "480000.00",
+     "ledger": "Professional Income",
+     "side": "Cr"
+    },
+    {
+     "amount": "480000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Freelance design income - client payments",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Rent",
+   "confidence": 0.85,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "120000.00",
+     "ledger": "Rent",
+     "side": "Dr"
+    },
+    {
+     "amount": "120000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "House rent",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Groceries and Household",
+   "confidence": 0.85,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "90000.00",
+     "ledger": "Groceries and Household",
+     "side": "Dr"
+    },
+    {
+     "amount": "90000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Groceries and household supplies",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Utilities",
+   "confidence": 0.85,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24000.00",
+     "ledger": "Utilities",
+     "side": "Dr"
+    },
+    {
+     "amount": "24000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Electricity, water and mobile bills",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Transport",
+   "confidence": 0.85,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "36000.00",
+     "ledger": "Transport",
+     "side": "Dr"
+    },
+    {
+     "amount": "36000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Fuel and cab fares",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Medical",
+   "confidence": 0.85,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "15000.00",
+     "ledger": "Medical",
+     "side": "Dr"
+    },
+    {
+     "amount": "15000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Medical expenses and medicines",
+   "source": "cash_book"
+  },
+  {
+   "category": "investment",
+   "confidence": 0.9,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "60000.00",
+     "ledger": "Investments",
+     "side": "Dr"
+    },
+    {
+     "amount": "60000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "SIP mutual fund investment",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_principal",
+   "confidence": 0.9,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "30000.00",
+     "ledger": "Loans",
+     "side": "Dr"
+    },
+    {
+     "amount": "30000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Home loan EMI - principal part",
+   "source": "cash_book"
+  },
+  {
+   "category": "loan_interest",
+   "confidence": 0.9,
+   "date": "2026-06-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "18000.00",
+     "ledger": "Interest Paid",
+     "side": "Dr"
+    },
+    {
+     "amount": "18000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Home loan EMI - interest part",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Education",
+   "confidence": 0.85,
+   "date": "2026-07-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "30000.00",
+     "ledger": "Education",
+     "side": "Dr"
+    },
+    {
+     "amount": "30000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "School fees for child",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Insurance",
+   "confidence": 0.85,
+   "date": "2026-07-05",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "18000.00",
+     "ledger": "Insurance",
+     "side": "Dr"
+    },
+    {
+     "amount": "18000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Life insurance premium",
+   "source": "cash_book"
+  },
+  {
+   "category": "contra",
+   "confidence": 0.9,
+   "date": "2026-08-01",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "20000.00",
+     "ledger": "Cash",
+     "side": "Dr"
+    },
+    {
+     "amount": "20000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "ATM cash withdrawal",
+   "source": "cash_book"
+  },
+  {
+   "category": "interest_income",
+   "confidence": 0.9,
+   "date": "2026-09-30",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Interest Received",
+     "side": "Cr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Savings account interest",
+   "source": "cash_book"
+  },
+  {
+   "category": "gift",
+   "confidence": 0.9,
+   "date": "2026-11-12",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "10000.00",
+     "ledger": "Gifts Received",
+     "side": "Cr"
+    },
+    {
+     "amount": "10000.00",
+     "ledger": "Bank",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Gift from relatives",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Donations Given",
+   "confidence": 0.85,
+   "date": "2026-12-25",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5000.00",
+     "ledger": "Donations Given",
+     "side": "Dr"
+    },
+    {
+     "amount": "5000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Donation to charity",
+   "source": "cash_book"
+  },
+  {
+   "category": "expense:Entertainment",
+   "confidence": 0.85,
+   "date": "2026-12-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "12000.00",
+     "ledger": "Entertainment",
+     "side": "Dr"
+    },
+    {
+     "amount": "12000.00",
+     "ledger": "Bank",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Movies and dining out",
+   "source": "cash_book"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "5000.00",
+     "ledger": "Donations Given",
+     "side": "Cr"
+    },
+    {
+     "amount": "5000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Donations Given",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "30000.00",
+     "ledger": "Education",
+     "side": "Cr"
+    },
+    {
+     "amount": "30000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Education",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "12000.00",
+     "ledger": "Entertainment",
+     "side": "Cr"
+    },
+    {
+     "amount": "12000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Entertainment",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "10000.00",
+     "ledger": "Gifts Received",
+     "side": "Dr"
+    },
+    {
+     "amount": "10000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Gifts Received",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "90000.00",
+     "ledger": "Groceries and Household",
+     "side": "Cr"
+    },
+    {
+     "amount": "90000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Groceries and Household",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "18000.00",
+     "ledger": "Insurance",
+     "side": "Cr"
+    },
+    {
+     "amount": "18000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Insurance",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "18000.00",
+     "ledger": "Interest Paid",
+     "side": "Cr"
+    },
+    {
+     "amount": "18000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Interest Paid",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "6000.00",
+     "ledger": "Interest Received",
+     "side": "Dr"
+    },
+    {
+     "amount": "6000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Interest Received",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "15000.00",
+     "ledger": "Medical",
+     "side": "Cr"
+    },
+    {
+     "amount": "15000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Medical",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "480000.00",
+     "ledger": "Professional Income",
+     "side": "Dr"
+    },
+    {
+     "amount": "480000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Close Professional Income",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "120000.00",
+     "ledger": "Rent",
+     "side": "Cr"
+    },
+    {
+     "amount": "120000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Rent",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "36000.00",
+     "ledger": "Transport",
+     "side": "Cr"
+    },
+    {
+     "amount": "36000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Transport",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "24000.00",
+     "ledger": "Utilities",
+     "side": "Cr"
+    },
+    {
+     "amount": "24000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    }
+   ],
+   "narration": "Close Utilities",
+   "source": "closing"
+  },
+  {
+   "confidence": 1,
+   "date": "2027-03-31",
+   "flags": [],
+   "lines": [
+    {
+     "amount": "128000.00",
+     "ledger": "Income & Expenditure A/c",
+     "side": "Dr"
+    },
+    {
+     "amount": "128000.00",
+     "ledger": "Net Worth",
+     "side": "Cr"
+    }
+   ],
+   "narration": "Transfer profit/surplus/savings",
+   "source": "closing"
+  }
+ ],
+ "ledgers": {
+  "Bank": {
+   "balance": "98000.00",
+   "credit": "478000.00",
+   "debit": "576000.00",
+   "side": "Dr"
+  },
+  "Cash": {
+   "balance": "23000.00",
+   "credit": "0.00",
+   "debit": "23000.00",
+   "side": "Dr"
+  },
+  "Donations Given": {
+   "balance": "0.00",
+   "credit": "5000.00",
+   "debit": "5000.00",
+   "side": ""
+  },
+  "Education": {
+   "balance": "0.00",
+   "credit": "30000.00",
+   "debit": "30000.00",
+   "side": ""
+  },
+  "Entertainment": {
+   "balance": "0.00",
+   "credit": "12000.00",
+   "debit": "12000.00",
+   "side": ""
+  },
+  "Gifts Received": {
+   "balance": "0.00",
+   "credit": "10000.00",
+   "debit": "10000.00",
+   "side": ""
+  },
+  "Groceries and Household": {
+   "balance": "0.00",
+   "credit": "90000.00",
+   "debit": "90000.00",
+   "side": ""
+  },
+  "Income & Expenditure A/c": {
+   "balance": "0.00",
+   "credit": "496000.00",
+   "debit": "496000.00",
+   "side": ""
+  },
+  "Insurance": {
+   "balance": "0.00",
+   "credit": "18000.00",
+   "debit": "18000.00",
+   "side": ""
+  },
+  "Interest Paid": {
+   "balance": "0.00",
+   "credit": "18000.00",
+   "debit": "18000.00",
+   "side": ""
+  },
+  "Interest Received": {
+   "balance": "0.00",
+   "credit": "6000.00",
+   "debit": "6000.00",
+   "side": ""
+  },
+  "Investments": {
+   "balance": "210000.00",
+   "credit": "0.00",
+   "debit": "210000.00",
+   "side": "Dr"
+  },
+  "Loans": {
+   "balance": "90000.00",
+   "credit": "120000.00",
+   "debit": "30000.00",
+   "side": "Cr"
+  },
+  "Medical": {
+   "balance": "0.00",
+   "credit": "15000.00",
+   "debit": "15000.00",
+   "side": ""
+  },
+  "Net Worth": {
+   "balance": "241000.00",
+   "credit": "241000.00",
+   "debit": "0.00",
+   "side": "Cr"
+  },
+  "Professional Income": {
+   "balance": "0.00",
+   "credit": "480000.00",
+   "debit": "480000.00",
+   "side": ""
+  },
+  "Rent": {
+   "balance": "0.00",
+   "credit": "120000.00",
+   "debit": "120000.00",
+   "side": ""
+  },
+  "Transport": {
+   "balance": "0.00",
+   "credit": "36000.00",
+   "debit": "36000.00",
+   "side": ""
+  },
+  "Utilities": {
+   "balance": "0.00",
+   "credit": "24000.00",
+   "debit": "24000.00",
+   "side": ""
+  }
+ },
+ "name": "Anita (freelance designer, household books)",
+ "period": {
+  "end": "2027-03-31",
+  "start": "2026-04-01"
+ },
+ "questions": [],
+ "statements": {
+  "balance_sheet": {
+   "assets": {
+    "Bank": "98000.00",
+    "Cash": "23000.00",
+    "Investments": "210000.00"
+   },
+   "balanced": true,
+   "capital": {
+    "closing": "241000.00",
+    "ledger": "Net Worth",
+    "opening": "113000.00",
+    "savings": "128000.00"
+   },
+   "liabilities": {
+    "Loans": "90000.00"
+   },
+   "total_assets": "331000.00",
+   "total_liabilities_and_capital": "331000.00"
+  },
+  "income_expense": {
+   "expenses": {
+    "Donations Given": "5000.00",
+    "Education": "30000.00",
+    "Entertainment": "12000.00",
+    "Groceries and Household": "90000.00",
+    "Insurance": "18000.00",
+    "Interest Paid": "18000.00",
+    "Medical": "15000.00",
+    "Rent": "120000.00",
+    "Transport": "36000.00",
+    "Utilities": "24000.00"
+   },
+   "income": {
+    "Gifts Received": "10000.00",
+    "Interest Received": "6000.00",
+    "Professional Income": "480000.00"
+   },
+   "savings": "128000.00",
+   "total_expenses": "368000.00",
+   "total_income": "496000.00"
+  },
+  "net_worth": {
+   "closing_at_cost": {
+    "assets": {
+     "Bank": "98000.00",
+     "Cash": "23000.00",
+     "Investments": "210000.00"
+    },
+    "liabilities": {
+     "Loans": "90000.00"
+    },
+    "net_worth": "241000.00"
+   },
+   "closing_at_market": {
+    "assets": {
+     "Bank": "98000.00",
+     "Cash": "23000.00",
+     "Investments": "225000.00"
+    },
+    "liabilities": {
+     "Loans": "90000.00"
+    },
+    "net_worth": "256000.00",
+    "unrealised_gain": "15000.00"
+   },
+   "opening": {
+    "assets": {
+     "Accrued Income": "0.00",
+     "Bank": "80000.00",
+     "Cash": "3000.00",
+     "Debtors": "0.00",
+     "Fixed Assets": "0.00",
+     "Investments": "150000.00",
+     "Prepaid Expenses": "0.00",
+     "Stock-in-Trade": "0.00"
+    },
+    "liabilities": {
+     "Creditors": "0.00",
+     "Income Received in Advance": "0.00",
+     "Loans": "120000.00",
+     "Outstanding Expenses": "0.00"
+    },
+    "net_worth": "113000.00"
+   }
+  }
+ },
+ "trial_balance": {
+  "balanced": true,
+  "rows": [
+   {
+    "credit": "0.00",
+    "debit": "98000.00",
+    "ledger": "Bank"
+   },
+   {
+    "credit": "0.00",
+    "debit": "23000.00",
+    "ledger": "Cash"
+   },
+   {
+    "credit": "0.00",
+    "debit": "5000.00",
+    "ledger": "Donations Given"
+   },
+   {
+    "credit": "0.00",
+    "debit": "30000.00",
+    "ledger": "Education"
+   },
+   {
+    "credit": "0.00",
+    "debit": "12000.00",
+    "ledger": "Entertainment"
+   },
+   {
+    "credit": "10000.00",
+    "debit": "0.00",
+    "ledger": "Gifts Received"
+   },
+   {
+    "credit": "0.00",
+    "debit": "90000.00",
+    "ledger": "Groceries and Household"
+   },
+   {
+    "credit": "0.00",
+    "debit": "18000.00",
+    "ledger": "Insurance"
+   },
+   {
+    "credit": "0.00",
+    "debit": "18000.00",
+    "ledger": "Interest Paid"
+   },
+   {
+    "credit": "6000.00",
+    "debit": "0.00",
+    "ledger": "Interest Received"
+   },
+   {
+    "credit": "0.00",
+    "debit": "210000.00",
+    "ledger": "Investments"
+   },
+   {
+    "credit": "90000.00",
+    "debit": "0.00",
+    "ledger": "Loans"
+   },
+   {
+    "credit": "0.00",
+    "debit": "15000.00",
+    "ledger": "Medical"
+   },
+   {
+    "credit": "113000.00",
+    "debit": "0.00",
+    "ledger": "Net Worth"
+   },
+   {
+    "credit": "480000.00",
+    "debit": "0.00",
+    "ledger": "Professional Income"
+   },
+   {
+    "credit": "0.00",
+    "debit": "120000.00",
+    "ledger": "Rent"
+   },
+   {
+    "credit": "0.00",
+    "debit": "36000.00",
+    "ledger": "Transport"
+   },
+   {
+    "credit": "0.00",
+    "debit": "24000.00",
+    "ledger": "Utilities"
+   }
+  ],
+  "total_credit": "699000.00",
+  "total_debit": "699000.00"
+ },
+ "warnings": []
+}

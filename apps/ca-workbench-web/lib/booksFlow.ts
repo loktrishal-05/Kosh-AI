@@ -44,7 +44,14 @@ export function defaultPeriod(today: Date) {
   const year = today.getMonth() < 3 ? today.getFullYear() - 1 : today.getFullYear();
   return { period_start: `${year}-04-01`, period_end: `${year + 1}-03-31` };
 }
-export function money(value: string): string { const negative = value.startsWith("-"); return rupees((negative ? -1n : 1n) * paise(negative ? value.slice(1) : value)); }
+const AMOUNT = /^-?\d+(?:\.\d{1,2})?$/;
+export function isAmount(value: unknown): value is string { return typeof value === "string" && AMOUNT.test(value); }
+/** Indian-grouped rupees. Never throws: an unexpected value is shown as received rather than blanking the page. */
+export function money(value: string): string {
+  if (!isAmount(value)) return String(value ?? "");
+  const negative = value.startsWith("-");
+  return rupees((negative ? -1n : 1n) * paise(negative ? value.slice(1) : value));
+}
 export function statementAmount(statements: Statements, ...path: string[]): string {
   let v: StatementValue = statements;
   for (const key of path) { if (typeof v !== "object" || !v) return "0"; v = v[key]; }
@@ -95,7 +102,7 @@ export function plainLabel(key: string): string {
 export function statementRows(statements: Statements, entity: EntityType) {
   const keys = entity === "business" ? ["trading", "profit_loss", "balance_sheet"] : entity === "nonprofit" ? ["receipts_payments", "income_expenditure", "balance_sheet"] : ["income_expense", "net_worth", "balance_sheet"];
   function flatten(value: Record<string, StatementValue>, prefix = ""): { label: string; amount: string }[] {
-    return Object.entries(value).flatMap(([key, v]) => typeof v === "boolean" ? [] : typeof v === "string" ? [{ label: prefix + plainLabel(key), amount: v }] : flatten(v, prefix + plainLabel(key) + " / "));
+    return Object.entries(value).flatMap(([key, v]) => typeof v === "boolean" ? [] : typeof v === "string" ? (isAmount(v) ? [{ label: prefix + plainLabel(key), amount: v }] : []) : flatten(v, prefix + plainLabel(key) + " / "));
   }
   return keys.map(key => ({ key, title: statementInfo[key][0], caption: statementInfo[key][1], rows: flatten(statements[key] || {}) }));
 }
