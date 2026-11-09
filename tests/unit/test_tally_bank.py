@@ -62,3 +62,14 @@ def test_rules_alias_unknown_and_summary():
     assert drafts[7].lines[0].ledger == "Professional Fees"
     assert all(v.source == "bank_csv" for v in drafts)
     assert summary(drafts) == {"count": 8, "auto_ready": 6, "needs_review": 2, "total_in": Decimal(450), "total_out": Decimal(1710)}
+
+
+def test_money_in_under_an_expense_keyword_needs_a_human():
+    from datetime import date
+    from decimal import Decimal
+    from taxsetu_engine.tally_bank import to_drafts
+    from taxsetu_engine.tally_models import BankTxn, BookContext
+    d, = to_drafts([BankTxn(date(2026, 4, 1), "UPI/123456789012/RENT APR/okaxis", credit=Decimal("20000"))], BookContext())
+    assert d.vtype == "Receipt" and "NEEDS_REVIEW" in d.flags and d.confidence < Decimal("0.8")
+    out, = to_drafts([BankTxn(date(2026, 4, 1), "NEFT RENT APR", debit=Decimal("20000"))], BookContext())
+    assert out.vtype == "Payment" and "NEEDS_REVIEW" not in out.flags and out.lines[0].ledger == "Rent Paid"
