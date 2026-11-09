@@ -5,7 +5,7 @@ import hmac
 import json
 import time
 
-ROLES = {"OWNER", "CLERK", "CA", "DRIVER", "EMPLOYEE"}
+ROLES = {"OWNER", "CLERK", "CA", "DRIVER", "EMPLOYEE", "BRIDGE", "PAIR"}      # BRIDGE/PAIR: Tally bridge machine tokens; no human route accepts them
 
 
 def _b64(b: bytes) -> str:

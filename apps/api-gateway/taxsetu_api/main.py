@@ -56,6 +56,18 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
         """Runs all five agents + the OTP gate on fake data in one stateless request (fresh in-memory gate per call)."""
         return demo.storyline()
 
+    class DevTokenIn(BaseModel):
+        tenant_id: str = Field(pattern=r"^[0-9a-fA-F-]{36}$")
+        role: str = Field(default="OWNER", pattern="^(OWNER|CA|CLERK|EMPLOYEE)$")
+
+    @app.post("/api/v1/auth/dev-token", tags=["auth"])
+    def dev_token(b: DevTokenIn, x_admin_key: str = Header(default="")):
+        """Stopgap login until WhatsApp/mobile OTP exists: whoever holds TAXSETU_ADMIN_KEY can mint a 12 h token. Disabled when unset."""
+        key = os.environ.get("TAXSETU_ADMIN_KEY", "")
+        if len(key) < 24 or not hmac.compare_digest(x_admin_key.encode(), key.encode()):
+            raise HTTPException(401, "admin key required")
+        return {"token": auth.encode({"tenant_id": b.tenant_id, "role": b.role}, secret, ttl_s=12 * 3600), "expires_in_s": 12 * 3600}
+
     @app.get("/health")
     def health():
         if drafts is None:
