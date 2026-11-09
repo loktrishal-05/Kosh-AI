@@ -28,6 +28,8 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
     secret = secret or os.environ.get("HITL_SIGNING_SECRET", "dev-only-change-me").encode()
     wa_secret = wa_secret or os.environ.get("WHATSAPP_APP_SECRET", "").encode()
     drafts, audit = store.from_env()      # Postgres (RLS) when DATABASE_URL_APP is set, else in-memory
+    if drafts is not None and secret == b"dev-only-change-me":
+        raise RuntimeError("refusing to run on Postgres with the default HITL_SIGNING_SECRET: tokens would be forgeable")
     gate = HitlGate(secret, audit=audit, drafts=drafts)
     app = FastAPI(title="TaxSetu AI API", version="0.1.0")
     app.state.gate, app.state.seen_wamids = gate, set()
@@ -56,8 +58,14 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
 
     @app.get("/health")
     def health():
-        pg = drafts is not None       # Postgres chains are per tenant: verified via /api/v1/audit, not globally here
-        return {"ok": True, "store": "postgres" if pg else "memory", "audit_chain_valid": None if pg else gate.audit.verify()}
+        if drafts is None:
+            return {"ok": True, "store": "memory", "audit_chain_valid": gate.audit.verify()}
+        try:      # Postgres chains are per tenant (verified via /api/v1/audit); here prove we connect as the RLS-bound role, not a bypass role
+            with drafts.pg.tx("00000000-0000-0000-0000-000000000000") as c:
+                user, bypass = c.execute("SELECT current_user, (SELECT rolbypassrls FROM pg_roles WHERE rolname = current_user)").fetchone()
+        except Exception as e:      # class name only: connection errors can carry the DSN
+            return {"ok": False, "store": "postgres", "error": type(e).__name__}
+        return {"ok": not bypass, "store": "postgres", "db_role": user, "bypass_rls": bypass}
 
     # ---- WhatsApp webhook: HMAC verified, idempotent on wamid --------------------------------------------------
     @app.post("/api/v1/webhooks/whatsapp")

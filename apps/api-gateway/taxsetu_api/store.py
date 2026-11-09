@@ -6,6 +6,7 @@ import os
 import time
 import uuid
 from contextlib import contextmanager
+from urllib.parse import quote, urlsplit, urlunsplit
 
 from .audit import GENESIS, AuditLog, canonical, h
 from .portal import PortalError
@@ -31,7 +32,7 @@ class Pg:
     @contextmanager
     def tx(self, tenant_id: str):
         uuid.UUID(tenant_id)                      # Postgres tenants are UUIDs; fail loudly instead of an opaque SQL error
-        with self._psycopg.connect(self.url) as conn:     # commit on clean exit, rollback on exception
+        with self._psycopg.connect(self.url, prepare_threshold=None) as conn:     # commit on clean exit, rollback on exception
             conn.execute("SELECT set_config('app.tenant_id', %s, true)", (tenant_id,))
             yield conn
 
@@ -108,9 +109,23 @@ class PgAuditLog(AuditLog):
         return True
 
 
-def from_env():
-    """(drafts, audit) backed by Postgres when DATABASE_URL_APP is set and psycopg is installed, else (None, None) = in-memory."""
+def app_url() -> str | None:
+    """DATABASE_URL_APP verbatim, else the platform's owner URL (Vercel/Neon `DATABASE_URL`) re-pointed at the RLS-bound `taxsetu_app` role
+    using TAXSETU_APP_PASSWORD, so the owner credential is never what the API runs as."""
     url = os.environ.get("DATABASE_URL_APP")
+    if url:
+        return url
+    base, pw = os.environ.get("DATABASE_URL"), os.environ.get("TAXSETU_APP_PASSWORD")
+    if not (base and pw):
+        return None
+    u = urlsplit(base)
+    host = (u.hostname or "") + (f":{u.port}" if u.port else "")
+    return urlunsplit(u._replace(netloc=f"taxsetu_app:{quote(pw, safe='')}@{host}"))
+
+
+def from_env():
+    """(drafts, audit) backed by Postgres when an app-role URL is configured and psycopg is installed, else (None, None) = in-memory."""
+    url = app_url()
     if not url:
         return None, None
     pg = Pg(url)
