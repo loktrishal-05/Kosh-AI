@@ -10,8 +10,7 @@ import json
 import os
 from pathlib import Path
 
-DEFAULT_DIR = Path(__file__).parent / "models" / "narration"
-THRESHOLD = float(os.environ.get("TAXSETU_LOCAL_THRESHOLD", "0.7"))
+THRESHOLD = float(os.environ.get("TAXSETU_LOCAL_THRESHOLD", "0.9"))      # on unseen wording it is right ~86% of the time at 0.9 (see ml/artifacts/narration_v1/metrics.json)
 ABSTAIN = "Other"
 
 
@@ -76,11 +75,11 @@ class LocalLlm:
 
 
 def local_llm_from_env():
-    """A LocalLlm when the model files and onnxruntime/tokenizers are present, else None. TAXSETU_LOCAL_MODEL=off disables; =<dir> points elsewhere."""
+    """OPT-IN: a LocalLlm only when TAXSETU_LOCAL_MODEL names a directory holding the model files and onnxruntime/tokenizers are installed, else None."""
     setting = os.environ.get("TAXSETU_LOCAL_MODEL", "")
-    if setting.lower() in ("off", "0", "false", "no"):
+    if not setting or setting.lower() in ("off", "0", "false", "no"):
         return None
-    directory = Path(setting) if setting else DEFAULT_DIR
+    directory = Path(setting)
     if not all((directory / f).exists() for f in ("model_int8.onnx", "tokenizer.json", "labels.json")):
         return None
     try:

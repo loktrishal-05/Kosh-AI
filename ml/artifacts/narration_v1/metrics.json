@@ -1,0 +1,58 @@
+{
+ "base_model": "prajjwal1/bert-mini",
+ "pretrained_weights_loaded": true,
+ "labels": [
+  "Bank Charges",
+  "Electricity Charges",
+  "Insurance",
+  "Interest Paid",
+  "Interest Received",
+  "Office Expenses",
+  "Other",
+  "Printing and Stationery",
+  "Professional Fees",
+  "Purchases",
+  "Rent Paid",
+  "Repairs and Maintenance",
+  "Salary and Wages",
+  "Sales",
+  "Telephone and Internet",
+  "Travelling Expenses"
+ ],
+ "epochs": 3,
+ "train_rows": 38000,
+ "test_rows": 4000,
+ "test_is": "synthetic, phrases never seen in training",
+ "fp32_test_accuracy": 0.75575,
+ "int8_test_accuracy": 0.759,
+ "int8_agrees_with_fp32": 0.97775,
+ "macro_f1_fp32": 0.7358843592547213,
+ "confidence_table": [
+  {
+   "threshold": 0.5,
+   "answered": 0.96225,
+   "accuracy_when_answered": 0.7825409197194076
+  },
+  {
+   "threshold": 0.6,
+   "answered": 0.93225,
+   "accuracy_when_answered": 0.800214534727809
+  },
+  {
+   "threshold": 0.7,
+   "answered": 0.908,
+   "accuracy_when_answered": 0.8169052863436124
+  },
+  {
+   "threshold": 0.8,
+   "answered": 0.8825,
+   "accuracy_when_answered": 0.8345609065155808
+  },
+  {
+   "threshold": 0.9,
+   "answered": 0.8445,
+   "accuracy_when_answered": 0.8638247483718177
+  }
+ ],
+ "model_bytes": 11366340
+}

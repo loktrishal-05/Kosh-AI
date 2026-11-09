@@ -24,7 +24,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_
 from sklearn.metrics import classification_report, f1_score
 from narration_data import make, LABELS
 
-SEED, BASE, EPOCHS, BATCH, LR, MAXLEN = 7, "prajjwal1/bert-mini", 6, 64, 3e-4, 64
+SEED, BASE, EPOCHS, BATCH, LR, MAXLEN = 7, "prajjwal1/bert-mini", 3, 64, 3e-4, 64
 torch.manual_seed(SEED)
 train, test = make(seed=SEED, n_train=40000, n_test=4000)
 val, train = train[:2000], train[2000:]            # val: same phrases as training (a sanity check); test: phrases never seen in training

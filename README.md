@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-915%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-935%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -422,13 +422,13 @@ default exists only for local development.
 |-------|------:|----------------|
 | `tests/unit` | 717 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 51 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 63 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
-| `tests/agents` | 41 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
+| `tests/agents` | 49 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
 | `tests/infra` | 31 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 36 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
 | `apps/ca-workbench-web` | 33 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **915 + 34** (+5 opt-in live-Tally tests) | **all passing** |
+| **Total** | **935 + 34** (+5 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -485,6 +485,8 @@ flowchart LR
 draft. The AI only **proposes**: every figure is re-validated by code (amounts, dates, GSTIN checksum, GST recomputed, printed total compared), a suggested ledger must
 come from the business's real ledgers and the row stays "needs your check", and nothing is approved without a person. It never runs on the public sandbox routes. The page
 says plainly when AI is off. **Tested with a fake model only; it has not been run against the live Claude API** (no key was available), so evaluate on real bills before relying on it.
+
+**On-server model (no key needed, opt-in).** For the ledger-suggestion and typed-sentence parts only, a small fine-tuned classifier can run on the server's CPU instead (`TAXSETU_LOCAL_MODEL=ml/artifacts/narration_v1`; see [`ml/README.md`](ml/README.md)). It was trained on synthetic data and is right about **76% of the time on wording it never saw** (86% when it is at least 90% sure, 4% on personal spending), so it only pre-fills a ledger on rows that a person must still check. It cannot read bill photos.
 
 API (all under `/api/v1/tally`): `sandbox/*` (anonymous, stateless), `entry`, `bank-statement`, `batches` (stage, list, get, approve, reject),
 `setup`, `aliases`, `ledgers`, `bridges` (create, list, revoke), and `bridge/pair|pending|ack|ledgers` for the bridge itself.

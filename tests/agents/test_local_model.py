@@ -84,16 +84,27 @@ def test_loader_returns_nothing_when_off_or_files_are_missing(monkeypatch, tmp_p
     assert LM.local_llm_from_env() is None                       # corrupt files must not break the server
 
 
-# ---- the real exported model, when it has been trained and bundled --------------------------------------------------------------------
-REAL = LM.DEFAULT_DIR
+# ---- the real exported model, when its files and onnxruntime are present ------------------------------------------------------------------
+REAL = ROOT / "ml" / "artifacts" / "narration_v1"
 
 
-@pytest.mark.skipif(not (REAL / "model_int8.onnx").exists(), reason="narration model not bundled")
-def test_the_bundled_model_loads_and_classifies_unseen_wording():
+def test_it_is_opt_in_nothing_loads_unless_a_directory_is_named(monkeypatch):
+    monkeypatch.delenv("TAXSETU_LOCAL_MODEL", raising=False)
+    assert LM.local_llm_from_env() is None
+
+
+@pytest.mark.skipif(not (REAL / "model_int8.onnx").exists(), reason="narration model artifacts not present")
+def test_the_trained_model_keeps_its_measured_quality_and_loads_through_the_runtime_path(monkeypatch):
     pytest.importorskip("onnxruntime")
     pytest.importorskip("tokenizers")
+    import json
+    metrics = json.loads((REAL / "metrics.json").read_text(encoding="utf-8"))
+    assert metrics["int8_test_accuracy"] >= 0.70 and metrics["test_is"].startswith("synthetic")        # honest floor: ~76% on phrases it never saw
     model = LM.LocalNarrationModel(REAL)
-    got = dict(zip(["bescom", "airtel", "salary", "sms"], model.predict([
-        "out | UPI/DR/412345678901/BESCOM/okhdfcbank/Bill Pay", "out | NEFT-AIRT0000001-AIRTEL BROADBAND-JAN", "out | IMPS/P2A/123/RAMESH SALARY FOR MARCH", "out | SMS ALERT CHGS Q3"])))
-    assert [got[k][0] for k in ("bescom", "airtel", "salary", "sms")] == ["Electricity Charges", "Telephone and Internet", "Salary and Wages", "Bank Charges"]
-    assert all(0 < p <= 1 for _, p in got.values())
+    got = model.predict(["out | UPI/DR/412345678901/BESCOM/okhdfcbank/Bill Pay", "out | NEFT-AIRT0000001-AIRTEL BROADBAND-JAN", "out | IMPS/P2A/123/RAMESH SALARY FOR MARCH",
+                         "out | SMS ALERT CHGS Q3", "in | UPI/CR/1/RAZORPAY SETTLEMENT"])
+    assert [g[0] for g in got] == ["Electricity Charges", "Telephone and Internet", "Salary and Wages", "Bank Charges", "Sales"]
+    assert all(0 < p <= 1 for _, p in got)
+    monkeypatch.setenv("TAXSETU_LOCAL_MODEL", str(REAL))
+    llm = LM.local_llm_from_env()
+    assert llm is not None and llm.provider == "local" and llm.threshold == 0.9
