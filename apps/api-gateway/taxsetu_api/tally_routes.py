@@ -25,15 +25,22 @@ NOT_A_COUNTER_LEDGER = ("Input ", "Output ", "TDS Payable")
 
 
 def get_llm():
-    """AI assist is opt-in: only when the deployment owner set ANTHROPIC_API_KEY. Tests replace this function. Never called from the anonymous sandbox routes."""
+    """AI assist is opt-in and never called from the anonymous sandbox routes. Claude when the owner set ANTHROPIC_API_KEY; otherwise the small on-server
+    model if its files and onnxruntime are installed (no key, no network); otherwise None and the rules do the work. Tests replace this function."""
     from taxsetu_agents.claude_llm import llm_from_env
-    return llm_from_env()
+    llm = llm_from_env()
+    if llm is not None:
+        return llm
+    from taxsetu_agents.local_model import local_llm_from_env
+    return local_llm_from_env()
 
 
 def ai_status(llm, **extra) -> dict:
-    note = ("AI helped read this; every figure is re-checked by code and a person approves it." if llm
+    local = getattr(llm, "provider", "") == "local"
+    note = ("A small model running on this server suggested ledgers for unclear rows; it never approves anything and a person checks every one." if local
+            else "AI helped read this; every figure is re-checked by code and a person approves it." if llm
             else "AI assist is switched off on this server; the rule-based reader is doing the work.")
-    return {"enabled": llm is not None, "note": note, **extra}
+    return {"enabled": llm is not None, "provider": getattr(llm, "provider", "claude") if llm else "", "note": note, **extra}
 
 
 def _counter_ledgers(ctx) -> set:
@@ -290,7 +297,7 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
     def invoice(b: InvoiceIn, c: dict = Depends(need(*DRAFTERS))):
         """Photo or pasted text of a supplier bill -> a purchase draft. Needs AI; GST and totals are recomputed and checked by code."""
         llm = get_llm()
-        if llm is None:
+        if llm is None or getattr(llm, "provider", "") == "local":
             raise HTTPException(503, "Reading bills with AI is not switched on for this server. Type the entry instead, or ask your administrator to add an AI key.")
         if not b.text.strip() and not b.image_base64:
             raise HTTPException(422, "send a photo of the bill or paste its text")

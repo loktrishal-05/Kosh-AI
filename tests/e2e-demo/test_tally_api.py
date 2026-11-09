@@ -370,3 +370,19 @@ def test_bill_input_is_bounded(client, monkeypatch):
     assert client.post("/api/v1/tally/invoice", headers=h, json={"text": "x", "media_type": "application/x-evil"}).status_code == 422
     use_llm(monkeypatch, FakeLlm(bill={}))
     assert client.post("/api/v1/tally/invoice", headers=h, json={"text": "unreadable"}).status_code == 422
+
+
+def test_the_on_server_model_suggests_ledgers_without_any_key_and_cannot_read_bills(client, monkeypatch):
+    from taxsetu_agents.local_model import LocalLlm
+
+    class Stub:
+        def predict(self, texts):
+            return [("Office Expenses", 0.93) if "TEA STALL" in t else ("Other", 0.4) for t in texts]
+    t = str(uuid.uuid4())
+    use_llm(monkeypatch, LocalLlm(Stub()))
+    r = client.post("/api/v1/tally/bank-statement", headers=tok(t), json={"csv": CSV}).json()
+    assert r["ai"]["enabled"] and r["ai"]["provider"] == "local" and "this server" in r["ai"]["note"] and r["ai"]["suggested"] == 1
+    tea = next(d for d in r["drafts"] if "TEA STALL" in d["narration"])
+    assert "Office Expenses" in [l["ledger"] for l in tea["lines"]] and "NEEDS_REVIEW" in tea["flags"] and any(f.startswith("AI_SUGGESTED") for f in tea["flags"])
+    bill = client.post("/api/v1/tally/invoice", headers=tok(t), json={"text": "Gupta Traders invoice GT/77"})
+    assert bill.status_code == 503                                          # only Claude can read a bill; the local model never pretends to
