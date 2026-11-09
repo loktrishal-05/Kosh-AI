@@ -1,0 +1,30 @@
+{
+  "entity_type": "nonprofit",
+  "name": "Sunrise Youth Club",
+  "period_start": "2026-04-01",
+  "period_end": "2027-03-31",
+  "opening": {
+    "cash": "4000", "bank": "46000", "fixed_assets": "30000",
+    "accrued_income": {"Subscriptions": "4000"},
+    "outstanding_expenses": {"Salaries": "2000"}
+  },
+  "entries": [
+    {"date": "2026-08-31", "description": "Member subscriptions received", "receipt": "60000", "mode": "bank"},
+    {"date": "2026-09-15", "description": "General donations from well-wishers", "receipt": "25000", "mode": "cash"},
+    {"date": "2026-10-02", "description": "Donation for building corpus fund", "receipt": "10000", "mode": "bank"},
+    {"date": "2026-12-31", "description": "Savings bank interest", "receipt": "3000", "mode": "bank"},
+    {"date": "2027-01-26", "description": "Sports day event receipts", "receipt": "12000", "mode": "cash"},
+    {"date": "2026-09-30", "description": "Salaries paid to coach and staff", "payment": "36000", "mode": "bank"},
+    {"date": "2026-09-30", "description": "Hall rent paid", "payment": "24000", "mode": "bank"},
+    {"date": "2027-01-26", "description": "Sports day event expenses", "payment": "15000", "mode": "cash"},
+    {"date": "2026-11-10", "description": "Printing and stationery", "payment": "4000", "mode": "cash"},
+    {"date": "2026-07-20", "description": "Purchase of sports equipment", "payment": "8000", "mode": "bank"},
+    {"date": "2026-12-31", "description": "Electricity charges paid", "payment": "6000", "mode": "cash"}
+  ],
+  "closing": {
+    "accrued_income": {"Subscriptions": "6000"},
+    "advance_income": {"Subscriptions": "2000"},
+    "outstanding_expenses": {"Salaries": "3000"},
+    "depreciation": "3800"
+  }
+}
