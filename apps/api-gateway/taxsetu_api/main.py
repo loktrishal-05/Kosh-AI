@@ -14,7 +14,7 @@ from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth, demo
+from . import auth, demo, store
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -27,7 +27,8 @@ encoders.encoders_by_class_tuples = encoders.generate_encoders_by_class_tuples(e
 def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> FastAPI:
     secret = secret or os.environ.get("HITL_SIGNING_SECRET", "dev-only-change-me").encode()
     wa_secret = wa_secret or os.environ.get("WHATSAPP_APP_SECRET", "").encode()
-    gate = HitlGate(secret)
+    drafts, audit = store.from_env()      # Postgres (RLS) when DATABASE_URL_APP is set, else in-memory
+    gate = HitlGate(secret, audit=audit, drafts=drafts)
     app = FastAPI(title="TaxSetu AI API", version="0.1.0")
     app.state.gate, app.state.seen_wamids = gate, set()
 
@@ -55,7 +56,8 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
 
     @app.get("/health")
     def health():
-        return {"ok": True, "audit_chain_valid": gate.audit.verify()}
+        pg = drafts is not None       # Postgres chains are per tenant: verified via /api/v1/audit, not globally here
+        return {"ok": True, "store": "postgres" if pg else "memory", "audit_chain_valid": None if pg else gate.audit.verify()}
 
     # ---- WhatsApp webhook: HMAC verified, idempotent on wamid --------------------------------------------------
     @app.post("/api/v1/webhooks/whatsapp")
@@ -168,7 +170,7 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
     class AuthIn(BaseModel):
         draft_id: str
         payload_sha256: str
-        verification_mode: str = Field(default="EVC_OTP", pattern="^(EVC_OTP|AADHAAR_OTP|DSC)$")
+        verification_mode: str = Field(default="EVC_OTP", pattern="^(EVC_OTP|AADHAAR_OTP|CLASS3_DSC)$")
         otp_or_signature: str
 
     @app.post("/api/v1/hitl/request-otp/{draft_id}")
@@ -188,7 +190,7 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
 
     @app.get("/api/v1/audit")
     def audit_log(c: dict = Depends(need("OWNER", "CA"))):
-        return {"valid": gate.audit.verify(), "events": gate.audit.events(c["tenant_id"])}
+        return {"valid": gate.audit.verify(c["tenant_id"]), "events": gate.audit.events(c["tenant_id"])}
 
     return app
 

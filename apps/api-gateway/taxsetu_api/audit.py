@@ -6,8 +6,16 @@ import time
 GENESIS = "0" * 64
 
 
+def canonical(body: dict) -> str:
+    return json.dumps(body, sort_keys=True, default=str)
+
+
+def h(prev: str, text: str) -> str:
+    return hashlib.sha256((prev + text).encode()).hexdigest()
+
+
 def _h(prev: str, body: dict) -> str:
-    return hashlib.sha256((prev + json.dumps(body, sort_keys=True, default=str)).encode()).hexdigest()
+    return h(prev, canonical(body))
 
 
 class AuditLog:
@@ -25,7 +33,7 @@ class AuditLog:
     def events(self, tenant_id: str | None = None) -> list[dict]:
         return [dict(e) for e in self._events if tenant_id in (None, e["tenant_id"])]
 
-    def verify(self) -> bool:
+    def verify(self, tenant_id: str | None = None) -> bool:      # in-memory chain is global; tenant_id accepted for interface parity
         prev = GENESIS
         for e in self._events:
             body = {k: v for k, v in e.items() if k not in ("prev_event_hash", "event_hash")}
