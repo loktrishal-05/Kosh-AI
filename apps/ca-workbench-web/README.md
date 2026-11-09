@@ -32,3 +32,11 @@ Connected mode uses temporary admin sign-in with a tenant id and the server's ad
 Browser requests use same-origin `/api/…` URLs. Set the server-side `TAXSETU_API` environment variable to the gateway origin (for example `http://localhost:8000`); it defaults to `https://taxsetu-ai.vercel.app`. Restart/rebuild Next.js after changing it. The connected gateway needs `TAXSETU_ADMIN_KEY` configured and an existing tenant. Live Tally XML imports remain unverified; review entries in a test company first.
 
 Verified locally: `npm test` (13 tests), `npm run typecheck` (strict), and `npm run build` (85 static pages). The new Tally Assistant has not been exercised in a browser or against a live gateway/TallyPrime in this offline worktree.
+
+## Books from your notebook
+
+Open `/books` to try business, club/charity or personal notebook examples, enter opening and year-end figures, import CSV and turn money-in/money-out lines into proper accounts. Results explain the journal, statements, ledgers, trial balance and independent checks; download the journal as CSV. Amounts stay exact decimal strings with BigInt paise totals.
+
+Sign in on `/tally` to share this tab?s session. Saved books support adding lines, voiding with a reason, updating figures, closing and carrying balances into the next period. Owner/CA permissions are required for decisions. Closed books are read-only. Sending to Tally stages batches for separate approval in Tally Assistant; nothing is filed.
+
+The converter source is absent in this worktree. Report types follow `books_routes.py` and `test_single_entry_acceptance.py`: `statements`, `journal` (date/source/narration/lines/flags), `ledgers`, `trial_balance`, `crosscheck`, `counts`, `questions`, `warnings`, `errors`. The sample documentation under `docs/` is outside this UI-only change. Hand-computed sample expectations: business_textbook sales 770,000.00, purchases 381,500.00, gross profit 403,500.00, net profit 211,000.00, assets 354,000.00; nonprofit_club income 100,000.00, expenditure 89,800.00, surplus 10,200.00, closing fund 102,200.00; individual_freelancer income 496,000.00, expenses 368,000.00, savings 128,000.00, net worth at cost 241,000.00 and at market 256,000.00. Kirana is a full year of shop transactions including credit customers, suppliers, a loan, an asset and bad debt.

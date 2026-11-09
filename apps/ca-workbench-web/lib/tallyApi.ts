@@ -7,8 +7,15 @@ export interface Draft {
 }
 export interface Ledger { name: string; parent: string; meaning?: string; duty_head?: string; gstin?: string }
 export interface Pack { ledgers: Ledger[]; xml: string }
-export interface Entry { draft: Draft | null; questions: string[]; flags: string[]; interpretation: string; plain?: string; xml_preview?: string }
-export interface Statement { drafts: Draft[]; errors: string[]; skipped: number; summary: Record<string, string | number> }
+export interface AiStatus { enabled: boolean; note: string; suggested?: number }
+export interface Entry { draft: Draft | null; questions: string[]; flags: string[]; interpretation: string; plain?: string; xml_preview?: string; ai?: AiStatus }
+export interface Bill extends Omit<Entry, "interpretation"> { extracted: Record<string, string | null> }
+export interface BillInput { text: string; image_base64: string; media_type: string; state_code: string }
+export interface Statement { drafts: Draft[]; errors: string[]; skipped: number; summary: Record<string, string | number>; ai?: AiStatus }
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) { super(message); this.status = status; }
+}
 export type BatchStatus = "PENDING_APPROVAL" | "APPROVED" | "POSTED" | "FAILED" | "REJECTED";
 export interface BatchSummary {
   count: number; total?: string;
@@ -37,7 +44,7 @@ export async function call<T>(path: string, options: { method?: string; body?: u
   if (!response.ok) {
     const detail = data && typeof data === "object" && "detail" in data ? data.detail : undefined;
     const message = typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map(d => typeof d?.msg === "string" ? d.msg : "Invalid request").join("; ") : `TaxSetu request failed (${response.status}). Please try again.`;
-    throw new Error(message);
+    throw new ApiError(message, response.status);
   }
   if (text && data === undefined) throw new Error("TaxSetu returned an unreadable response. Please try again.");
   return data as T;
@@ -45,6 +52,7 @@ export async function call<T>(path: string, options: { method?: string; body?: u
 
 const post = <T>(path: string, body: unknown, token?: string) => call<T>(path, { method: "POST", body, token });
 export const tallyApi = {
+  readBill: (body: BillInput, token: string) => post<Bill>("tally/invoice", body, token),
   starterPack: (business_type: Setup["business_type"], state_code: string) => call<Pack>(`tally/sandbox/starter-pack?${new URLSearchParams({ business_type, state_code })}`),
   entry: (text: string, state_code: string, token?: string) => post<Entry>(`tally/${token ? "" : "sandbox/"}entry`, { text, state_code }, token),
   statement: (csv: string, state_code: string, token?: string) => post<Statement>(`tally/${token ? "" : "sandbox/"}bank-statement`, { csv, state_code }, token),

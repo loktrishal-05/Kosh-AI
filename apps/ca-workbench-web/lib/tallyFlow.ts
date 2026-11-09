@@ -1,6 +1,10 @@
 import type { Draft } from "./tallyApi.ts";
 
 const messages: Record<string, string> = {
+  AI_SUGGESTED: "AI suggests this ledger. Please check it.",
+  TOTAL_MISMATCH: "The printed total does not match the amount plus GST. Check the paper bill.",
+  TOTAL_UNREADABLE: "We could not read the printed total. Check it against the paper bill.",
+  INVOICE_NO_MISSING: "The bill number is missing. Look for it on the paper bill.",
   GSTIN_INVALID: "The supplier's GST identification number looks invalid. Check it with the supplier.",
   GSTIN_MISSING: "The supplier's GST identification number is missing. Ask the supplier for it.",
   ITC_BLOCKED_17_5: "GST paid on this purchase may not be claimable under section 17(5). Ask your accountant before claiming it.",
@@ -9,10 +13,14 @@ const messages: Record<string, string> = {
   SUSPICIOUS_TEXT: "This text contains unusual instructions. Check the transaction details before continuing.",
 };
 export function flagMessage(flag: string): string {
+  if (flag.startsWith("AI_SUGGESTED:")) return `AI suggests this ledger: ${flag.slice(13).replace(/\.$/, "")}. Please check it.`;
   return flag.startsWith("NEW_LEDGER:") ? `First time we see ${flag.slice(11)}; we will create it in Tally` : messages[flag] ?? flag;
 }
 export function setLedger(draft: Draft, fromLedger: string, toLedger: string): Draft {
   return { ...draft, lines: draft.lines.map(line => line.ledger === fromLedger ? { ...line, ledger: toLedger } : { ...line }) };
+}
+export function bankNeedsCheck(draft: Draft): boolean {
+  return draft.lines.some(line => line.ledger === "Suspense A/c") || draft.flags.some(flag => flag === "NEEDS_REVIEW" || flag.startsWith("AI_SUGGESTED"));
 }
 export function paise(amount: string): bigint {
   if (!/^\d+(?:\.\d{1,2})?$/.test(amount)) throw new Error("Amount must be a non-negative rupee string with at most two decimal places");
