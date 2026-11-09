@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthGate } from "../components/AuthGate";
 import { WorkbenchHeader } from "../components/WorkbenchHeader";
 import "./globals.css";
 
@@ -8,7 +9,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return <html lang="en"><body>
     <a className="skip-link" href="#main">Skip to content</a>
     <WorkbenchHeader />
-    <main id="main">{children}</main>
+    <main id="main"><AuthGate>{children}</AuthGate></main>
     <footer>TaxSetu AI · Client approval stays with the client. <span>Demo workspace / October 2026</span></footer>
   </body></html>;
 }

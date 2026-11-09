@@ -15,7 +15,7 @@ from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth, books_routes, books_store, demo, gsp_live, store, tally_routes, tally_store
+from . import auth, books_routes, books_store, demo, gsp_live, login, store, tally_routes, tally_store
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -88,6 +88,8 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None, gsp=
         if not tenant_exists(b.tenant_id):
             raise HTTPException(404, "unknown tenant: create it first with POST /api/v1/auth/tenants")
         return {"token": auth.encode({"tenant_id": b.tenant_id, "role": b.role}, secret, ttl_s=12 * 3600), "expires_in_s": 12 * 3600}
+
+    login.mount(app, secret=secret, tenant_exists=tenant_exists)
 
     class TenantIn(BaseModel):
         legal_name: str = Field(min_length=2, max_length=120)

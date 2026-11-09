@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-935%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-940%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -416,19 +416,30 @@ default exists only for local development.
 
 ---
 
+### Signing in (evaluation build)
+The workbench opens on a **sign-in page**. Click **Demo admin**: the username and password fill in on screen and the sign-in carries on by itself, landing on the workbench as "Demo Admin · OWNER (demo)"
+(you can also type `demo.admin` / `Demo@2026`). One session is shared by the Clients, Books and Tally Assistant pages, and **Sign out** clears it.
+
+![Demo admin: the details fill in, then it signs in](docs/assets/signin-demo-filled.png)
+
+How it is built so real authentication can replace it later without touching the pages: the demo account is **off unless the API server has `TAXSETU_DEMO_LOGIN=1`** (the button only appears when the server says it is on);
+it can only reach the one shared demo workspace; wrong passwords are throttled; the session is the same signed token and the same OWNER/CA/CLERK role checks the rest of the API already enforces.
+For production: leave `TAXSETU_DEMO_LOGIN` unset and replace `authenticate()` in `apps/api-gateway/taxsetu_api/login.py` with a user store (hashed passwords) or an identity provider (OIDC or mobile OTP);
+the sign-in page, token format and role checks stay as they are. The browser-side gate only decides what to show; the API enforces tenants and roles on every call.
+
 ## Testing
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
 | `tests/unit` | 717 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 63 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 68 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
 | `tests/agents` | 49 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
 | `tests/infra` | 31 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 36 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
-| `apps/ca-workbench-web` | 33 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **935 + 34** (+5 opt-in live-Tally tests) | **all passing** |
+| `apps/ca-workbench-web` | 38 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
+| **Total** | **940 + 38** (+5 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
