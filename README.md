@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-712%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-717%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -390,7 +390,7 @@ python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Script
 pip install pytest httpx uvicorn fastapi "pydantic>=2" \
   -e packages/deterministic-tax-engine -e packages/mcp-servers -e packages/agents -e apps/api-gateway
 
-pytest tests -q                                           # 712 pass (Postgres tests skip if no database is reachable)
+pytest tests -q                                           # 717 pass (Postgres tests skip if no database is reachable)
 uvicorn --factory taxsetu_api.main:create_app --port 8000 # then open http://localhost:8000
 ```
 
@@ -419,15 +419,15 @@ default exists only for local development.
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
-| `tests/unit` | 559 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
+| `tests/unit` | 560 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 26 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 27 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
 | `tests/agents` | 34 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
-| `tests/infra` | 21 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
-| `tests/bridge` | 33 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
+| `tests/infra` | 23 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
+| `tests/bridge` | 34 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
 | `apps/ca-workbench-web` | 13 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **712 + 13** | **all passing** |
+| **Total** | **717 + 13** | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -484,10 +484,19 @@ API (all under `/api/v1/tally`): `sandbox/*` (anonymous, stateless), `entry`, `b
 Bridge and pairing tokens use separate machine roles that no human route accepts.
 
 **Honest status.** Everything above is tested against fakes. The XML follows Tally's documented import format, but it has **not been
-run against a live TallyPrime**. Run `python tally_bridge.py selftest` and then `--dry-run` on a test company first. Also known: non-ASCII
-ledger names may need UTF-16 on some Tally versions; the bank table scrolls sideways on phones; there is no real login yet (a temporary
-admin-key token endpoint exists, disabled unless `TAXSETU_ADMIN_KEY` is set); stock/inventory vouchers, JSON (TallyPrime 7+), e-invoice
-and multi-company are out of scope.
+run against a live TallyPrime**; the envelope matches Tally's published "XML message formats" page, including its documented success reply
+(`HEADER/STATUS 1`, no counters). Run `python tally_bridge.py selftest` and then `--dry-run` on a test company first.
+
+**What has been exercised end to end.** `scripts/tally_e2e.py` drives the deployed API (Vercel + Neon) with the real bridge program and a
+fake Tally on localhost: two real tenants, stage, approve the exact hash, post, ack, audit chain, cross-tenant isolation, bridge
+revocation (33 checks). The workbench's Connected mode was also driven in a browser against a local stack.
+
+![Approval and delivery](docs/assets/tally-assistant-approval.jpg)
+
+Also known: non-ASCII ledger names may need UTF-16 on some Tally versions; the bank table scrolls sideways on phones; there is no real
+login yet. A temporary admin-key endpoint mints 12-hour tokens (`POST /api/v1/auth/dev-token`) and creates tenants
+(`POST /api/v1/auth/tenants`, audited); both are disabled unless `TAXSETU_ADMIN_KEY` is set. Stock/inventory vouchers, JSON (TallyPrime 7+),
+e-invoice and multi-company are out of scope.
 
 ---
 
@@ -510,7 +519,7 @@ and multi-company are out of scope.
 
 * Agents default to a deterministic **stub** model. `ClaudeLlm` (vision + JSON-schema extraction) exists but has only been tested with a fake client; it needs an API key and a real-bill evaluation before anyone relies on it.
 * The workbench's client matrix runs on generated mock data. Only the Tally Assistant page talks to the API.
-* Postgres persistence is opt-in. Production on Vercel uses Neon; there is no tenant-onboarding API yet, so tenants are seeded by SQL (one sandbox tenant exists) and tokens are minted out of band.
+* Postgres persistence is opt-in. Production on Vercel uses Neon; tenants are created through an admin-key endpoint (migration 0004 adds its audit action) and sign-in is the temporary admin-key token endpoint until real OTP login exists.
 * The Tally XML shape follows Tally's import format but is **unverified** against a live TallyPrime.
 * The HSN rate table is intentionally empty (returns `NOT_FOUND`) rather than guessing rates.
 * The report's settlement example is internally inconsistent (₹2,370 of deductions against a quoted ₹97,820 credit); the engine follows the arithmetic (₹97,630).
