@@ -1,0 +1,27 @@
+{
+  "entity_type": "individual",
+  "name": "Anita (freelance designer, household books)",
+  "period_start": "2026-04-01",
+  "period_end": "2027-03-31",
+  "opening": {"cash": "3000", "bank": "80000", "investments": "150000", "loans": "120000"},
+  "entries": [
+    {"date": "2026-06-30", "description": "Freelance design income - client payments", "receipt": "480000", "mode": "bank"},
+    {"date": "2026-09-30", "description": "Savings account interest", "receipt": "6000", "mode": "bank"},
+    {"date": "2026-11-12", "description": "Gift from relatives", "receipt": "10000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "House rent", "payment": "120000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Groceries and household supplies", "payment": "90000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Electricity, water and mobile bills", "payment": "24000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Fuel and cab fares", "payment": "36000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Medical expenses and medicines", "payment": "15000", "mode": "bank"},
+    {"date": "2026-07-05", "description": "School fees for child", "payment": "30000", "mode": "bank"},
+    {"date": "2026-07-05", "description": "Life insurance premium", "payment": "18000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "SIP mutual fund investment", "payment": "60000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Home loan EMI - principal part", "payment": "30000", "mode": "bank"},
+    {"date": "2026-06-30", "description": "Home loan EMI - interest part", "payment": "18000", "mode": "bank"},
+    {"date": "2026-12-25", "description": "Donation to charity", "payment": "5000", "mode": "bank"},
+    {"date": "2026-12-31", "description": "Movies and dining out", "payment": "12000", "mode": "bank"},
+    {"date": "2026-08-01", "description": "ATM cash withdrawal", "payment": "20000", "mode": "bank"},
+    {"date": "2026-08-01", "description": "ATM cash withdrawal", "receipt": "20000", "mode": "cash"}
+  ],
+  "closing": {"investments_market_value": "225000"}
+}

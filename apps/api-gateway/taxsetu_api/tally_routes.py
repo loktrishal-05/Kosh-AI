@@ -316,6 +316,8 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
         audit.append(c["tenant_id"], c["role"], "TALLY_BATCH_STAGED", batch_id=item["batch_id"], payload_sha256=sha, kind=kind)
         return {"batch_id": item["batch_id"], "payload_sha256": sha, "status": item["status"], "summary": summary}
 
+    app.state.tally_stage = stage            # the books export stages its batches through the same approval queue
+
     @app.post("/api/v1/tally/batches", tags=["tally"])
     def stage_batch(b: BatchIn, c: dict = Depends(need(*DRAFTERS))):
         drafts = []

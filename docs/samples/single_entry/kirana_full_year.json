@@ -1,0 +1,1484 @@
+{
+ "entity_type": "business",
+ "name": "Simulated Kirana Store (seed 7)",
+ "period_start": "2026-04-01",
+ "period_end": "2027-03-31",
+ "opening": {
+  "cash": "20000",
+  "bank": "80000",
+  "debtors": "30000",
+  "creditors": "50000",
+  "stock": "150000",
+  "fixed_assets": "100000"
+ },
+ "entries": [
+  {
+   "date": "2026-04-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-04-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-04-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "42400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "141660",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-04-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "6700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "4600",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "2100",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-04-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-20",
+   "description": "Received from debtors against bills",
+   "receipt": "53300",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-04-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-04-27",
+   "description": "Cash sales for the month",
+   "receipt": "213100",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-04-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "137700",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-05-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-05-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-05-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "44400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "132800",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-05-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "3500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "4400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-05-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-20",
+   "description": "Received from debtors against bills",
+   "receipt": "21900",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-05-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-05-27",
+   "description": "Cash sales for the month",
+   "receipt": "185900",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-05-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "155900",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-03",
+   "description": "Capital introduced by owner",
+   "receipt": "50000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "68900",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "112800",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-06-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "6700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "3000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-20",
+   "description": "Received from debtors against bills",
+   "receipt": "62300",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-06-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-06-27",
+   "description": "Cash sales for the month",
+   "receipt": "236400",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-06-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "151700",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-07-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-07-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-07-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "42500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "94700",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-07-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "4800",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "7500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-07-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-20",
+   "description": "Received from debtors against bills",
+   "receipt": "40300",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-07-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-07-27",
+   "description": "Cash sales for the month",
+   "receipt": "186300",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-07-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "159500",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-09",
+   "description": "Purchase of furniture for shop",
+   "receipt": "",
+   "payment": "35000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "69200",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "147300",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-08-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "3600",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8300",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-20",
+   "description": "Received from debtors against bills",
+   "receipt": "26000",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-08-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-08-27",
+   "description": "Cash sales for the month",
+   "receipt": "222900",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-08-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "137300",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-06",
+   "description": "Loan received from bank",
+   "receipt": "100000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "59000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "131960",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-09-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "6600",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1200",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-20",
+   "description": "Received from debtors against bills",
+   "receipt": "29600",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-09-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-09-27",
+   "description": "Cash sales for the month",
+   "receipt": "239500",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-09-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "159200",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "74800",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "133700",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-10-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "5900",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8900",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "2000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-20",
+   "description": "Received from debtors against bills",
+   "receipt": "45400",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-10-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-10-27",
+   "description": "Cash sales for the month",
+   "receipt": "186100",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-10-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "161600",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "52700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "137430",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-11-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "3500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8900",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-20",
+   "description": "Received from debtors against bills",
+   "receipt": "35300",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-11-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-11-27",
+   "description": "Cash sales for the month",
+   "receipt": "239900",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-11-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "153200",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "57500",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "135900",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2026-12-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "3400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "5800",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "2900",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-20",
+   "description": "Received from debtors against bills",
+   "receipt": "45300",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2026-12-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2026-12-27",
+   "description": "Cash sales for the month",
+   "receipt": "238800",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2026-12-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "145300",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "78700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "105500",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2027-01-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "3200",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "7100",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "2300",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-20",
+   "description": "Received from debtors against bills",
+   "receipt": "28400",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2027-01-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-01-27",
+   "description": "Cash sales for the month",
+   "receipt": "192000",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-01-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "156200",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "69300",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "124800",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2027-02-14",
+   "description": "Electricity bill paid",
+   "receipt": "",
+   "payment": "6800",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "2100",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-20",
+   "description": "Received from debtors against bills",
+   "receipt": "48500",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2027-02-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-02-27",
+   "description": "Cash sales for the month",
+   "receipt": "248400",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-02-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "133900",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-05",
+   "description": "Shop rent paid",
+   "receipt": "",
+   "payment": "25000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-05",
+   "description": "Staff salaries paid",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-07",
+   "description": "Repayment of loan instalment",
+   "receipt": "",
+   "payment": "8000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-07",
+   "description": "Interest on loan paid",
+   "receipt": "",
+   "payment": "1000",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-10",
+   "description": "Cash purchases of goods",
+   "receipt": "",
+   "payment": "44700",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-12",
+   "description": "Paid to suppliers against bills",
+   "receipt": "",
+   "payment": "138500",
+   "mode": "bank",
+   "party": "Suppliers"
+  },
+  {
+   "date": "2027-03-15",
+   "description": "Transport and freight charges",
+   "receipt": "",
+   "payment": "8400",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-15",
+   "description": "Office expenses",
+   "receipt": "",
+   "payment": "1200",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-18",
+   "description": "Bank charges",
+   "receipt": "",
+   "payment": "250",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-19",
+   "description": "Withdrawn by owner for household use",
+   "receipt": "",
+   "payment": "40000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-20",
+   "description": "Received from debtors against bills",
+   "receipt": "23500",
+   "payment": "",
+   "mode": "bank",
+   "party": "Customers"
+  },
+  {
+   "date": "2027-03-22",
+   "description": "Cash deposited into bank",
+   "receipt": "",
+   "payment": "60000",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-22",
+   "description": "Cash deposited into bank",
+   "receipt": "60000",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  },
+  {
+   "date": "2027-03-27",
+   "description": "Cash sales for the month",
+   "receipt": "230800",
+   "payment": "",
+   "mode": "cash",
+   "party": ""
+  },
+  {
+   "date": "2027-03-28",
+   "description": "UPI and card sales received in bank",
+   "receipt": "159600",
+   "payment": "",
+   "mode": "bank",
+   "party": ""
+  }
+ ],
+ "closing": {
+  "debtors": "310301",
+  "creditors": "77301",
+  "stock": "146200",
+  "discount_allowed": "2299",
+  "discount_received": "6149",
+  "bad_debts": "1500",
+  "outstanding_expenses": {
+   "Electricity Charges": "6000"
+  },
+  "depreciation": "13500"
+ }
+}

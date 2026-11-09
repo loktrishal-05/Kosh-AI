@@ -1,0 +1,30 @@
+{
+  "entity_type": "business",
+  "name": "Ravi General Stores (textbook case)",
+  "period_start": "2026-04-01",
+  "period_end": "2027-03-31",
+  "opening": {"cash": "5000", "bank": "25000", "debtors": "40000", "creditors": "30000", "stock": "60000", "fixed_assets": "20000"},
+  "entries": [
+    {"date": "2026-09-30", "description": "Received from debtors against bills", "receipt": "350000", "mode": "bank", "party": "Various customers"},
+    {"date": "2026-09-30", "description": "Cash sales for the year", "receipt": "400000", "mode": "cash"},
+    {"date": "2026-06-15", "description": "Capital introduced by owner", "receipt": "50000", "mode": "bank"},
+    {"date": "2026-12-31", "description": "Bank interest received", "receipt": "2000", "mode": "bank"},
+    {"date": "2026-09-30", "description": "Paid to suppliers against bills", "payment": "270000", "mode": "bank", "party": "Various suppliers"},
+    {"date": "2026-09-30", "description": "Cash purchases of goods", "payment": "100000", "mode": "cash"},
+    {"date": "2026-09-30", "description": "Shop rent paid", "payment": "60000", "mode": "bank"},
+    {"date": "2026-09-30", "description": "Staff salaries paid", "payment": "90000", "mode": "cash"},
+    {"date": "2026-09-30", "description": "Electricity bill paid", "payment": "12000", "mode": "cash"},
+    {"date": "2026-09-30", "description": "Transport and freight charges", "payment": "18000", "mode": "cash"},
+    {"date": "2026-09-30", "description": "Withdrawn by owner for household use", "payment": "72000", "mode": "cash"},
+    {"date": "2026-07-10", "description": "Purchase of furniture for shop", "payment": "30000", "mode": "bank"},
+    {"date": "2026-09-30", "description": "Bank charges", "payment": "1000", "mode": "bank"},
+    {"date": "2026-10-05", "description": "Cash deposited into bank", "payment": "100000", "mode": "cash"},
+    {"date": "2026-10-05", "description": "Cash deposited into bank", "receipt": "100000", "mode": "bank"}
+  ],
+  "closing": {
+    "debtors": "55000", "creditors": "40000", "stock": "75000",
+    "discount_allowed": "3000", "discount_received": "1500", "bad_debts": "2000",
+    "outstanding_expenses": {"Rent Paid": "5000"},
+    "depreciation": "5000"
+  }
+}
