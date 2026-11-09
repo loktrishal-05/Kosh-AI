@@ -151,6 +151,20 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
     def sandbox_statement(b: CsvIn):
         return _statement(b.csv, _ctx(tally, None, "Your Company", b.state_code, b.bank_ledger, b.cash_ledger))
 
+    @app.post("/api/v1/tally/sandbox/voucher-xml", tags=["tally-sandbox"])
+    def sandbox_xml(b: BatchIn):
+        """Stateless: turn reviewed drafts into the Tally import file so a demo user can download it (nothing is stored or sent)."""
+        drafts = []
+        for i, raw in enumerate(b.drafts):
+            try:
+                d = draft_from_dict(raw)
+            except (ValueError, KeyError, TypeError, InvalidOperation) as e:
+                raise HTTPException(422, f"entry {i + 1}: {e}")
+            if not d.balanced():
+                raise HTTPException(422, f"entry {i + 1}: debits and credits do not match")
+            drafts.append(d)
+        return {"xml": tallybooks.voucher_xml(b.company, drafts), "count": len(drafts)}
+
     # ---- authenticated: draft -> stage -> approve -------------------------------------------------------------
     DRAFTERS = ("OWNER", "CA", "CLERK", "EMPLOYEE")
 
