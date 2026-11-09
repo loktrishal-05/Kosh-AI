@@ -26,6 +26,7 @@ from xml.sax.saxutils import escape
 MAX_XML = 2 * 1024 * 1024
 DEFAULT_CONFIG = Path.home() / ".taxsetu-bridge.json"
 NETWORK_ERRORS = (OSError, urllib.error.URLError)
+CLOUD_TIMEOUT, TALLY_TIMEOUT = 60, 600      # a 500-voucher import took 22 s to create and 43 s to re-send on a fast PC; a slow accounts PC needs headroom
 
 
 def private_file(path):
@@ -106,7 +107,7 @@ def request(url, data=None, token="", xml=False):
     handlers = [NoRedirect()]
     if xml:
         handlers.append(urllib.request.ProxyHandler({}))
-    with urllib.request.build_opener(*handlers).open(req, timeout=60) as response:
+    with urllib.request.build_opener(*handlers).open(req, timeout=TALLY_TIMEOUT if xml else CLOUD_TIMEOUT) as response:
         raw = response.read(MAX_XML + 1)
     if len(raw) > MAX_XML:
         raise ValueError("Response exceeds 2 MB")

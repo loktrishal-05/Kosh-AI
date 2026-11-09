@@ -28,9 +28,15 @@ masters and all five voucher types import and read back correctly; the bridge's 
 | Replies contain tags with the word `ENTITY` (`TEMPPARTYENTITY`) | the DOCTYPE/ENTITY guard now matches real declarations only |
 | `Day Book` over XML returns an empty body | reads use an inline `Voucher` collection (`TSVouchers`) |
 | Import replies are `<RESPONSE>` counters (`CREATED/ALTERED/ERRORS/EXCEPTIONS`); failures carry no text in the reply and `tally.imp` only repeats the summary | parsers handle both shapes; `EXCEPTIONS>0` is failure |
-| Education mode only takes vouchers dated the 1st, 2nd or last day of a month | tests use the 2nd |
+| Education mode only takes vouchers dated the 1st or 2nd of a month (the 15th, 29th and 30th were all rejected) | tests use the 1st/2nd |
+| Re-sending a voucher creates a **duplicate**; an explicit `VOUCHERNUMBER` or a `GUID` child does not prevent it, but a `REMOTEID` attribute does (second send: `ALTERED 1`, and a changed amount updates the same voucher) | staged batches write `REMOTEID="ts-<batch id>-<position>"`; position keeps two identical entries apart |
+| Non-English names sent as UTF-8 are stored exactly; UTF-16 posts were mis-decoded into `????` ledgers | the bridge stays on UTF-8; do not send UTF-16 |
+| A 500-voucher GST batch: 22 s to create, 43 s to re-send, 0.5 MB | the bridge now waits up to 10 minutes for Tally (60 s for the cloud) |
 
-Still unverified: other Tally versions, licensed companies, non-ASCII names (may need UTF-16), the Edit Log edition.
+Also confirmed: a three-month, 36-row bank statement imports in 0.9 s and the Bank Account ledger moves by exactly the statement's net;
+Tally's Profit & Loss matched independent arithmetic (Sales 7,14,750 = 3 x 30,000 + 6,24,750; Purchases 1,50,000).
+
+Still unverified: other Tally versions, licensed companies, the Edit Log edition.
 
 ## 2. Architecture
 

@@ -286,3 +286,13 @@ def test_real_declarations_are_still_refused_but_illegal_refs_are_dropped():
     assert books.parse_ledger_export('<!DOCTYPE x [<!ENTITY a "b">]><ENVELOPE><LEDGER NAME="Cash"><PARENT>P</PARENT></LEDGER></ENVELOPE>') == []
     ok = books.parse_ledger_export("<ENVELOPE><LEDGER NAME='Cash &#4;X'><PARENT>Bank&#4; Accounts&#65;</PARENT></LEDGER></ENVELOPE>")
     assert ok == [{"name": "Cash X", "parent": "Bank AccountsA", "gstin": ""}]            # &#4; dropped, legal &#65; kept
+
+
+def test_remote_ids_make_a_retry_idempotent_and_keep_identical_entries_apart():
+    a, b = purchase(), purchase()
+    plain = ET.fromstring(books.voucher_xml(CTX.company, [a]))
+    assert plain.find(".//VOUCHER").get("REMOTEID") is None                          # manual file import: no id
+    root = ET.fromstring(books.voucher_xml(CTX.company, [a, b], remote_id_prefix="ts-abc"))
+    ids = [v.get("REMOTEID") for v in root.iter("VOUCHER")]
+    assert ids == ["ts-abc-1", "ts-abc-2"]                                            # same content, different position => two vouchers
+    assert [v.get("REMOTEID") for v in ET.fromstring(books.voucher_xml(CTX.company, [a, b], "ts-abc")).iter("VOUCHER")] == ids   # stable on re-send

@@ -63,3 +63,17 @@ def test_a_missing_ledger_is_reported_not_silently_accepted():
 def test_unknown_company_is_a_clear_error():
     r = post(tb.export_ledgers_request("No Such Company 12345"))
     assert "Could not set" in r and tb.parse_ledger_export(r) == []
+
+
+def test_resending_a_batch_does_not_duplicate_vouchers():
+    """REMOTEID: the second send alters in place. Counts are read back from Tally itself."""
+    day = date.today().replace(day=1)
+    marker = D("7777.77")
+    drafts = [VoucherDraft("Payment", day, (Line("Rent Paid", marker, "Dr"), Line("Bank Account", marker, "Cr")), narration="idempotency probe")] * 2   # two identical entries
+    xml = tb.voucher_xml(CO, drafts, remote_id_prefix="ts-live-" + os.urandom(4).hex())
+    first, second = tb.parse_response(post(xml)), tb.parse_response(post(xml))
+    assert first["ok"] and first["created"] == 2
+    assert second["created"] == 0 and second["altered"] == 2, second                 # retried in place, nothing new
+    rows = tb.parse_daybook_export(post(tb.export_daybook_request(CO, day, day)))
+    mine = [r for r in rows if r["vtype"] == "Payment" and r["amount"] == "7777.77" and r["date"] == day.isoformat()]
+    assert len(mine) % 2 == 0 and len(mine) >= 2                                      # identical entries stayed separate, retry added none

@@ -238,3 +238,13 @@ def test_tenant_creation_is_admin_only_and_audited(client, monkeypatch):
     t = client.post("/api/v1/auth/dev-token", json={"tenant_id": r.json()["tenant_id"], "role": "OWNER"}, headers={"x-admin-key": "k" * 32}).json()["token"]
     log = client.get("/api/v1/audit", headers={"Authorization": "Bearer " + t}).json()
     assert log["valid"] and [e["action"] for e in log["events"]] == ["TENANT_CREATED"]
+
+
+def test_staged_vouchers_carry_batch_scoped_remote_ids(client):
+    t = str(uuid.uuid4())
+    b = staged(client, t, [payment(), payment()]).json()                              # two identical entries
+    root = ET.fromstring(client.get(f"/api/v1/tally/batches/{b['batch_id']}", headers=tok(t)).json()["xml"])
+    ids = [v.get("REMOTEID") for v in root.iter("VOUCHER")]
+    assert ids == [f"ts-{b['batch_id']}-1", f"ts-{b['batch_id']}-2"]
+    other = staged(client, t, [payment()]).json()
+    assert ET.fromstring(client.get(f"/api/v1/tally/batches/{other['batch_id']}", headers=tok(t)).json()["xml"]).find(".//VOUCHER").get("REMOTEID") not in ids

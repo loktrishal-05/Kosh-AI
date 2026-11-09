@@ -377,3 +377,21 @@ def test_bridge_reads_a_reply_with_the_illegal_character_reference_real_tally_em
     assert [e.get("NAME") for e in root.findall(".//LEDGER")] == ["Cash"]
     with pytest.raises(ValueError):
         bridge.safe_xml('<!DOCTYPE x [<!ENTITY a "b">]><ENVELOPE/>')
+
+
+def test_tally_calls_wait_long_for_big_imports_but_cloud_calls_stay_short(monkeypatch):
+    seen = []
+
+    class Resp:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def read(self, n=-1): return b"{}"
+
+    class Opener:
+        def open(self, req, timeout=None):
+            seen.append(timeout)
+            return Resp()
+    monkeypatch.setattr(bridge.urllib.request, "build_opener", lambda *h: Opener())
+    bridge.request("http://127.0.0.1:9000", b"<x/>", xml=True)
+    bridge.request("https://api.example/api/v1/tally/bridge/pending", token="t")
+    assert seen == [bridge.TALLY_TIMEOUT, bridge.CLOUD_TIMEOUT] and bridge.TALLY_TIMEOUT >= 300 and bridge.CLOUD_TIMEOUT <= 60

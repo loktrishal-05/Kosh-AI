@@ -61,18 +61,23 @@ def _import_envelope(company, report):
     return env, ET.SubElement(imp, "REQUESTDATA")
 
 
-def voucher_xml(company: str, drafts: list) -> str:
-    """Serialize balanced drafts using Tally's debit-negative convention."""
+def voucher_xml(company: str, drafts: list, remote_id_prefix: str = "") -> str:
+    """Serialize balanced drafts using Tally's debit-negative convention.
+    With `remote_id_prefix` each VOUCHER carries REMOTEID="<prefix>-<position>". Verified on a real TallyPrime 7.2: re-sending a voucher with the
+    same REMOTEID alters it in place (ALTERED 1) instead of creating a duplicate, so a crash-and-retry cannot double-post. The id includes the
+    position, so two genuinely identical entries in one batch stay two vouchers. Without a prefix (manual file import) no id is written."""
     env, data = _import_envelope(company, "Vouchers")
-    for draft in drafts:
+    for index, draft in enumerate(drafts, 1):
         if not draft.lines or any(l.side not in ("Dr", "Cr") or not l.amount.is_finite()
                                   or l.amount <= 0 or l.amount != r2(l.amount) for l in draft.lines):
             raise ValueError("draft needs positive, finite paise lines with Dr/Cr sides")
         if not draft.balanced():
             raise ValueError("draft is not balanced")
         msg = ET.SubElement(data, "TALLYMESSAGE", {"xmlns:UDF": "TallyUDF"})
-        v = ET.SubElement(msg, "VOUCHER", {"VCHTYPE": _clean(draft.vtype), "ACTION": "Create",
-                                         "OBJVIEW": "Accounting Voucher View"})
+        attrs = {"VCHTYPE": _clean(draft.vtype), "ACTION": "Create", "OBJVIEW": "Accounting Voucher View"}
+        if remote_id_prefix:
+            attrs["REMOTEID"] = _clean(f"{remote_id_prefix}-{index}")
+        v = ET.SubElement(msg, "VOUCHER", attrs)
         for tag, value in (("DATE", draft.date.strftime("%Y%m%d")),
                            ("EFFECTIVEDATE", draft.date.strftime("%Y%m%d")),
                            ("VOUCHERTYPENAME", draft.vtype)):

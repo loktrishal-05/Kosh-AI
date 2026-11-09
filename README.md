@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-720%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-723%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -390,7 +390,7 @@ python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Script
 pip install pytest httpx uvicorn fastapi "pydantic>=2" \
   -e packages/deterministic-tax-engine -e packages/mcp-servers -e packages/agents -e apps/api-gateway
 
-pytest tests -q                                           # 720 pass, 4 live-Tally tests skipped (Postgres tests skip if no database is reachable)
+pytest tests -q                                           # 723 pass, 5 live-Tally tests skipped (Postgres tests skip if no database is reachable)
 uvicorn --factory taxsetu_api.main:create_app --port 8000 # then open http://localhost:8000
 ```
 
@@ -427,7 +427,7 @@ default exists only for local development.
 | `tests/infra` | 23 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 34 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
 | `apps/ca-workbench-web` | 13 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **720 + 13** (+4 opt-in live-Tally tests) | **all passing** |
+| **Total** | **723 + 13** (+5 opt-in live-Tally tests) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -490,8 +490,16 @@ is stored as 4,500 CGST + 4,500 SGST with the supplier credited 59,000. The full
 Testing against the real program found four bugs that fakes could not: Tally **rejects a ledger without a `NAME.LIST/NAME` child**;
 it **writes illegal character references (`&#4;`)** that strict XML parsers refuse; our safety check **rejected any reply containing the
 word `ENTITY`** (Tally has such a tag); and the **`Day Book` report returns nothing over XML**, so reads use an inline voucher collection.
-Not covered by a real run: other Tally versions (older Tally.ERP 9, TallyPrime 7.0/7.1), a licensed (non-Education) company, non-English
-ledger names, and the Edit Log edition. Run `python tally_bridge.py selftest` and then `--dry-run` on a test company before real books.
+A 36-row, three-month bank statement (junk header and footer, quoted amounts) went through the importer into the live Tally in one
+request (0.9 s); the Bank Account ledger moved by exactly the statement's net, and Tally's own Profit & Loss matched independent
+arithmetic. A 500-voucher GST batch took 22 s. Each staged voucher carries a batch-scoped `REMOTEID`, so a retried post alters the voucher
+in place instead of duplicating it (re-sending 500 vouchers created 0 and altered 500). Non-English ledger names (Hindi, Tamil, accents, the
+rupee sign) are stored exactly when sent as plain UTF-8; sending UTF-16 corrupted them, so the bridge stays on UTF-8.
+
+![Real TallyPrime Profit and Loss after the imports](docs/assets/tally-real-profit-loss.png)
+
+Not covered by a real run: other Tally versions (older Tally.ERP 9, TallyPrime 7.0/7.1), a licensed (non-Education) company, and the
+Edit Log edition. Run `python tally_bridge.py selftest` and then `--dry-run` on a test company before real books.
 
 **What has been exercised end to end.** `scripts/tally_e2e.py` drives the deployed API (Vercel + Neon) with the real bridge program and a
 fake Tally on localhost: two real tenants, stage, approve the exact hash, post, ack, audit chain, cross-tenant isolation, bridge
@@ -499,7 +507,7 @@ revocation (33 checks). The workbench's Connected mode was also driven in a brow
 
 ![Approval and delivery](docs/assets/tally-assistant-approval.jpg)
 
-Also known: non-ASCII ledger names may need UTF-16 on some Tally versions; the bank table scrolls sideways on phones; there is no real
+Also known: the bank table scrolls sideways on phones; there is no real
 login yet. A temporary admin-key endpoint mints 12-hour tokens (`POST /api/v1/auth/dev-token`) and creates tenants
 (`POST /api/v1/auth/tenants`, audited); both are disabled unless `TAXSETU_ADMIN_KEY` is set. Stock/inventory vouchers, JSON (TallyPrime 7+),
 e-invoice and multi-company are out of scope.

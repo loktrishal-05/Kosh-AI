@@ -5,6 +5,7 @@
 Nothing reaches Tally unless a human approved the batch's SHA-256, and the bridge re-verifies a signature before posting."""
 import hashlib
 import hmac
+import uuid
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
@@ -176,9 +177,10 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
     def statement(b: CsvIn, c: dict = Depends(need(*DRAFTERS))):
         return _statement(b.csv, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger))
 
-    def stage(c: dict, kind: str, company: str, xml: str, summary: dict) -> dict:
+    def stage(c: dict, kind: str, company: str, xml: str, summary: dict, batch_id: str | None = None) -> dict:
         sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
-        item = tally.outbox_add(c["tenant_id"], {"kind": kind, "company": company, "xml": xml, "sha256": sha, "summary": summary})
+        item = tally.outbox_add(c["tenant_id"], {"kind": kind, "company": company, "xml": xml, "sha256": sha, "summary": summary,
+                                                 **({"batch_id": batch_id} if batch_id else {})})
         audit.append(c["tenant_id"], c["role"], "TALLY_BATCH_STAGED", batch_id=item["batch_id"], payload_sha256=sha, kind=kind)
         return {"batch_id": item["batch_id"], "payload_sha256": sha, "status": item["status"], "summary": summary}
 
@@ -198,7 +200,8 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
         summary = {"count": len(drafts), "total": str(sum((max(d.total_dr(), d.total_cr()) for d in drafts), Decimal(0))),
                    "items": [{"vtype": d.vtype, "date": d.date.isoformat(), "party": d.party,
                               "amount": str(max(d.total_dr(), d.total_cr())), "flags": list(d.flags)} for d in drafts]}
-        return stage(c, "vouchers", b.company, tallybooks.voucher_xml(b.company, drafts), summary)
+        bid = str(uuid.uuid4())      # known before the XML is built: it seeds each voucher's REMOTEID, which makes a retried post idempotent in Tally
+        return stage(c, "vouchers", b.company, tallybooks.voucher_xml(b.company, drafts, remote_id_prefix=f"ts-{bid}"), summary, batch_id=bid)
 
     @app.post("/api/v1/tally/setup", tags=["tally"])
     def setup(b: SetupIn, c: dict = Depends(need("OWNER", "CA"))):
