@@ -400,7 +400,7 @@ DATABASE_URL_APP=postgresql://taxsetu_app:taxsetu_app@localhost:5432/taxsetu \
   uvicorn --factory taxsetu_api.main:create_app --port 8000   # drafts + audit now durable
 ```
 
-CA workbench (Node 22.18+):
+CA workbench (Node 24+):
 
 ```bash
 cd apps/ca-workbench-web && npm install && npm test && npm run build && npm run start   # http://localhost:3000
