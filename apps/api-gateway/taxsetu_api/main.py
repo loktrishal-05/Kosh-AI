@@ -32,6 +32,13 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
         raise RuntimeError("refusing to run on Postgres with the default HITL_SIGNING_SECRET: tokens would be forgeable")
     gate = HitlGate(secret, audit=audit, drafts=drafts)
     app = FastAPI(title="TaxSetu AI API", version="0.1.0")
+    if drafts is not None:
+        from fastapi.responses import JSONResponse
+        from psycopg.errors import ForeignKeyViolation
+
+        @app.exception_handler(ForeignKeyViolation)
+        async def unknown_tenant(_request, _exc):      # every tenant-owned table references tenants(tenant_id)
+            return JSONResponse({"detail": "this account is not set up yet: ask your administrator to add the tenant"}, status_code=404)
     app.state.gate, app.state.seen_wamids = gate, set()
 
     def who(authorization: str = Header(default="")) -> dict:

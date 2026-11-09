@@ -156,3 +156,16 @@ def test_api_runs_end_to_end_on_postgres(pg, monkeypatch):
     assert r.status_code == 200 and r.json()["status"] == "FILED_VERIFIED"
     log = c.get("/api/v1/audit", headers=h).json()
     assert log["valid"] and [e["action"] for e in log["events"]] == ["RETSAVE", "OTP_ISSUED", "RETFILE_HITL"]
+
+
+def test_unknown_tenant_gets_a_clear_404_not_a_500(pg, monkeypatch):
+    """A valid token for a tenant with no tenants row used to hit the foreign key and return a bare 500."""
+    monkeypatch.setenv("DATABASE_URL_APP", APP)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    c = TestClient(create_app(SECRET, b"wa"), raise_server_exceptions=False)
+    ghost = {"Authorization": "Bearer " + auth.encode({"tenant_id": str(uuid.uuid4()), "role": "OWNER"}, SECRET)}
+    d = {"vtype": "Payment", "date": "2026-04-01", "lines": [{"ledger": "Rent Paid", "amount": "1", "side": "Dr"},
+                                                             {"ledger": "Bank Account", "amount": "1", "side": "Cr"}]}
+    r = c.post("/api/v1/tally/batches", headers=ghost, json={"company": "X", "drafts": [d]})
+    assert r.status_code == 404 and "not set up" in r.json()["detail"]
+    assert c.get("/api/v1/tally/batches", headers=ghost).json() == {"batches": []}        # reads stay empty, never another tenant's rows
