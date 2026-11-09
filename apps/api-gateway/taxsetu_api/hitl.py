@@ -47,10 +47,10 @@ class AgentTools:
 
 
 class HitlGate:
-    def __init__(self, secret: bytes, audit: AuditLog | None = None, clock=time.time, drafts=None):
+    def __init__(self, secret: bytes, audit: AuditLog | None = None, clock=time.time, drafts=None, portal=None):
         self._secret, self.audit, self._clock = secret, audit or AuditLog(), clock
         self._drafts = drafts or MemoryDrafts()     # MemoryDrafts or store.PgDrafts: get(tenant, id) / save(draft)
-        self._portal = MockPortalProvider(secret)
+        self._portal = portal or MockPortalProvider(secret)      # a live GSP provider is injected only when its credentials are configured
         self.agent_tools = AgentTools(self)
 
     def _owned(self, tenant_id: str, draft_id: str) -> Draft:
@@ -94,7 +94,13 @@ class HitlGate:
         if not ok:
             self.audit.append(tenant_id, role, "FILING_REJECTED", draft_id=draft_id, reason="bad or expired OTP")
             raise PortalError("invalid or expired OTP")
-        d.ack = self._portal.file(d.kind, d.payload, d.draft_id, d.sha256, sign_approval(self._secret, d.draft_id, d.sha256))
+        d.ack = self._portal.file(d.kind, d.payload, d.draft_id, d.sha256, sign_approval(self._secret, d.draft_id, d.sha256), tenant_id=tenant_id)
+        if d.ack.get("final") is False:
+            # Saved at the portal but not filed (a live GSP cannot file: that needs the taxpayer's EVC/DSC). Never mark it filed.
+            self._drafts.save(d)
+            self.audit.append(tenant_id, role, "RETFILE_HITL", draft_id=draft_id, payload_sha256=d.sha256,
+                              verification_method=verification_mode, portal_ack=d.ack["ack_no"], filed=False)
+            return {"status": "SAVED_AT_PORTAL_AWAITING_EVC", **d.ack}
         d.status = "FILED_VERIFIED"
         self._drafts.save(d)
         self.audit.append(tenant_id, role, "RETFILE_HITL", draft_id=draft_id, payload_sha256=d.sha256,

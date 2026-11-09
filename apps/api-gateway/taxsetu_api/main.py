@@ -15,7 +15,7 @@ from taxsetu_engine import ewb, gst, itr, recon, refund
 
 from fastapi import encoders
 
-from . import auth, books_routes, books_store, demo, store, tally_routes, tally_store
+from . import auth, books_routes, books_store, demo, gsp_live, store, tally_routes, tally_store
 from .hitl import HitlGate
 from .portal import PortalError
 
@@ -25,13 +25,15 @@ encoders.ENCODERS_BY_TYPE[Decimal] = lambda x: format(x, "f")
 encoders.encoders_by_class_tuples = encoders.generate_encoders_by_class_tuples(encoders.ENCODERS_BY_TYPE)
 
 
-def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> FastAPI:
+def create_app(secret: bytes | None = None, wa_secret: bytes | None = None, gsp=None) -> FastAPI:
     secret = secret or os.environ.get("HITL_SIGNING_SECRET", "dev-only-change-me").encode()
     wa_secret = wa_secret or os.environ.get("WHATSAPP_APP_SECRET", "").encode()
     drafts, audit = store.from_env()      # Postgres (RLS) when DATABASE_URL_APP is set, else in-memory
     if drafts is not None and secret == b"dev-only-change-me":
         raise RuntimeError("refusing to run on Postgres with the default HITL_SIGNING_SECRET: tokens would be forgeable")
-    gate = HitlGate(secret, audit=audit, drafts=drafts)
+    if gsp is None and (cfg := gsp_live.GspConfig.from_env()) is not None:
+        gsp = gsp_live.GspSessions(cfg)                       # live GST portal access only when the GSP credentials are configured
+    gate = HitlGate(secret, audit=audit, drafts=drafts, portal=gsp_live.LivePortalProvider(secret, gsp) if gsp else None)
     app = FastAPI(title="TaxSetu AI API", version="0.1.0")
     if drafts is not None:
         from fastapi.responses import JSONResponse
@@ -241,6 +243,43 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
             return gate.authorize(c["tenant_id"], b.draft_id, b.payload_sha256, b.otp_or_signature, c["role"], b.verification_mode)
         except PortalError as e:
             raise HTTPException(409, str(e))
+
+    class GspLoginIn(BaseModel):
+        gstin: str
+        username: str = Field(min_length=1, max_length=60)
+
+    class GspOtpIn(GspLoginIn):
+        otp: str = Field(min_length=4, max_length=8)
+
+    @app.get("/api/v1/gsp/status")
+    def gsp_status(c: dict = Depends(need("OWNER", "CA", "EMPLOYEE"))):
+        return {"live": gsp is not None, "kinds": list(gsp_live.LIVE_KINDS) if gsp else [],
+                "note": "Live GST portal access is switched on: returns are SAVED as drafts at the portal and the taxpayer files with EVC/DSC." if gsp
+                else "Live GST portal access is off (no GSP credentials on this server); filing is simulated."}
+
+    @app.post("/api/v1/gsp/otp")
+    def gsp_otp(b: GspLoginIn, c: dict = Depends(need("OWNER", "CA"))):
+        """Ask the GST portal to text the taxpayer's registered mobile an OTP. The OTP never passes through this server until the taxpayer types it in."""
+        if gsp is None:
+            raise HTTPException(503, "Live GST portal access is not configured on this server")
+        try:
+            gsp.start(c["tenant_id"], b.gstin, b.username)
+        except PortalError as e:
+            raise HTTPException(502, str(e))
+        return {"sent": True}
+
+    @app.post("/api/v1/gsp/session")
+    def gsp_session(b: GspOtpIn, c: dict = Depends(need("OWNER", "CA"))):
+        if gsp is None:
+            raise HTTPException(503, "Live GST portal access is not configured on this server")
+        s = gsp.get(c["tenant_id"], b.gstin)
+        if s is None or s.username != b.username:
+            raise HTTPException(409, "request an OTP for this GSTIN first")
+        try:
+            s.verify_otp(b.otp)
+        except PortalError as e:
+            raise HTTPException(409, str(e))
+        return {"active": s.active}
 
     tally_routes.mount(app, secret=secret, gate=gate, who=who, need=need,
                        tally=tally_store.MemoryTally() if drafts is None else tally_store.PgTally(drafts.pg))

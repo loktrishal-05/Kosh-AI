@@ -19,7 +19,7 @@ def sign_approval(secret: bytes, draft_id: str, payload_sha256: str) -> str:
 
 class PortalProvider(Protocol):
     def validate(self, kind: str, payload: dict) -> list: ...
-    def file(self, kind: str, payload: dict, draft_id: str, payload_sha256: str, approval: str) -> dict: ...
+    def file(self, kind: str, payload: dict, draft_id: str, payload_sha256: str, approval: str, tenant_id: str = "") -> dict: ...
 
 
 class MockPortalProvider:
@@ -31,7 +31,7 @@ class MockPortalProvider:
     def validate(self, kind: str, payload: dict) -> list:
         return [f"missing field: {f}" for f in REQUIRED.get(kind, ()) if not payload.get(f)]
 
-    def file(self, kind, payload, draft_id, payload_sha256, approval) -> dict:
+    def file(self, kind, payload, draft_id, payload_sha256, approval, tenant_id: str = "") -> dict:
         if not hmac.compare_digest(approval or "", sign_approval(self._secret, draft_id, payload_sha256)):
             raise PortalError("filing refused: no valid human approval token for this exact payload")
         errs = self.validate(kind, payload)

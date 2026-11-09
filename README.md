@@ -95,7 +95,7 @@ flowchart LR
 
   ENG["Deterministic tax engine<br/>Decimal only, zero LLM"]
   PG[("PostgreSQL 16<br/>RLS + pgvector")]
-  PORTAL["Portal provider<br/>Mock now, GSP / ERI later"]
+  PORTAL["Portal provider<br/>Mock; GST via GSP when configured; ERI later"]
 
   WA --> WH --> A1 & A3
   CA --> JWT --> GATE
@@ -583,7 +583,7 @@ Verified on TallyPrime 7.2 Education mode only; Education mode accepts only vouc
 | 6b | Next.js CA workbench · mock portal UI | 🟡 workbench + Tally Assistant built; Tally Assistant is wired to the API, the client matrix is still mock data · portal UI todo |
 | 8 | Tally Assistant | ✅ verified on a real TallyPrime 7.2 (Education mode) · AI assist built, **not yet run against the live Claude API** |
 | 9 | Books from your notebook (single entry to double entry) | ✅ verified: hand-computed cases, simulated shops, production, and ledger-by-ledger against a real Tally |
-| 7 | Live GSP / ERI integration | ⛔ out of scope (needs licensed credentials) |
+| 7 | Live GSP / ERI integration | 🟡 **GST via a GSP is built** (login with the taxpayer's OTP, save GSTR-1/3B drafts, never files; simulator-tested, **not verified against a real GSP**). **ERI (income tax) is not built**: its API spec is only issued to registered ERIs. See [`docs/GSP.md`](docs/GSP.md) |
 
 **Known limitations — stated plainly**
 

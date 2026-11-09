@@ -31,7 +31,7 @@ workbench) · MCP servers (JSON-RPC 2.0) · LangGraph agents. Local Python is 3.
 | 5 | e-MOA/e-AOA, Form 16 A/B, Labour Form A/B | generator tests | **done on synthetic samples**: Labour Form A/B, Form 16 parser + validator, e-MOA (INC-33) / e-AOA (INC-34) drafters, all wired as `mca-labour` MCP tools (draft-only; CA/CS review required) |
 | 6a | HITL gate + mock portal + audit chain + FastAPI gateway (REST, WhatsApp HMAC webhook, JWT roles) | air-gap + e2e demo tests | **done (21 tests)** |
 | 6b | Mock gov-portal UI + CA workbench (Next.js) | e2e demo | **partial**: CA workbench built by Codex (matrix, 2B diff, Tally export; typecheck, build and 5 unit tests pass) on mock data, not yet wired to the API; portal UI todo |
-| 7 | Production hardening, live GSP/ERI | out of scope (needs licensed credentials) | deferred |
+| 7 | Production hardening, live GSP/ERI | GSP client built and simulator-tested (docs/GSP.md); real-GSP check and ERI need credentials | partly done |
 | 8 | Tally Assistant (see `docs/TALLY.md`) | books engine, classifier, bank importer, bridge, approval outbox, UI | **built; verified on a real TallyPrime 7.2 (Education)**; other Tally versions, UTF-16 names, real login pending |
 | 9 | Books from your notebook (see `docs/BOOKS.md`) | engine, stored books with void/close/rollover, Tally export, UI | **done and verified**: hand-computed + simulated + production + real Tally (0 mismatches); AI assist for Tally entries built, live-model run pending |
 
