@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-572%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-712%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -37,7 +37,8 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 12. [Quickstart](#quickstart)
 13. [Testing](#testing)
 14. [Deployment](#deployment)
-15. [Status, limits and roadmap](#status-limits-and-roadmap)
+15. [Tally Assistant](#tally-assistant)
+16. [Status, limits and roadmap](#status-limits-and-roadmap)
 
 ---
 
@@ -369,6 +370,7 @@ taxsetu-ai/
 ├── apps/
 │   ├── api-gateway/                FastAPI edge, HITL gate, mock portal, audit, sandbox
 │   ├── ca-workbench-web/           Next.js 15 CA console (mock data)
+│   ├── tally-bridge/               Program for the customer PC: posts approved XML into TallyPrime (stdlib only)
 │   └── mock-gov-portals/           (planned) portal UIs
 ├── infra/                          Postgres RLS migrations (0001 core, 0002 drafts + audit detail), docker-compose
 ├── tests/                          unit · adversarial · e2e-demo · infra · mcp · agents
@@ -388,7 +390,7 @@ python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Script
 pip install pytest httpx uvicorn fastapi "pydantic>=2" \
   -e packages/deterministic-tax-engine -e packages/mcp-servers -e packages/agents -e apps/api-gateway
 
-pytest tests -q                                           # 572 pass (Postgres tests skip if no database is reachable)
+pytest tests -q                                           # 712 pass (Postgres tests skip if no database is reachable)
 uvicorn --factory taxsetu_api.main:create_app --port 8000 # then open http://localhost:8000
 ```
 
@@ -417,14 +419,15 @@ default exists only for local development.
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
-| `tests/unit` | 477 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
+| `tests/unit` | 559 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math), Form 16 parse/reconcile, e-MOA/e-AOA drafting, Neon URL re-pointing |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
-| `tests/e2e-demo` | 9 | The report's demo storyline over HTTP, including the sandbox endpoint |
+| `tests/e2e-demo` | 26 | The report's demo storyline over HTTP, including the sandbox endpoint |
 | `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
 | `tests/agents` | 34 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
-| `tests/infra` | 13 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
-| `apps/ca-workbench-web` | 5 | Money formatting, XML escaping, balanced vouchers, priority ordering (`node:test`) |
-| **Total** | **572 + 5** | **all passing** |
+| `tests/infra` | 21 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
+| `tests/bridge` | 33 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
+| `apps/ca-workbench-web` | 13 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
+| **Total** | **712 + 13** | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -447,6 +450,47 @@ The deployed build runs the **mock** portal only. Nothing in this repository can
 
 ---
 
+## Tally Assistant
+
+Small businesses pay accountants a lot to keep Tally correct. The Tally Assistant lets an owner who has never used Tally do the
+routine work in plain language: say what happened, upload a bank statement, approve the result. Research notes, sources and the
+work-package plan are in [`docs/TALLY.md`](docs/TALLY.md).
+
+![Plain-language entry](docs/assets/tally-assistant-entry.jpg)
+![Bank statement review](docs/assets/tally-assistant-bank.jpg)
+
+```mermaid
+flowchart LR
+  O["Owner: types a sentence,<br/>uploads a bank CSV"] --> C["Classifier<br/>rules first, optional LLM fill-in"]
+  C --> D["VoucherDraft<br/>balanced, GST-aware"]
+  D --> H["Human reviews and approves<br/>the SHA-256 of the exact XML"]
+  H --> Q[("Outbox + audit chain<br/>Neon, RLS")]
+  B["tally-bridge on the PC"] -->|"poll over HTTPS"| Q
+  B -->|"verify hash + HMAC, then POST"| T["TallyPrime :9000"]
+  T -->|"reply"| B -->|"ack"| Q
+```
+
+| Piece | Where | What it does |
+|-------|-------|--------------|
+| Books engine | `taxsetu_engine/tallybooks.py`, `tally_coa.py` | Voucher and ledger-master XML (Tally's `Import Data` envelope), GST split, TDS line, reply and export parsers, starter chart of accounts for traders / services / manufacturers with a plain-English meaning per ledger |
+| Classifier | `tally_classify.py` | "Paid 25000 rent to Sharma by cheque yesterday" becomes a balanced draft. Missing amount, party or direction becomes a plain question, never a guess. Instruction-like text is flagged and ignored |
+| Bank importer | `tally_bank.py` | Messy bank CSVs (junk headers, signed or Dr/Cr columns, several date formats), de-duplicated by hash. Unknown payees go to *Suspense* and cannot be sent until a person picks a ledger. Money **in** under an expense keyword is flagged for review |
+| Approval + outbox | `taxsetu_api/tally_routes.py`, migration `0003_tally.sql` | Stage a batch, approve the exact hash (changed content gives 409), one decision per batch, every step in the audit chain. Learned payee names are remembered per tenant |
+| Bridge | `apps/tally-bridge/` | Runs on the customer PC, dials out only, re-verifies SHA-256 and a per-bridge HMAC, accepts only `Create`/`Alter` imports of Vouchers or Masters for the paired company, journals each post before sending so a crash cannot double-post |
+| UI | `apps/ca-workbench-web/app/tally` | Demo mode (no sign-in, ends in a downloadable Tally file) and connected mode (stage, approve, watch status, pair a bridge) with a glossary for novices |
+
+API (all under `/api/v1/tally`): `sandbox/*` (anonymous, stateless), `entry`, `bank-statement`, `batches` (stage, list, get, approve, reject),
+`setup`, `aliases`, `ledgers`, `bridges` (create, list, revoke), and `bridge/pair|pending|ack|ledgers` for the bridge itself.
+Bridge and pairing tokens use separate machine roles that no human route accepts.
+
+**Honest status.** Everything above is tested against fakes. The XML follows Tally's documented import format, but it has **not been
+run against a live TallyPrime**. Run `python tally_bridge.py selftest` and then `--dry-run` on a test company first. Also known: non-ASCII
+ledger names may need UTF-16 on some Tally versions; the bank table scrolls sideways on phones; there is no real login yet (a temporary
+admin-key token endpoint exists, disabled unless `TAXSETU_ADMIN_KEY` is set); stock/inventory vouchers, JSON (TallyPrime 7+), e-invoice
+and multi-company are out of scope.
+
+---
+
 ## Status, limits and roadmap
 
 | Phase | Scope | Status |
@@ -458,13 +502,14 @@ The deployed build runs the **mock** portal only. Nothing in this repository can
 | 3 | Five agents | ✅ done · `ClaudeLlm` adapter written and tested with a fake client, **not yet run against the live API** · pgvector/BM25 RAG pending |
 | 0 | Postgres RLS, persistence, compose, CI | ✅ done and tested live (RLS, restart survival, per-tenant audit chain) |
 | 5 | Labour Form A/B · e-MOA / e-AOA · Form 16 | ✅ done on synthetic samples · parsing is for labelled text, not arbitrary PDF layouts; legal text needs CA/CS review |
-| 6b | Next.js CA workbench · mock portal UI | 🟡 workbench done on mock data (not wired to the API) · portal UI todo |
+| 6b | Next.js CA workbench · mock portal UI | 🟡 workbench + Tally Assistant built; Tally Assistant is wired to the API, the client matrix is still mock data · portal UI todo |
+| 8 | Tally Assistant | 🟡 built and tested end to end on fakes; **never run against a live TallyPrime** (see below) |
 | 7 | Live GSP / ERI integration | ⛔ out of scope (needs licensed credentials) |
 
 **Known limitations — stated plainly**
 
 * Agents default to a deterministic **stub** model. `ClaudeLlm` (vision + JSON-schema extraction) exists but has only been tested with a fake client; it needs an API key and a real-bill evaluation before anyone relies on it.
-* The workbench runs on generated mock data and is **not yet connected** to the API.
+* The workbench's client matrix runs on generated mock data. Only the Tally Assistant page talks to the API.
 * Postgres persistence is opt-in. Production on Vercel uses Neon; there is no tenant-onboarding API yet, so tenants are seeded by SQL (one sandbox tenant exists) and tokens are minted out of band.
 * The Tally XML shape follows Tally's import format but is **unverified** against a live TallyPrime.
 * The HSN rate table is intentionally empty (returns `NOT_FOUND`) rather than guessing rates.
