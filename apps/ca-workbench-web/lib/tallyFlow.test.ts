@@ -1,12 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import type { Draft } from "./tallyApi.ts";
-import { batchTotals, clearToken, flagMessage, getToken, paise, rupees, sampleBankCsv, setLedger, setToken } from "./tallyFlow.ts";
+import { bankNeedsCheck, batchTotals, clearToken, flagMessage, getToken, paise, rupees, sampleBankCsv, setLedger, setToken } from "./tallyFlow.ts";
 
 const draft: Draft = { vtype: "Payment", date: "2026-10-01", party: "Sharma", narration: "Rent", flags: ["NEEDS_REVIEW"], lines: [{ ledger: "Suspense A/c", side: "Dr", amount: "25000.00" }, { ledger: "Bank Account", side: "Cr", amount: "25000.00" }] };
 test("every known flag has an explanation; new ledgers and unknown codes preserve names", () => {
   assert.equal(flagMessage("NEW_LEDGER:Sharma & Sons"), "First time we see Sharma & Sons; we will create it in Tally");
-  for (const flag of ["GSTIN_INVALID", "GSTIN_MISSING", "ITC_BLOCKED_17_5", "GST_ASSUMED_INTRASTATE", "NEEDS_REVIEW", "SUSPICIOUS_TEXT"]) {
+  for (const flag of ["GSTIN_INVALID", "GSTIN_MISSING", "ITC_BLOCKED_17_5", "GST_ASSUMED_INTRASTATE", "NEEDS_REVIEW", "SUSPICIOUS_TEXT", "AI_SUGGESTED", "TOTAL_MISMATCH", "TOTAL_UNREADABLE", "INVOICE_NO_MISSING"]) {
     assert.notEqual(flagMessage(flag), flag);
     assert.ok(flagMessage(flag).length > 30);
   }
@@ -55,4 +55,16 @@ test("token helpers tolerate missing or inaccessible session storage and round-t
     Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem: (k: string) => items.get(k), setItem: (k: string, v: string) => items.set(k, v), removeItem: (k: string) => items.delete(k) } });
     setToken("minted-token"); assert.equal(getToken(), "minted-token"); clearToken(); assert.equal(getToken(), "");
   } finally { if (descriptor) Object.defineProperty(globalThis, "sessionStorage", descriptor); else Reflect.deleteProperty(globalThis, "sessionStorage"); }
+});
+
+test("AI suggestion flags explain the reason and require a human check", () => {
+  assert.equal(flagMessage("AI_SUGGESTED:Looks like rent"), "AI suggests this ledger: Looks like rent. Please check it.");
+  assert.equal(flagMessage("AI_SUGGESTED:Looks like rent."), "AI suggests this ledger: Looks like rent. Please check it.");
+});
+
+test("an AI-filled bank category still needs a human check", () => {
+  assert.equal(bankNeedsCheck({ ...draft, flags: ["AI_SUGGESTED:rent"], lines: [{ ledger: "Rent", side: "Dr", amount: "1" }] }), true);
+  assert.equal(bankNeedsCheck({ ...draft, flags: ["NEEDS_REVIEW"], lines: [{ ledger: "Rent", side: "Dr", amount: "1" }] }), true);
+  assert.equal(bankNeedsCheck({ ...draft, flags: [], lines: [{ ledger: "Rent", side: "Dr", amount: "1" }] }), false);
+  assert.equal(bankNeedsCheck({ ...draft, flags: [] }), true);
 });
