@@ -158,6 +158,9 @@ def to_drafts(txns, ctx) -> list:
             for pattern, head in HEADS:
                 if re.search(r"\b(?:" + pattern + r")\b", lower):
                     ledger, confidence = head, Decimal("0.85")
+                    if not outgoing and head not in ("Bank Charges", "Interest Paid"):
+                        confidence = Decimal("0.5")      # money IN under an expense keyword (rent received? refund?): a person must decide
+                        flags.append("NEEDS_REVIEW")
                     break
         if ledger == "Suspense A/c":
             flags.append("NEEDS_REVIEW")
