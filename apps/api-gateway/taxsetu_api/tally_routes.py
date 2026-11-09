@@ -3,18 +3,118 @@
   /tally/*    authenticated owners/CAs: draft, stage a batch, approve the exact bytes, pair a bridge
   /bridge/*   the program on the customer PC: fetch approved batches, report what Tally said
 Nothing reaches Tally unless a human approved the batch's SHA-256, and the bridge re-verifies a signature before posting."""
+import base64
+import binascii
 import hashlib
 import hmac
 import uuid
+from dataclasses import replace
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, Field
 from taxsetu_engine import tally_bank, tally_classify, tally_coa, tallybooks
-from taxsetu_engine.tally_models import BookContext, draft_from_dict, draft_to_dict
+from taxsetu_engine.money import d, r2
+from taxsetu_engine.tally_models import BookContext, Line, draft_from_dict, draft_to_dict
 
 from . import auth
+
+GST_SLABS = {Decimal(x) for x in ("0", "0.25", "1", "1.5", "3", "5", "12", "18", "28")}
+NOT_A_COUNTER_LEDGER = ("Input ", "Output ", "TDS Payable")
+
+
+def get_llm():
+    """AI assist is opt-in: only when the deployment owner set ANTHROPIC_API_KEY. Tests replace this function. Never called from the anonymous sandbox routes."""
+    from taxsetu_agents.claude_llm import llm_from_env
+    return llm_from_env()
+
+
+def ai_status(llm, **extra) -> dict:
+    note = ("AI helped read this; every figure is re-checked by code and a person approves it." if llm
+            else "AI assist is switched off on this server; the rule-based reader is doing the work.")
+    return {"enabled": llm is not None, "note": note, **extra}
+
+
+def _counter_ledgers(ctx) -> set:
+    """Ledgers a bank row may sensibly be filed under: real ones the business has, plus our starter set; never bank, cash, suspense or GST/TDS duty ledgers."""
+    names = set(ctx.known_ledgers) | {l.name for l in tally_coa.starter_pack("trader", ctx.state_code or "29")
+                                      if l.parent not in ("Duties & Taxes", "Bank Accounts", "Cash-in-Hand")}
+    return {n for n in names if n not in (ctx.bank_ledger, ctx.cash_ledger, "Suspense A/c", "Round Off") and not n.startswith(NOT_A_COUNTER_LEDGER)}
+
+
+def _suggest(llm, drafts: list, ctx) -> tuple:
+    """Pre-fill a ledger for rows that need a person. The row STAYS 'needs review' (flag kept, confidence capped): the AI never approves anything."""
+    if llm is None:
+        return drafts, 0
+    todo = [i for i, v in enumerate(drafts) if "NEEDS_REVIEW" in v.flags and v.vtype in ("Payment", "Receipt")][:40]
+    allowed = _counter_ledgers(ctx)
+    if not todo or not allowed:
+        return drafts, 0
+    rows = [{"i": i, "narration": drafts[i].narration[:120], "direction": "money in" if drafts[i].vtype == "Receipt" else "money out",
+             "amount": str(max(drafts[i].total_dr(), drafts[i].total_cr()))} for i in todo]
+    try:
+        got = llm.suggest_ledgers(rows, sorted(allowed))
+    except Exception:
+        return drafts, 0
+    out, n = list(drafts), 0
+    for i, pick in (got or {}).items():
+        ledger, why = pick if isinstance(pick, tuple) else (pick, "")
+        if i not in todo or ledger not in allowed:
+            continue
+        v = out[i]
+        first = Line(ledger, v.lines[0].amount, v.lines[0].side)
+        out[i] = replace(v, lines=(first,) + tuple(v.lines[1:]), party=ledger, confidence=min(v.confidence, Decimal("0.6")),
+                         flags=tuple(f for f in v.flags if not f.startswith("AI_SUGGESTED")) + ("AI_SUGGESTED:" + (why or "suggested by AI"),))
+        n += 1
+    return out, n
+
+
+def bill_to_draft(raw: dict, ctx) -> dict:
+    """Printed bill fields (read by the AI) -> a purchase draft. The AI only READS; GST is recomputed here and the printed total is checked."""
+    questions = []
+    clean = lambda s, n: "".join(ch for ch in str(s or "") if ch.isprintable())[:n].strip()
+    supplier, inv_no = clean(raw.get("supplier_name"), 60), clean(raw.get("invoice_no"), 16)
+    try:
+        taxable = d(clean(raw.get("taxable"), 20).replace(",", ""))
+        rate = d(clean(raw.get("rate"), 8).replace("%", ""))
+        if not taxable.is_finite() or taxable <= 0 or not rate.is_finite():
+            raise ValueError("unreadable")
+    except (InvalidOperation, ValueError, TypeError):
+        return {"extracted": raw, "draft": None, "flags": [], "questions": ["I could not read the taxable amount and GST rate on this bill. Please type them in."]}
+    if rate not in GST_SLABS:
+        questions.append(f"The GST rate read from the bill ({rate}%) is not a standard slab. What is the correct rate?")
+    try:
+        day = date.fromisoformat(clean(raw.get("invoice_date"), 10))
+    except ValueError:
+        day = None
+        questions.append("What is the date on the bill?")
+    if not supplier:
+        questions.append("Who is the supplier on this bill?")
+    if questions:
+        return {"extracted": raw, "draft": None, "flags": [], "questions": questions}
+    name = ctx.aliases.get(tally_classify.normalise_party(supplier), supplier)
+    draft = tallybooks.purchase_draft(ctx, date=day, supplier=name, supplier_gstin=clean(raw.get("supplier_gstin"), 15).upper(),
+                                      invoice_no=inv_no, taxable=str(taxable), rate_pct=str(rate))
+    flags = list(draft.flags)
+    expected = r2(taxable + taxable * rate / 100)
+    printed = clean(raw.get("total_amount"), 20).replace(",", "")
+    if printed:
+        try:
+            if abs(d(printed) - expected) > 1:
+                flags.append("TOTAL_MISMATCH")
+                questions.append(f"The total printed on the bill ({printed}) does not match taxable value plus GST ({expected}). Check the bill before you approve.")
+        except InvalidOperation:
+            flags.append("TOTAL_UNREADABLE")
+    if not inv_no:
+        flags.append("INVOICE_NO_MISSING")
+    if name == supplier and name not in ctx.known_ledgers:
+        flags.append("NEW_LEDGER:" + supplier)
+    weak = "TOTAL_MISMATCH" in flags or "GSTIN_INVALID" in flags or "GSTIN_MISSING" in flags
+    draft = replace(draft, flags=tuple(flags), confidence=Decimal("0.5") if weak else Decimal("0.7"), source="invoice")
+    return {"extracted": raw, "draft": draft_to_dict(draft), "flags": flags, "questions": questions, "plain": explain(draft),
+            "xml_preview": tallybooks.voucher_xml(ctx.company or "Your Company", [draft])}
+
 
 PAIR_TTL_S, BRIDGE_TTL_S = 15 * 60, 90 * 24 * 3600
 MAX_DRAFTS = 500
@@ -79,6 +179,15 @@ class ApproveIn(BaseModel):
     payload_sha256: str = Field(min_length=64, max_length=64)
 
 
+class InvoiceIn(BaseModel):
+    text: str = Field(default="", max_length=20000)
+    image_base64: str = Field(default="", max_length=8_000_000)
+    media_type: str = Field(default="image/jpeg", pattern="^image/(jpeg|png|webp)$")
+    state_code: str = Field(default="", max_length=2)
+    bank_ledger: str = Field(default="Bank Account", max_length=99)
+    cash_ledger: str = Field(default="Cash", max_length=99)
+
+
 class AliasIn(BaseModel):
     party: str = Field(min_length=1, max_length=60)
     ledger: str = Field(min_length=1, max_length=99)
@@ -112,22 +221,22 @@ def _ctx(tally, tenant: str | None, company: str, state_code: str, bank_ledger: 
                        aliases=tally.aliases(tenant) if tenant else {}, known_ledgers={l["name"] for l in synced})
 
 
-def _entry(text: str, today: date | None, ctx: BookContext) -> dict:
-    r = tally_classify.draft_from_text(text, today or date.today(), ctx)
+def _entry(text: str, today: date | None, ctx: BookContext, llm=None) -> dict:
+    r = tally_classify.draft_from_text(text, today or date.today(), ctx, llm=llm)
     d = r["draft"]
     out = {"draft": draft_to_dict(d) if d else None, "questions": r["questions"], "flags": r["flags"],
-           "interpretation": r["interpretation"]}
+           "interpretation": r["interpretation"], "ai": ai_status(llm)}
     if d:
         out["plain"] = explain(d)
         out["xml_preview"] = tallybooks.voucher_xml(ctx.company or "Your Company", [d])
     return out
 
 
-def _statement(csv: str, ctx: BookContext) -> dict:
+def _statement(csv: str, ctx: BookContext, llm=None) -> dict:
     parsed = tally_bank.parse_statement_csv(csv)
-    drafts = tally_bank.to_drafts(parsed["txns"], ctx)
+    drafts, suggested = _suggest(llm, tally_bank.to_drafts(parsed["txns"], ctx), ctx)
     return {"errors": parsed["errors"], "skipped": parsed["skipped"], "summary": tally_bank.summary(drafts),
-            "drafts": [{**draft_to_dict(d), "plain": explain(d)} for d in drafts]}
+            "drafts": [{**draft_to_dict(v), "plain": explain(v)} for v in drafts], "ai": ai_status(llm, suggested=suggested)}
 
 
 def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
@@ -171,11 +280,34 @@ def mount(app, *, secret: bytes, gate, tally, who, need) -> None:
 
     @app.post("/api/v1/tally/entry", tags=["tally"])
     def entry(b: TextIn, c: dict = Depends(need(*DRAFTERS))):
-        return _entry(b.text, b.today, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger))
+        return _entry(b.text, b.today, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger), llm=get_llm())
 
     @app.post("/api/v1/tally/bank-statement", tags=["tally"])
     def statement(b: CsvIn, c: dict = Depends(need(*DRAFTERS))):
-        return _statement(b.csv, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger))
+        return _statement(b.csv, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger), llm=get_llm())
+
+    @app.post("/api/v1/tally/invoice", tags=["tally"])
+    def invoice(b: InvoiceIn, c: dict = Depends(need(*DRAFTERS))):
+        """Photo or pasted text of a supplier bill -> a purchase draft. Needs AI; GST and totals are recomputed and checked by code."""
+        llm = get_llm()
+        if llm is None:
+            raise HTTPException(503, "Reading bills with AI is not switched on for this server. Type the entry instead, or ask your administrator to add an AI key.")
+        if not b.text.strip() and not b.image_base64:
+            raise HTTPException(422, "send a photo of the bill or paste its text")
+        try:
+            image = base64.b64decode(b.image_base64, validate=True) if b.image_base64 else None
+        except (ValueError, binascii.Error):
+            raise HTTPException(422, "the photo could not be decoded")
+        if image and len(image) > 5_000_000:
+            raise HTTPException(413, "photo is larger than 5 MB")
+        try:
+            raw = llm.extract_bill(b.text, image, b.media_type)
+        except Exception:
+            raise HTTPException(502, "the AI reader failed just now; try again or type the entry")
+        if not raw:
+            raise HTTPException(422, "I could not read anything from this bill; try a clearer photo or type the entry")
+        out = bill_to_draft(raw, _ctx(tally, c["tenant_id"], "", b.state_code, b.bank_ledger, b.cash_ledger))
+        return {**out, "ai": ai_status(llm)}
 
     def stage(c: dict, kind: str, company: str, xml: str, summary: dict, batch_id: str | None = None) -> dict:
         sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()

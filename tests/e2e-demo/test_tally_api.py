@@ -248,3 +248,125 @@ def test_staged_vouchers_carry_batch_scoped_remote_ids(client):
     assert ids == [f"ts-{b['batch_id']}-1", f"ts-{b['batch_id']}-2"]
     other = staged(client, t, [payment()]).json()
     assert ET.fromstring(client.get(f"/api/v1/tally/batches/{other['batch_id']}", headers=tok(t)).json()["xml"]).find(".//VOUCHER").get("REMOTEID") not in ids
+
+
+
+# ---- AI assist (a fake model stands in for Claude; nothing here touches the network) -----------------------------------------------
+from taxsetu_api import tally_routes as TR
+from taxsetu_engine.gst import gstin_check_char
+
+
+class FakeLlm:
+    def __init__(self, entry=None, suggestions=None, bill=None, boom=False):
+        self.entry, self.suggestions, self.bill, self.boom, self.calls = entry or {}, suggestions or {}, bill or {}, boom, []
+
+    def extract_entry(self, text):
+        self.calls.append("entry")
+        return self.entry
+
+    def suggest_ledgers(self, rows, ledgers):
+        self.calls.append("suggest")
+        if self.boom:
+            raise RuntimeError("model down")
+        self.seen = (rows, ledgers)
+        return self.suggestions
+
+    def extract_bill(self, text="", image=None, media_type="image/jpeg"):
+        self.calls.append("bill")
+        return self.bill
+
+
+def use_llm(monkeypatch, llm):
+    monkeypatch.setattr(TR, "get_llm", lambda: llm)
+    return llm
+
+
+def _g(pan):
+    g = f"29{pan}1Z"
+    return g + gstin_check_char(g)
+
+
+BILL = {"supplier_name": "Gupta Traders", "supplier_gstin": _g("ABCDE1234F"), "invoice_no": "GT/77", "invoice_date": "2026-11-02",
+        "hsn": "1006", "description": "rice", "taxable": "10000", "rate": "18", "total_amount": "11,800.00"}
+CSV = "Date,Narration,Debit,Credit,Balance\n01/04/2026,UPI/123456789012/RANDOM PERSON/ybl,500.00,,9500.00\n01/04/2026,UPI/123456789012/TEA STALL RAMU/ybl,40.00,,9460.00\n01/04/2026,BANK CHARGES,10.00,,9450.00\n"
+
+
+def test_the_public_sandbox_never_calls_the_ai(client, monkeypatch):
+    llm = use_llm(monkeypatch, FakeLlm(entry={"amount": "1"}, suggestions={0: ("Rent Paid", "x")}))
+    client.post("/api/v1/tally/sandbox/entry", json={"text": "paid sharma rent"})
+    r = client.post("/api/v1/tally/sandbox/bank-statement", json={"csv": CSV}).json()
+    assert llm.calls == [] and r["ai"]["enabled"] is False        # paid calls are never reachable anonymously
+
+
+def test_ai_fills_in_what_the_keyword_rules_cannot_read_and_code_still_validates(client, monkeypatch):
+    t = str(uuid.uuid4())
+    text = {"text": "paid sharma twenty five thousand for rent", "today": "2026-11-09"}
+    off = client.post("/api/v1/tally/entry", headers=tok(t), json=text).json()
+    assert off["draft"] is None and off["questions"] and off["ai"]["enabled"] is False        # rules alone: asks instead of guessing
+    llm = use_llm(monkeypatch, FakeLlm(entry={"amount": "25000", "direction": "paid", "party": "Sharma", "head": "Rent Paid"}))
+    on = client.post("/api/v1/tally/entry", headers=tok(t), json=text).json()
+    assert on["draft"]["vtype"] == "Payment" and {l["amount"] for l in on["draft"]["lines"]} == {"25000.00"}
+    assert on["ai"]["enabled"] and "entry" in llm.calls
+    use_llm(monkeypatch, FakeLlm(entry={"amount": "-5", "direction": "paid", "head": "Suspense A/c; DROP TABLE", "party": "x" * 500}))
+    hostile = client.post("/api/v1/tally/entry", headers=tok(t), json=text).json()
+    assert hostile["draft"] is None                                                   # invalid amount, unknown head and oversized party are all dropped
+
+
+def test_ai_prefills_ledgers_for_rows_a_person_must_still_check(client, monkeypatch):
+    t = str(uuid.uuid4())
+    base = client.post("/api/v1/tally/bank-statement", headers=tok(t), json={"csv": CSV}).json()
+    assert base["ai"]["enabled"] is False and base["summary"]["needs_review"] == 2
+    llm = use_llm(monkeypatch, FakeLlm(suggestions={0: ("Office Expenses", "small UPI payment"), 1: ("Bank Account", "hostile"), 2: ("Rent Paid", "row was not sent")}))
+    r = client.post("/api/v1/tally/bank-statement", headers=tok(t), json={"csv": CSV}).json()
+    d0, d1, d2 = r["drafts"]
+    assert "Office Expenses" in [l["ledger"] for l in d0["lines"]] and any(f.startswith("AI_SUGGESTED") for f in d0["flags"])
+    assert "NEEDS_REVIEW" in d0["flags"] and Decimal(d0["confidence"]) <= Decimal("0.6")        # still a human decision
+    assert "Suspense A/c" in [l["ledger"] for l in d1["lines"]]                                  # a hostile / not-allowed ledger is ignored
+    assert not any(f.startswith("AI_SUGGESTED") for f in d2["flags"])                           # rows that were already fine are never changed
+    assert r["ai"]["suggested"] == 1 and all(row["i"] in (0, 1) for row in llm.seen[0])
+    assert "Bank Account" not in llm.seen[1] and "Suspense A/c" not in llm.seen[1]
+
+
+def test_statement_still_works_when_the_ai_is_down(client, monkeypatch):
+    use_llm(monkeypatch, FakeLlm(boom=True))
+    r = client.post("/api/v1/tally/bank-statement", headers=tok(str(uuid.uuid4())), json={"csv": CSV}).json()
+    assert r["summary"]["count"] == 3 and r["ai"]["suggested"] == 0
+
+
+def test_a_supplier_bill_becomes_a_checked_purchase_draft(client, monkeypatch):
+    t = str(uuid.uuid4())
+    assert client.post("/api/v1/tally/invoice", headers=tok(t), json={"text": "bill"}).status_code == 503            # no AI configured
+    use_llm(monkeypatch, FakeLlm(bill=BILL))
+    r = client.post("/api/v1/tally/invoice", headers=tok(t), json={"text": "bill", "state_code": "29"}).json()
+    lines = {(l["ledger"], l["side"]): l["amount"] for l in r["draft"]["lines"]}
+    assert lines == {("Purchases", "Dr"): "10000.00", ("Input CGST", "Dr"): "900.00", ("Input SGST", "Dr"): "900.00", ("Gupta Traders", "Cr"): "11800.00"}
+    assert r["draft"]["source"] == "invoice" and r["draft"]["reference"] == "GT/77" and not r["questions"]
+    assert "NEW_LEDGER:Gupta Traders" in r["flags"] and "<REFERENCE>GT/77</REFERENCE>" in r["xml_preview"]
+
+
+@pytest.mark.parametrize("change,expect_flag,expect_question", [
+    ({"total_amount": "12,500.00"}, "TOTAL_MISMATCH", True),               # the AI misread a digit: caught by recomputation
+    ({"supplier_gstin": "29ABCDE1234F1Z0"}, "GSTIN_INVALID", False),       # checksum fails
+    ({"supplier_gstin": ""}, "GSTIN_MISSING", False),
+])
+def test_bill_checks_are_done_by_code_not_by_the_model(client, monkeypatch, change, expect_flag, expect_question):
+    use_llm(monkeypatch, FakeLlm(bill={**BILL, **change}))
+    r = client.post("/api/v1/tally/invoice", headers=tok(str(uuid.uuid4())), json={"text": "bill", "state_code": "29"}).json()
+    assert expect_flag in r["flags"] and bool(r["questions"]) == expect_question and Decimal(r["draft"]["confidence"]) <= Decimal("0.5")
+
+
+@pytest.mark.parametrize("change", [{"rate": "17"}, {"invoice_date": "garbage"}, {"supplier_name": ""}, {"taxable": "ten thousand"}])
+def test_unreadable_or_odd_bills_ask_a_question_instead_of_making_a_draft(client, monkeypatch, change):
+    use_llm(monkeypatch, FakeLlm(bill={**BILL, **change}))
+    r = client.post("/api/v1/tally/invoice", headers=tok(str(uuid.uuid4())), json={"text": "bill"}).json()
+    assert r["draft"] is None and r["questions"]
+
+
+def test_bill_input_is_bounded(client, monkeypatch):
+    use_llm(monkeypatch, FakeLlm(bill=BILL))
+    h = tok(str(uuid.uuid4()))
+    assert client.post("/api/v1/tally/invoice", headers=h, json={}).status_code == 422
+    assert client.post("/api/v1/tally/invoice", headers=h, json={"image_base64": "!!!not base64!!!"}).status_code == 422
+    assert client.post("/api/v1/tally/invoice", headers=h, json={"text": "x", "media_type": "application/x-evil"}).status_code == 422
+    use_llm(monkeypatch, FakeLlm(bill={}))
+    assert client.post("/api/v1/tally/invoice", headers=h, json={"text": "unreadable"}).status_code == 422
