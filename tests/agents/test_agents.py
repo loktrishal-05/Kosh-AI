@@ -151,6 +151,21 @@ def test_mov07_defence_reduces_penalty_only_when_gate_allows(env):
     assert far["status"] == "ESCALATE_CA"                                               # not a 1-2 char typo
 
 
+def test_logistics_stops_when_rule_138e_would_block_part_a():
+    t = gstin("DDDDD4444D")
+    prof = {t: {"gstin": t, "status": "ACTIVE", "filings": [(True, True)] * 4 + [(True, False), (True, False)]},   # 2 missed GSTR-3B in a row
+            GOOD: PROFILES[GOOD]}
+    gate = HitlGate(b"x")
+    c = mesh(gate.agent_tools.stage, gstn={"profiles": prof})
+    kw = dict(tenant_id="T1", driver_phone="97", invoice_date=date(2026, 11, 7), distance_km=100, consignment_value="75000",
+              vehicle_ocr="TN09BC4411")
+    s = LogisticsAgent(c).run_generate(gstin=t, invoice_no="I1", **kw)
+    assert s["status"] == "BLOCKED_138E" and "GSTR-3B" in s["errors"][0] and cards(c, "97") == []
+    assert gate.audit.events("T1") == []                                          # nothing was staged
+    one = {**prof, t: {**prof[t], "filings": [(True, True)] * 5 + [(True, False)]}}                 # one miss: still allowed
+    assert LogisticsAgent(mesh(gate.agent_tools.stage, gstn={"profiles": one})).run_generate(gstin=t, invoice_no="I2", **kw)["status"] == "STAGED"
+
+
 # ---- Agent 4 -------------------------------------------------------------------------------------------------
 def test_direct_tax_stages_itr4_for_digital_business(env):
     gate, c = env

@@ -230,3 +230,20 @@ def test_workspace_archive_only_signed_and_calendar_idempotent():
         c.call("gworkspace-sync", "archive_signed_returns_to_drive", fy="2026-27", month="11", files_list=[{"name": "draft.json"}])
     assert c.call("gworkspace-sync", "archive_signed_returns_to_drive", fy="2026-27", month="11",
                   files_list=[{"name": "r.json", "ack_no": "SIM-1"}])["archived"] == 1
+
+
+def test_labour_registers_tool_masks_pii_and_reports_orphans():
+    import json as _json
+    emp = dict(employee_code="E1", full_name="Asha", gender="F", category="Skilled", mobile="9876543210", uan="100200300400",
+               date_of_joining="2024-04-01", bank_account="123456789012", ifsc="HDFC0001234")
+    wage = dict(employee_code="E1", minimum_wage_basic="9000", minimum_wage_da="1000", working_days_in_month=26, days_worked=26,
+                basic_earned="10000", da="2000", hra="1000", deductions={"epf": "1440", "tds": "500"})
+    orphan = {**wage, "employee_code": "E9"}
+    r = mesh().call("mca-labour", "compile_labour_registers_form_a_and_b", lin="LIN-1", month="2026-10",
+                    payroll_data={"employees": [emp], "wages": [wage, orphan]}, today="2026-11-07")
+    assert "123456789012" not in _json.dumps(r["form_a"], default=str) and r["form_a"][0]["Bank Account Number"] == "XXXXXXXX9012"
+    row = r["form_b"][0]
+    assert (str(row["gross"]), str(row["net"]), str(row["employer_pf"]), row["below_minimum_wage"]) == ("13000.00", "11060.00", "1440.00", False)
+    assert "missing from Form A" in r["errors"]["E9"][0]
+    with pytest.raises(ToolError, match="bad payroll_data"):
+        mesh().call("mca-labour", "compile_labour_registers_form_a_and_b", lin="L", month="m", payroll_data={"employees": [{"nope": 1}]})

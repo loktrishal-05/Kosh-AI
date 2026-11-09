@@ -2,7 +2,7 @@
 is produced by the gstn-nic tool only after the deterministic gate AND a RAG citation lookup both pass. Staging only; a human approves."""
 import re
 
-from taxsetu_engine import gst, recon
+from taxsetu_engine import gst, planner, recon
 
 from .graph import Graph
 from .ingestion import dedup_hash, fy_of
@@ -41,12 +41,19 @@ class LogisticsAgent:
             s.update(status="NEEDS_REVIEW", errors=["GSTIN fails checksum"], halt=True)
         elif not VEHICLE.match(s["vehicle"]):
             s.update(status="NEEDS_REVIEW", errors=[f"vehicle number '{s['vehicle']}' unreadable - ask driver to confirm"], halt=True)
+        elif (b := self._blocked_138e(s["gstin"]))["blocked"]:     # the portal would refuse Part A anyway; say why, up front
+            s.update(status="BLOCKED_138E", errors=b["reasons"], halt=True)
         else:
             h = dedup_hash(s["gstin"], s["inv_no"], fy_of(s["inv_date"]))   # clerk + driver both photographed the same invoice
             if h in self.seen:
                 s.update(status="DUPLICATE", halt=True)
             else:
                 self.seen.add(h)
+
+    def _blocked_138e(self, gstin: str) -> dict:
+        """Consignor-side Rule 138E check from GSTN filing history. ponytail: consignee filings are not available to this agent yet."""
+        filings = self.c.read("gstn-nic", f"gst://taxpayer/{gstin}/public-profile").get("filings", [])
+        return planner.ewb_block_status({"GSTR1": [bool(a) for a, _ in filings], "GSTR3B": [bool(b) for _, b in filings]}, {})
 
     def generate(self, s):
         r = self.c.call("gstn-nic", "generate_eway_bill_v103", tenant_id=s["tenant_id"], gstin=s["gstin"], vehicle_no=s["vehicle"],
