@@ -7,7 +7,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-274%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-498%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
@@ -61,7 +61,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 flowchart LR
   subgraph Channels
     WA["WhatsApp<br/>(owner, clerk, driver)"]
-    CA["CA workbench<br/>(planned Next.js)"]
+    CA["CA workbench<br/>(Next.js, mock data)"]
   end
 
   subgraph Edge["API gateway (FastAPI)"]
@@ -114,10 +114,11 @@ gate, and the gate only moves when a human supplies a valid OTP.
 
 | Layer | Package | Responsibility |
 |-------|---------|----------------|
-| Engine | `packages/deterministic-tax-engine` | GST, TDS, ITR routing, presumptive tax, refunds, 2B reconciliation, e-Way Bill, MOV-07 gate, split-pay, Tally XML |
+| Engine | `packages/deterministic-tax-engine` | GST, TDS, ITR routing, presumptive tax, refunds, 2B reconciliation, e-Way Bill, MOV-07 gate, split-pay, Tally XML, Rule 138E watchdog, TDS interest, 30-day planner, Labour Form A/B |
 | MCP mesh | `packages/mcp-servers` | Eight tool/resource servers with a JSON-RPC 2.0 core and an air-gap name guard |
-| Agents | `packages/agents` | Five graph-shaped agents, an `Llm` protocol with a deterministic stub, a loop-capped graph runner |
-| Gateway | `apps/api-gateway` | FastAPI edge, JWT roles, WhatsApp webhook, HITL gate, mock portal, audit chain, sandbox storyline |
+| Agents | `packages/agents` | Five graph-shaped agents, an `Llm` protocol with a deterministic stub and a Claude adapter, a loop-capped graph runner |
+| Gateway | `apps/api-gateway` | FastAPI edge, JWT roles, WhatsApp webhook, HITL gate, mock portal, audit chain, optional Postgres store, sandbox storyline |
+| Workbench | `apps/ca-workbench-web` | Next.js 15 CA console: 80-client exception matrix, GSTR-2B diff viewer, Tally XML export (mock data, cannot file) |
 | Infra | `infra/` | Postgres schema with row-level security, docker-compose (Postgres, Redis, MinIO) |
 
 ---
@@ -128,7 +129,7 @@ gate, and the gate only moves when a human supplies a valid OTP.
 |-------|---------|--------------|---------------------|
 | **1 Ingestion** | Bill photo / PDF on WhatsApp | Extract → validate GSTIN checksum → de-duplicate (`SHA-256(gstin + normalised inv no + FY)`) → supplier trust score from GSTN history → GST split, §17(5) blocked-credit check, TDS → send a one-tap approval card | Guess on a bad extraction (returns `NEEDS_REVIEW`); move money |
 | **2 Recon + chase** | 14th of the month (GSTR-2B ready) | 4-way match (exact / fuzzy ≤2 edits / mismatch / missing), Rule 37 180-day clock, one nudge attempt per invoice per run | Send a 4th nudge, or nudge inside 48 h — it escalates to the CA queue |
-| **3 Logistics** | Plate + invoice photo, or a detention notice | Validate OCR'd plate, block duplicate EWBs, stage an EWB with a 4-hour pre-expiry alert, draft the MOV-07 reply | Cite Circular 64/38 without a valid invoice + clerical defect + a citation that resolves in the corpus |
+| **3 Logistics** | Plate + invoice photo, or a detention notice | Validate OCR'd plate, check Rule 138E blocking, block duplicate EWBs, stage an EWB with a 4-hour pre-expiry alert, draft the MOV-07 reply | Cite Circular 64/38 without a valid invoice + clerical defect + a citation that resolves in the corpus |
 | **4 Direct tax** | Month-end / year-end | Presumptive income from GST sales vs bank credits, 5 % cash-ceiling guardrail, ITR form routing, stage the ITR, diagnose unclaimed refunds and draft §119(2)(b) petitions | Stage a presumptive ITR once the cash ceiling is breached (escalates to CA); use ITR-U for a refund |
 | **5 Explainer + hand-off** | Before each deadline | Build Tally XML packets for the CA, stage the return, produce a vernacular voice summary | Say a number the engine did not produce — ungrounded prose is replaced by a fixed template |
 
@@ -238,7 +239,7 @@ Eight isolated servers speak MCP's JSON-RPC 2.0 (`initialize`, `tools/list`, `to
 | `paytm-upi-aa` | *`execute_split_vendor_payout`* (creates an *intent* only), `release_or_refund_gst_escrow`, `generate_smart_compliance_receipt` | `bank://aa/{pan}/statements/{month}`, `escrow://gst-holds/active` | Mock; partial receipt |
 | `incometax-traces` | `evaluate_itr_eligibility_1_to_7`, `compute_presumptive_44ad_44ada_44ae`, *`validate_and_stage_itr_json`*, *`generate_sec_119_2b_condonation_petition`* | `itd://pan/{pan}/ais-tis/{ay}`, `…/form26as/{ay}`, `…/5yr-unclaimed-refunds` | Mock sandbox |
 | `statutory-rag` | `search_effective_dated_statute`, `verify_citation`, `verify_hsn_sac_tax_rate` | `law://cgst/section/{n}`, `law://incometax/section/{n}`, `law://cbic/circulars/{no}` | Keyword ranking over a small corpus |
-| `mca-labour` | *e-MOA / e-AOA / Labour Form A+B generators* | — | Registered; **refuses** until Phase 5 |
+| `mca-labour` | *`compile_labour_registers_form_a_and_b`* (masked Form A, computed Form B), *e-MOA / e-AOA drafters* | — | Labour registers live; e-MOA / e-AOA **refuse** until Phase 5b |
 | `gworkspace-sync` | `sync_compliance_schedule_to_calendar`, `archive_signed_returns_to_drive` | `gdrive://audit-vault/{fy}/{month}` | In-memory; archives only filed (acknowledged) documents |
 
 ---
@@ -268,7 +269,17 @@ erDiagram
 * Seven tables, every one with `ENABLE` **and** `FORCE ROW LEVEL SECURITY`, policy `tenant_id = current_setting('app.tenant_id', true)`.
 * The application connects as `taxsetu_app` (`NOSUPERUSER NOBYPASSRLS`); with no tenant set, queries return zero rows.
 * The audit table is granted `SELECT, INSERT` only — it is append-only by privilege as well as by policy.
-* Static checks run on every CI build; a live cross-tenant test runs when Postgres is available (see [Testing](#testing)).
+* Static checks and the live cross-tenant tests run on every CI build against a Postgres service container.
+
+### Persistence (optional, enabled by `DATABASE_URL_APP`)
+
+| Concern | Design |
+|---------|--------|
+| Drafts | `hitl_drafts` table under RLS; each call runs in its own transaction with `app.tenant_id` set, so isolation is the database's job |
+| Audit chain | One hash chain **per tenant** (a tenant can only see its own rows). The canonical JSON each hash covered is stored, so verification re-hashes exactly what was signed. Appends take a per-tenant advisory lock so concurrent writers cannot fork the chain |
+| OTP double-spend | Optimistic `version` check; the OTP is burned and saved *before* filing, so a concurrent loser fails instead of filing twice |
+| Tamper evidence | The app role has `SELECT, INSERT` only on the audit table; a rewrite by the table owner is caught by `verify()` |
+| Fallback | Without `DATABASE_URL_APP` the same gate runs in memory (tests, serverless sandbox) |
 
 ---
 
@@ -318,6 +329,8 @@ the MCP mesh and the approval gate on fake data and renders the result.
 | **Agent 3–5 · MOV-07 defence (₹72,000 → ₹1,000), ITR-4, Hindi voice summary** | ![Agents 3-5](docs/assets/storyline-2-defence-itr-handoff.jpg) |
 | **Human gate · wrong OTP refused, correct OTP files, audit chain intact** | ![Human gate](docs/assets/storyline-3-human-gate.jpg) |
 | **OpenAPI explorer (`/docs`)** | ![API docs](docs/assets/api-docs.jpg) |
+| **CA workbench · exception matrix: 80 clients, four batch filters, priority-sorted** | ![Exception matrix](docs/assets/workbench-matrix.jpg) |
+| **CA workbench · client GSTR-2B diff: typos, tax mismatches and missing records flagged with text, not colour alone** | ![2B diff](docs/assets/workbench-2b-diff.jpg) |
 
 ---
 
@@ -328,7 +341,7 @@ Paths below are relative to `/api/v1` unless they start with `/health` or `/`. A
 | Method | Path | Roles | Purpose |
 |--------|------|-------|---------|
 | GET | `/` | — | Sandbox landing page |
-| GET | `/health` | — | Liveness + audit-chain validity |
+| GET | `/health` | — | Liveness, store (`memory`/`postgres`), audit-chain validity |
 | GET | `/api/v1/demo/storyline` | — | Runs the whole flow on fake data, statelessly |
 | POST | `/webhooks/whatsapp` | HMAC | Signed, idempotent inbound messages |
 | POST | `/gst/{gstin}/reconcile-2b` | OWNER, CA | Deterministic 4-way reconciliation |
@@ -354,9 +367,9 @@ taxsetu-ai/
 │   └── tally-xml-bridge/           (reserved: TallyPrime bridge)
 ├── apps/
 │   ├── api-gateway/                FastAPI edge, HITL gate, mock portal, audit, sandbox
-│   ├── ca-workbench-web/           (planned) Next.js CA console
+│   ├── ca-workbench-web/           Next.js 15 CA console (mock data)
 │   └── mock-gov-portals/           (planned) portal UIs
-├── infra/                          Postgres RLS migration, docker-compose
+├── infra/                          Postgres RLS migrations (0001 core, 0002 drafts + audit detail), docker-compose
 ├── tests/                          unit · adversarial · e2e-demo · infra · mcp · agents
 ├── docs/                           PLAN.md, screenshots
 ├── index.py                        Vercel entrypoint
@@ -374,15 +387,23 @@ python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Script
 pip install pytest httpx uvicorn fastapi "pydantic>=2" \
   -e packages/deterministic-tax-engine -e packages/mcp-servers -e packages/agents -e apps/api-gateway
 
-pytest tests -q                                           # 274 pass, 1 skipped (needs live Postgres)
+pytest tests -q                                           # 498 pass (Postgres tests skip if no database is reachable)
 uvicorn --factory taxsetu_api.main:create_app --port 8000 # then open http://localhost:8000
 ```
 
 Optional local infrastructure and the live row-level-security test:
 
 ```bash
-docker compose -f infra/docker-compose.yml up -d          # Postgres 16 + pgvector, Redis, MinIO
-pip install "psycopg[binary]" && pytest tests/infra -q
+docker compose -f infra/docker-compose.yml up -d postgres # Postgres 16 + pgvector (migrations apply on first boot)
+pip install "psycopg[binary]" && pytest tests/infra -q    # live RLS + persistence tests
+DATABASE_URL_APP=postgresql://taxsetu_app:taxsetu_app@localhost:5432/taxsetu \
+  uvicorn --factory taxsetu_api.main:create_app --port 8000   # drafts + audit now durable
+```
+
+CA workbench (Node 22.18+):
+
+```bash
+cd apps/ca-workbench-web && npm install && npm test && npm run build && npm run start   # http://localhost:3000
 ```
 
 Configuration lives in environment variables (see `.env.example`): `DATABASE_URL`, `REDIS_URL`, `PORTAL_MODE=mock`,
@@ -395,15 +416,16 @@ default exists only for local development.
 
 | Suite | Tests | What it proves |
 |-------|------:|----------------|
-| `tests/unit` | 200 | Every statutory rule, boundary and rounding case in the engine, plus payments and Tally XML |
+| `tests/unit` | 403 | Every statutory rule, boundary and rounding case: GST, TDS, ITR, refunds, payments, Tally XML, planner (138E, 201(1A), schedule), labour registers (Verhoeff, masking, wage math) |
 | `tests/adversarial` | 13 | Air-gap, OTP replay / expiry / burn, edit-after-OTP, cross-tenant, audit tamper, prompt injection |
 | `tests/e2e-demo` | 9 | The report's demo storyline over HTTP, including the sandbox endpoint |
-| `tests/mcp` | 25 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap |
-| `tests/agents` | 24 | Each agent end to end, loop caps, dedup, grounded-number guard, "only a human can file" |
-| `tests/infra` | 4 | RLS on every table, append-only audit, no-bypass role (+1 live cross-tenant test, skipped without Postgres) |
-| **Total** | **275** | **274 pass · 1 skipped** |
+| `tests/mcp` | 26 | JSON-RPC shapes, forbidden tool names, each server's business rules, nudge cap, labour registers |
+| `tests/agents` | 34 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
+| `tests/infra` | 13 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
+| `apps/ca-workbench-web` | 5 | Money formatting, XML escaping, balanced vouchers, priority ordering (`node:test`) |
+| **Total** | **498 + 5** | **all passing** |
 
-CI runs the whole suite on every push (Python 3.10).
+CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
 ---
 
@@ -432,16 +454,17 @@ The deployed build runs the **mock** portal only. Nothing in this repository can
 | 6a | API gateway, HITL gate, mock portal, audit chain | ✅ done |
 | 4 | Payments logic (split, trust score, ledgers, Tally XML) | ✅ core done · UI and UPI rails pending |
 | 2 | MCP mesh | ✅ done on mock backends · `mca-labour` generators pending |
-| 3 | Five agents | ✅ done offline with a stub LLM · real model adapter and pgvector/BM25 RAG pending |
-| 0 | Postgres RLS, compose, CI | 🟡 live RLS test not yet run against a real database |
-| 5 | e-MOA / e-AOA, Form 16, Labour Form A/B | ⬜ todo |
-| 6b | Next.js CA workbench and mock portal UI | ⬜ todo |
+| 3 | Five agents | ✅ done · `ClaudeLlm` adapter written and tested with a fake client, **not yet run against the live API** · pgvector/BM25 RAG pending |
+| 0 | Postgres RLS, persistence, compose, CI | ✅ done and tested live (RLS, restart survival, per-tenant audit chain) |
+| 5 | Labour Form A/B · e-MOA / e-AOA · Form 16 | 🟡 Labour registers done · e-MOA / e-AOA and Form 16 parsing todo |
+| 6b | Next.js CA workbench · mock portal UI | 🟡 workbench done on mock data (not wired to the API) · portal UI todo |
 | 7 | Live GSP / ERI integration | ⛔ out of scope (needs licensed credentials) |
 
 **Known limitations — stated plainly**
 
-* The language model is a deterministic **stub**; no vision/LLM provider is wired in yet.
-* Draft and audit state are **in memory**; persistence through Postgres is the next backend task.
+* Agents default to a deterministic **stub** model. `ClaudeLlm` (vision + JSON-schema extraction) exists but has only been tested with a fake client; it needs an API key and a real-bill evaluation before anyone relies on it.
+* The workbench runs on generated mock data and is **not yet connected** to the API.
+* Postgres persistence is opt-in (`DATABASE_URL_APP`); the serverless Vercel deploy still uses the in-memory gate.
 * The Tally XML shape follows Tally's import format but is **unverified** against a live TallyPrime.
 * The HSN rate table is intentionally empty (returns `NOT_FOUND`) rather than guessing rates.
 * The report's settlement example is internally inconsistent (₹2,370 of deductions against a quoted ₹97,820 credit); the engine follows the arithmetic (₹97,630).
