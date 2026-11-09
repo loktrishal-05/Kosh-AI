@@ -1,0 +1,34 @@
+FORM 16 - SYNTHETIC DEMO ONLY
+Status: DRAFT
+Part A and Part B
+DRAFT: a practising CA/CS must review it before any filing.
+Employer name : Synthetic Demo Widgets Private Limited
+Employer TAN : DEMO12345A
+Employee name : Synthetic Example Employee
+Employee PAN : ZZZZZ1234Z
+Assessment year : 2026-27
+Period of employment : 01-04-2025 to 31-03-2026
+Gross salary : 1200000
+HRA : 120000
+LTA : 20000
+Exemptions u/s 10 : 140000
+Standard deduction : 50000
+Professional tax : 2400
+Income from house property : 0
+80C : 150000
+80CCD(1B) : 50000
+80D : 25000
+Other VI-A total : 0
+Total VI-A deductions : 225000
+Total taxable income : 782600
+Tax on total income : 69020
+Rebate 87A : 0
+Health & education cess : 2760.80
+Net tax payable : 71780.80
+Relief 89 : 0
+Total TDS : 71780.80
+Quarter | Receipt number | Amount deducted | Amount deposited
+Q1 | DEMO2025Q1 | Rs. 17,945.20 | INR 17,945.20
+Q2 | DEMO2025Q2 | Rs. 17,945.20 | INR 17,945.20
+Q3 | DEMO2025Q3 | Rs. 17,945.20 | INR 17,945.20
+Q4 | DEMO2025Q4 | Rs. 17,945.20 | INR 17,945.20
