@@ -2,7 +2,7 @@
 
 A standalone Next.js 15 / React 19 exception matrix for Demo CA Associates and 80 deterministic MSME clients. Plain CSS supports system light/dark themes and horizontally scrollable tables on small screens.
 
-Requires Node 22.18+ (Node 24 recommended).
+Requires Node 24+.
 
 ```sh
 npm install
@@ -23,4 +23,4 @@ Tally XML is generated in the browser from register values and downloaded as a B
 
 `lib/api.ts` exposes the unused `NEXT_PUBLIC_API_BASE` placeholder; there is no backend wiring, authentication or real client data. Tests use Node's built-in runner and strip-types in a single process for restricted sandboxes; no test dependency is required.
 
-Implementation environment: `npm install` was attempted, but registry access was blocked (`ENOTCACHED`, then `ECONNREFUSED`). The five pure-helper/data tests pass on Node 24. Build, typecheck and browser verification must be run after installing dependencies in a network-enabled environment.
+Verified: `npm test` (5 tests), `npm run typecheck` (strict) and `npm run build` (84 static pages) pass in CI and locally; the UI was exercised in a real browser (filter, client detail, 2B diff). Tally XML is still unverified against a live TallyPrime.
