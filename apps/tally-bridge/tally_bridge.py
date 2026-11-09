@@ -131,6 +131,19 @@ def load_config(path):
     return config
 
 
+_XML_REF = re.compile(r"&#(x[0-9a-fA-F]+|[0-9]+);")
+
+
+def _drop_illegal_refs(text):
+    """Real TallyPrime writes character references such as &#4; that XML 1.0 forbids; a strict parser rejects the whole reply. Drop only those."""
+    def keep(m):
+        ref = m.group(1)
+        code = int(ref[1:], 16) if ref[0] == "x" else int(ref)
+        ok = code in (9, 10, 13) or 0x20 <= code <= 0xD7FF or 0xE000 <= code <= 0xFFFD or 0x10000 <= code <= 0x10FFFF
+        return m.group(0) if ok else ""
+    return _XML_REF.sub(keep, text)
+
+
 IMPORT_REQUESTS = ("import", "import data")      # the classic envelope says "Import Data"; the newer HEADER style says "Import"
 
 
@@ -139,7 +152,7 @@ def safe_xml(text):
         raise ValueError("XML exceeds 2 MB or is not text")
     if "\x00" in text or re.search(r"<!\s*(DOCTYPE|ENTITY)", text, re.I):
         raise ValueError("DOCTYPE and ENTITY are forbidden")
-    root = ET.fromstring(text)
+    root = ET.fromstring(_drop_illegal_refs(text))
     for element in root.iter():
         element.tag = element.tag.upper()
         element.attrib = {key.upper(): value for key, value in element.attrib.items()}

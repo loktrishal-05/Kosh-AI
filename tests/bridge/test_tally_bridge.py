@@ -367,3 +367,13 @@ def test_documented_success_envelope_without_counters_is_ok_and_lineerror_still_
     assert bridge.parse_reply("<ENVELOPE><HEADER><VERSION>1</VERSION><STATUS>1</STATUS></HEADER><BODY><DATA/></BODY></ENVELOPE>")["ok"]
     bad = bridge.parse_reply("<ENVELOPE><HEADER><STATUS>1</STATUS></HEADER><BODY><DATA><LINEERROR>No such ledger</LINEERROR></DATA></BODY></ENVELOPE>")
     assert not bad["ok"] and bad["errors"] == ["No such ledger"]
+
+
+def test_bridge_reads_a_reply_with_the_illegal_character_reference_real_tally_emits():
+    from pathlib import Path
+    xml = (Path(__file__).resolve().parents[1] / "fixtures" / "tallyprime_7_2_ledger_export.xml").read_text(encoding="utf-8")
+    assert "&#4;" in xml
+    root = bridge.safe_xml(xml)
+    assert [e.get("NAME") for e in root.findall(".//LEDGER")] == ["Cash"]
+    with pytest.raises(ValueError):
+        bridge.safe_xml('<!DOCTYPE x [<!ENTITY a "b">]><ENVELOPE/>')

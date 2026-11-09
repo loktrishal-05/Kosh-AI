@@ -108,6 +108,7 @@ def masters_xml(company: str, ledgers: list) -> str:
         seen.add(name)
         msg = ET.SubElement(data, "TALLYMESSAGE", {"xmlns:UDF": "TallyUDF"})
         ledger = ET.SubElement(msg, "LEDGER", {"NAME": name, "ACTION": "Create"})
+        _text(ET.SubElement(ledger, "NAME.LIST"), "NAME", name)      # verified on a real TallyPrime 7.2: without NAME.LIST the ledger is rejected as an exception
         parent = "Duties & Taxes" if spec.gst_duty_head else spec.parent
         party = parent in ("Sundry Debtors", "Sundry Creditors")
         _text(ledger, "PARENT", parent)
@@ -122,12 +123,29 @@ def masters_xml(company: str, ledgers: list) -> str:
     return ET.tostring(env, encoding="unicode")
 
 
+_XML_REF = re.compile(r"&#(x[0-9a-fA-F]+|[0-9]+);")
+_DECL = re.compile(r"<!\s*(DOCTYPE|ENTITY)", re.I)
+
+
+def _valid_xml_char(code):
+    return code in (9, 10, 13) or 0x20 <= code <= 0xD7FF or 0xE000 <= code <= 0xFFFD or 0x10000 <= code <= 0x10FFFF
+
+
+def _drop_illegal_refs(text):
+    """Real TallyPrime writes character references such as &#4; that XML 1.0 forbids; a strict parser rejects the whole reply. Drop only those."""
+    def keep(m):
+        ref = m.group(1)
+        code = int(ref[1:], 16) if ref[0] == "x" else int(ref)
+        return m.group(0) if _valid_xml_char(code) else ""
+    return _XML_REF.sub(keep, text)
+
+
 def _parse(xml):
     if not isinstance(xml, str) or not xml.strip():
         raise ValueError("Empty XML response")
-    if re.search(r"DOCTYPE|ENTITY", xml, re.I):
+    if _DECL.search(xml):      # a real declaration only: Tally's own tags contain the word ENTITY (e.g. TEMPPARTYENTITY)
         raise ValueError("DOCTYPE and ENTITY are forbidden")
-    return ET.fromstring(xml)
+    return ET.fromstring(_drop_illegal_refs(xml))
 
 
 def parse_response(xml: str) -> dict:
@@ -172,10 +190,15 @@ def export_ledgers_request(company):
 
 
 def export_daybook_request(company, start: Date, end: Date):
-    env, _, _, variables = _envelope(company, "Export", "Data", "Day Book")
+    """Vouchers for a period. On a real TallyPrime 7.2 the 'Day Book' report comes back with an empty body over XML, but an inline
+    voucher collection returns every voucher with its ledger entries; the caller filters to [start, end] by date."""
+    env, _, desc, variables = _envelope(company, "Export", "Collection", "TSVouchers")
     for tag, value in (("SVEXPORTFORMAT", "$$SysName:XML"), ("SVFROMDATE", start.strftime("%Y%m%d")),
                        ("SVTODATE", end.strftime("%Y%m%d"))):
         _text(variables, tag, value)
+    col = ET.SubElement(ET.SubElement(ET.SubElement(desc, "TDL"), "TDLMESSAGE"), "COLLECTION", {"NAME": "TSVouchers", "ISMODIFY": "No"})
+    _text(col, "TYPE", "Voucher")
+    _text(col, "FETCH", "Date, VoucherTypeName, VoucherNumber, PartyLedgerName, Amount, AllLedgerEntries.LedgerName, AllLedgerEntries.Amount")
     return ET.tostring(env, encoding="unicode")
 
 

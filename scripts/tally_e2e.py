@@ -1,5 +1,5 @@
 """Smoke test of the full Tally flow against a deployed API (Vercel + Neon): sign in, draft, stage, pair the REAL tally_bridge.py,
-approve, post into a FAKE Tally on localhost:19000, then check audit, isolation and revocation.
+approve, post into a FAKE Tally on localhost:19000 (default) or into a REAL TallyPrime (set TALLY_URL and E2E_COMPANY), then check audit, isolation and revocation.
 Usage: E2E_ADMIN_KEY=... [TAXSETU_API=https://taxsetu-ai.vercel.app] python scripts/tally_e2e.py
 It creates two throwaway tenants (admin endpoint) and leaves harmless residue on them: a POSTED batch, a revoked bridge, two synced ledger names. Never prints tokens or keys."""
 import hashlib
@@ -16,7 +16,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 API = os.environ.get("TAXSETU_API", "https://taxsetu-ai.vercel.app").rstrip("/")
-COMPANY = "E2E Demo Books"
+TALLY_URL = os.environ.get("TALLY_URL", "")               # set (with E2E_COMPANY) to post into a real TallyPrime instead of the fake
+LIVE = bool(TALLY_URL)
+COMPANY = os.environ.get("E2E_COMPANY", "E2E Demo Books")
 BRIDGE = str(Path(__file__).resolve().parent.parent / "apps" / "tally-bridge" / "tally_bridge.py")
 KEY = os.environ["E2E_ADMIN_KEY"]
 results = []
@@ -69,8 +71,23 @@ class Tally(BaseHTTPRequestHandler):
         self.wfile.write(raw.encode())
 
 
-srv = HTTPServer(("127.0.0.1", 19000), Tally)
-threading.Thread(target=srv.serve_forever, daemon=True).start()
+if not LIVE:
+    srv = HTTPServer(("127.0.0.1", 19000), Tally)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+ENTRY_DATE = time.strftime("%d/%m/%Y", time.strptime(time.strftime("%Y-%m-02"), "%Y-%m-%d"))      # Tally Education mode only takes the 1st, 2nd and last day of a month
+
+
+def tally_payments():
+    """How many 25,000.00 payments the REAL Tally holds (live mode) or the fake received (default)."""
+    if not LIVE:
+        return len(imports)
+    sys.path[:0] = [str(Path(__file__).resolve().parent.parent / "packages" / "deterministic-tax-engine")]
+    from datetime import date
+    from taxsetu_engine import tallybooks as tb
+    req = urllib.request.Request(TALLY_URL, data=tb.export_daybook_request(COMPANY, date.today(), date.today()).encode(), headers={"Content-Type": "text/xml; charset=utf-8"})
+    rows = tb.parse_daybook_export(urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace"))
+    return sum(1 for r in rows if r["vtype"] == "Payment" and r["amount"] == "25000.00")
+
 tmp = Path(tempfile.mkdtemp())
 cfg = tmp / "bridge.json"
 
@@ -106,7 +123,7 @@ s, _ = call("POST", "/api/v1/auth/dev-token", {"tenant_id": TENANT, "role": "BRI
 step("admin key cannot mint a machine role", s == 422, f"http {s}")
 
 # ---- 2. draft from plain words, stage ----------------------------------------------------------------------------
-s, e = call("POST", "/api/v1/tally/entry", {"text": "Paid 25000 rent to Sharma by cheque yesterday", "state_code": "29"}, owner)
+s, e = call("POST", "/api/v1/tally/entry", {"text": "Paid 25000 rent to Sharma by cheque on " + ENTRY_DATE, "state_code": "29"}, owner)
 step("sentence becomes a balanced draft (authenticated, Neon aliases)", s == 200 and e.get("draft"), f"http {s}")
 s, b = call("POST", "/api/v1/tally/batches", {"company": COMPANY, "drafts": [e["draft"]]}, owner)
 step("batch staged in Neon outbox", s == 200 and b.get("status") == "PENDING_APPROVAL", f"http {s}")
@@ -122,20 +139,21 @@ step("pairing code issued", s == 200 and "pairing_code" in br, f"http {s}")
 rc, out = bridge("pair", "--api", API, "--code", br["pairing_code"])
 step("bridge paired", rc == 0, out[:80])
 c = json.loads(cfg.read_text())
-c["tally_url"] = "http://127.0.0.1:19000"
+c["tally_url"] = TALLY_URL or "http://127.0.0.1:19000"
 cfg.write_text(json.dumps(c))
 s, _ = call("POST", "/api/v1/tally/bridge/pair", {"code": br["pairing_code"], "host": "again"})
 step("pairing code is single-use", s == 409, f"http {s}")
 
 rc, out = bridge("selftest")
-step("bridge selftest passes against fake Tally", rc == 0, out[-90:])
+step("bridge selftest passes against " + ("REAL TallyPrime" if LIVE else "fake Tally"), rc == 0, out[-90:])
 time.sleep(1)
 s, led = call("GET", "/api/v1/tally/ledgers", None, owner)
-step("ledger list synced up to Neon", s == 200 and {l["name"] for l in led["ledgers"]} >= {"Rent Paid", "Bank Account"}, f"{len(led.get('ledgers', []))} ledgers")
+step("ledger list synced up to Neon", s == 200 and {l["name"] for l in led["ledgers"]} >= ({"Cash"} if LIVE else {"Rent Paid", "Bank Account"}), f"{len(led.get('ledgers', []))} ledgers")
 
 # ---- 4. nothing moves before approval ----------------------------------------------------------------------------
+base = tally_payments()
 rc, out = bridge("once")
-step("bridge posts nothing before approval", rc == 0 and not imports, f"imports={len(imports)}")
+step("bridge posts nothing before approval", rc == 0 and tally_payments() == base, f"payments={tally_payments()}")
 s, _ = call("POST", f"/api/v1/tally/batches/{bid}/approve", {"payload_sha256": "0" * 64}, owner)
 step("approving a different hash is refused", s == 409, f"http {s}")
 s, ap = call("POST", f"/api/v1/tally/batches/{bid}/approve", {"payload_sha256": sha}, owner)
@@ -146,11 +164,12 @@ step("second approval refused", s == 409, f"http {s}")
 # ---- 5. bridge posts, cloud learns the result ------------------------------------------------------------------------
 rc, out = bridge("once")
 step("bridge cycle succeeded", rc == 0, out[-90:])
-step("fake Tally received exactly the approved bytes", len(imports) == 1 and hashlib.sha256(imports[0]).hexdigest() == sha, f"imports={len(imports)}")
+step("Tally received exactly the approved content" if not LIVE else "REAL Tally now holds exactly one more 25,000.00 payment",
+     (tally_payments() == base + 1) if LIVE else (len(imports) == 1 and hashlib.sha256(imports[0]).hexdigest() == sha), f"payments={tally_payments()}")
 s, fin = call("GET", f"/api/v1/tally/batches/{bid}", None, owner)
 step("batch is POSTED with Tally's counters", s == 200 and fin["status"] == "POSTED" and fin["ack"].get("created") == 1, fin.get("status", "?"))
 rc, out = bridge("once")
-step("rerun does not double-post", rc == 0 and len(imports) == 1, f"imports={len(imports)}")
+step("rerun does not double-post", rc == 0 and tally_payments() == base + 1, f"payments={tally_payments()}")
 
 # ---- 6. audit + isolation + revocation ------------------------------------------------------------------------------
 s, log = call("GET", "/api/v1/audit", None, owner)

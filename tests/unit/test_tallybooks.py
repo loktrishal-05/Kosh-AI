@@ -74,6 +74,7 @@ def test_masters_xml():
     result = root.findall(".//LEDGER")
     assert len(result) == 4
     assert result[0].get("NAME") == name[:-1]
+    assert result[0].findtext("NAME.LIST/NAME") == name[:-1]            # real TallyPrime rejects a ledger without NAME.LIST
     assert result[0].get("ACTION") == "Create"
     assert result[0].findtext("PARENT") == "Sundry Creditors"
     assert result[0].findtext("ISBILLWISEON") == "Yes"
@@ -124,15 +125,16 @@ def test_failure_envelope():
 
 def test_export_requests():
     for xml, kind, ident in ((books.export_ledgers_request(CTX.company), "Data", "List of Accounts"),
-                             (books.export_daybook_request(CTX.company, DAY, DAY), "Data", "Day Book")):
+                             (books.export_daybook_request(CTX.company, DAY, DAY), "Collection", "TSVouchers")):
         root = ET.fromstring(xml)
         assert root.findtext("HEADER/TALLYREQUEST") == "Export"
         assert root.findtext("HEADER/TYPE") == kind
         assert root.findtext("HEADER/ID") == ident
         assert root.findtext(".//SVCURRENTCOMPANY") == CTX.company
         assert root.findtext(".//SVEXPORTFORMAT") == "$$SysName:XML"
-        if ident == "Day Book":
+        if ident == "TSVouchers":
             assert root.findtext(".//SVFROMDATE") == root.findtext(".//SVTODATE") == "20260402"
+            assert root.findtext(".//COLLECTION/TYPE") == "Voucher" and "AllLedgerEntries.Amount" in root.findtext(".//COLLECTION/FETCH")
 
 
 @pytest.mark.parametrize("wrapper", ["{}", "<ENVELOPE><BODY><DATA><COLLECTION>{}</COLLECTION></DATA></BODY></ENVELOPE>"])
@@ -270,3 +272,17 @@ def test_documented_success_envelope_without_counters_is_success():
     assert not bad["ok"] and "Ledger missing" in bad["errors"][0]
     empty = books.parse_response("<RESPONSE><CREATED>0</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS></RESPONSE>")
     assert not empty["ok"]                                  # counters present and zero: still "created nothing"
+
+
+def test_real_tallyprime_7_2_ledger_export_parses():
+    """Captured from a real TallyPrime 7.2: it writes &#4; (illegal in XML 1.0) and tags containing the word ENTITY."""
+    from pathlib import Path
+    xml = (Path(__file__).resolve().parents[1] / "fixtures" / "tallyprime_7_2_ledger_export.xml").read_text(encoding="utf-8")
+    got = books.parse_ledger_export(xml)
+    assert {"name": "Cash", "parent": "Cash-in-Hand", "gstin": ""} in got
+
+
+def test_real_declarations_are_still_refused_but_illegal_refs_are_dropped():
+    assert books.parse_ledger_export('<!DOCTYPE x [<!ENTITY a "b">]><ENVELOPE><LEDGER NAME="Cash"><PARENT>P</PARENT></LEDGER></ENVELOPE>') == []
+    ok = books.parse_ledger_export("<ENVELOPE><LEDGER NAME='Cash &#4;X'><PARENT>Bank&#4; Accounts&#65;</PARENT></LEDGER></ENVELOPE>")
+    assert ok == [{"name": "Cash X", "parent": "Bank AccountsA", "gstin": ""}]            # &#4; dropped, legal &#65; kept
