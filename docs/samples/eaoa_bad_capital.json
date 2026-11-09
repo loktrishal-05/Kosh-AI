@@ -1,0 +1,23 @@
+{
+  "status": "DRAFT",
+  "disclaimer": "DRAFT: a practising CA/CS must review it before any filing.",
+  "errors": [
+    "Subscribed capital 2000 exceeds authorised capital 500"
+  ],
+  "warnings": [
+    "Section 5(5)-(6): entrenchment is allowed only in the articles on formation, or by a later amendment agreed by all members (private company) or by special resolution (public company). CS must confirm agreement and the INC-34 attachment."
+  ],
+  "adoption": {
+    "reference": "Table F, Schedule I, Companies Act, 2013",
+    "summary": "Model articles for a company limited by shares: share capital, membership, meetings, directors and dividends."
+  },
+  "entrenchment_schedule": [
+    {
+      "article": "Demo Article 1",
+      "condition": "Unanimous member consent to amend this article.",
+      "cs_confirmation_required": true,
+      "attachment": "INC-34"
+    }
+  ],
+  "cs_confirmation_required": true
+}

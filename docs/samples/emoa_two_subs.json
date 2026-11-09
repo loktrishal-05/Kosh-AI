@@ -1,0 +1,56 @@
+{
+  "status": "DRAFT",
+  "disclaimer": "DRAFT: a practising CA/CS must review it before any filing.",
+  "errors": [],
+  "warnings": [],
+  "clauses": {
+    "I": {
+      "heading": "Name",
+      "proposed_names": [
+        "Synthetic Demo Widgets Private Limited"
+      ]
+    },
+    "II": {
+      "heading": "Registered Office",
+      "state": "Karnataka"
+    },
+    "III": {
+      "heading": "Objects",
+      "main": [
+        "To develop demonstration software using synthetic data."
+      ],
+      "incidental_ancillary_heading": "Incidental/ancillary objects"
+    },
+    "IV": {
+      "heading": "Liability",
+      "text": "The liability of members is limited to the amount unpaid on their shares."
+    },
+    "V": {
+      "heading": "Capital",
+      "authorised": "100000",
+      "number_of_shares": "10000",
+      "face_value": "10"
+    }
+  },
+  "subscription_table": [
+    {
+      "name": "Synthetic Subscriber 1",
+      "pan": "ZZZZZ1231Z",
+      "din": null,
+      "address": "Demo Plot 1, Fictional Layout, Bengaluru, Karnataka 560001",
+      "shares": "100",
+      "value": "1000",
+      "percentage": "50.0000"
+    },
+    {
+      "name": "Synthetic Subscriber 2",
+      "pan": "ZZZZZ1232Z",
+      "din": null,
+      "address": "Demo Plot 2, Fictional Layout, Bengaluru, Karnataka 560001",
+      "shares": "100",
+      "value": "1000",
+      "percentage": "50.0000"
+    }
+  ],
+  "total_subscribed": "2000"
+}

@@ -1,9 +1,8 @@
-"""mcp-server-mca-labour. Labour Form A/B registers are compiled by the deterministic engine; the e-MOA / e-AOA drafters are Phase 5b
-and refuse rather than fake legal text."""
+"""Deterministic labour registers, Form 16 parsing and incorporation drafts."""
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
-from taxsetu_engine import labour
+from taxsetu_engine import form16, labour, spice
 
 from .core import Server, ToolError
 
@@ -35,9 +34,20 @@ def build() -> Server:
             raise ToolError(f"bad payroll_data: {e}") from e
         return labour.compile_registers(lin, month, emps, wages, date.fromisoformat(today) if today else date.today())
 
-    for name in ("draft_spice_plus_emoa_inc33", "draft_eaoa_inc34_with_entrenchment"):
-        def tool(**kw):
-            raise ToolError("Phase 5b: not implemented yet")
-        tool.__name__ = name
-        s.tool(hitl=True)(tool)
+    @s.tool(hitl=True)
+    def draft_spice_plus_emoa_inc33(inp: dict) -> dict:
+        """Draft INC-33 clauses and subscription arithmetic for CA/CS review."""
+        return spice.draft_emoa(inp)
+
+    @s.tool(hitl=True)
+    def draft_eaoa_inc34_with_entrenchment(inp: dict) -> dict:
+        """Draft Table F adoption and an INC-34 entrenchment schedule for CS review."""
+        return spice.draft_eaoa(inp)
+
+    @s.tool(hitl=True)
+    def parse_form16_certificate(text: str) -> dict:
+        """Parse untrusted certificate text and reconcile the stated amounts."""
+        parsed = form16.parse_form16(text)
+        return {"status": "DRAFT", "disclaimer": form16.DISCLAIMER,
+                "parsed": parsed, "validation": form16.validate_form16(parsed)}
     return s

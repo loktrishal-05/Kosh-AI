@@ -216,9 +216,17 @@ def test_condonation_petition_only_in_the_119_2b_window():
     assert inwin["drafted"] is False and inwin["pathway"] == "SEC_139_4"
 
 
-def test_phase5_generators_refuse_instead_of_faking():
-    with pytest.raises(ToolError, match="Phase 5"):
-        mesh().call("mca-labour", "draft_eaoa_inc34_with_entrenchment")
+def test_phase5b_tools_produce_reviewable_drafts():
+    from taxsetu_engine.form16 import sample_form16
+    from taxsetu_engine.spice import sample_spice
+    server = mesh().servers["mca-labour"]
+    for name in ("draft_spice_plus_emoa_inc33", "draft_eaoa_inc34_with_entrenchment"):
+        out = server.call(name, {"inp": sample_spice()})
+        assert out["status"] == "DRAFT" and not out["errors"]
+        assert server.tools[name][1]["annotations"]["hitlRequired"]
+    result = rpc(server, "tools/call", name="parse_form16_certificate", arguments={"text": sample_form16()})["result"]
+    assert result["structuredContent"]["validation"]["ok"]
+    assert result["structuredContent"]["parsed"]["gross_salary"] == "1200000"
 
 
 def test_workspace_archive_only_signed_and_calendar_idempotent():
