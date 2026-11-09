@@ -7,7 +7,7 @@ export function batchStatus(batch: Batch): string {
   switch (batch.status) {
     case "PENDING_APPROVAL": return "Waiting for your approval";
     case "APPROVED": return "Approved - your Tally bridge will post it within about a minute";
-    case "POSTED": return `Posted to Tally (created ${batch.ack?.created ?? 0})`;
+    case "POSTED": return batch.ack?.created ? `Posted to Tally (created ${batch.ack.created})` : "Posted to Tally";   // some Tally replies carry no counts
     case "FAILED": return `Tally refused it: ${batch.ack?.errors?.join("; ") || "No error details returned. Check your bridge."}`;
     case "REJECTED": return "Rejected - this batch will not be sent to Tally";
   }

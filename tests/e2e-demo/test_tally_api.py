@@ -225,3 +225,16 @@ def test_dev_token_is_off_unless_configured(client, monkeypatch):
     r = client.post("/api/v1/auth/dev-token", json=body, headers={"x-admin-key": "k" * 32})
     assert r.status_code == 200 and client.get("/api/v1/tally/batches", headers={"Authorization": "Bearer " + r.json()["token"]}).status_code == 200
     assert client.post("/api/v1/auth/dev-token", json={**body, "role": "BRIDGE"}, headers={"x-admin-key": "k" * 32}).status_code == 422   # no minting machine roles
+
+
+def test_tenant_creation_is_admin_only_and_audited(client, monkeypatch):
+    body = {"legal_name": "Sunrise Traders", "entity_type": "PROPRIETORSHIP"}
+    assert client.post("/api/v1/auth/tenants", json=body).status_code == 401                       # disabled while no admin key is configured
+    monkeypatch.setenv("TAXSETU_ADMIN_KEY", "k" * 32)
+    assert client.post("/api/v1/auth/tenants", json=body, headers={"x-admin-key": "wrong" * 8}).status_code == 401
+    assert client.post("/api/v1/auth/tenants", json={**body, "entity_type": "COOPERATIVE"}, headers={"x-admin-key": "k" * 32}).status_code == 422
+    r = client.post("/api/v1/auth/tenants", json=body, headers={"x-admin-key": "k" * 32})
+    assert r.status_code == 200 and uuid.UUID(r.json()["tenant_id"])
+    t = client.post("/api/v1/auth/dev-token", json={"tenant_id": r.json()["tenant_id"], "role": "OWNER"}, headers={"x-admin-key": "k" * 32}).json()["token"]
+    log = client.get("/api/v1/audit", headers={"Authorization": "Bearer " + t}).json()
+    assert log["valid"] and [e["action"] for e in log["events"]] == ["TENANT_CREATED"]

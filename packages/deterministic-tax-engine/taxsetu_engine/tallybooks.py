@@ -154,7 +154,9 @@ def parse_response(xml: str) -> dict:
             code = root.findtext(".//STATUS.LIST/STATUS/CODE", "").strip()
             desc = root.findtext(".//STATUS.LIST/STATUS/DESC", "Import failed").strip()
             result["errors"].append(f"{code}: {desc}" if code else desc)
-        result["ok"] = status != "0" and not result["errors"] and result["created"] + result["altered"] > 0
+        counted = root.find(".//CREATED") is not None
+        # Tally's documented success envelope is HEADER/STATUS 1 with no counters at all: that is success, not "nothing created".
+        result["ok"] = status != "0" and not result["errors"] and (result["created"] + result["altered"] > 0 or (status == "1" and not counted))
         if not result["ok"] and not result["errors"]:
             result["errors"].append("No vouchers or masters created or altered")
     except (ET.ParseError, ValueError, TypeError) as exc:

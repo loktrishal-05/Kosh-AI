@@ -2,6 +2,7 @@
 import hashlib
 import hmac
 import os
+import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -67,13 +68,39 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None) -> F
         tenant_id: str = Field(pattern=r"^[0-9a-fA-F-]{36}$")
         role: str = Field(default="OWNER", pattern="^(OWNER|CA|CLERK|EMPLOYEE)$")
 
-    @app.post("/api/v1/auth/dev-token", tags=["auth"])
-    def dev_token(b: DevTokenIn, x_admin_key: str = Header(default="")):
-        """Stopgap login until WhatsApp/mobile OTP exists: whoever holds TAXSETU_ADMIN_KEY can mint a 12 h token. Disabled when unset."""
+    def admin_only(x_admin_key: str) -> None:
         key = os.environ.get("TAXSETU_ADMIN_KEY", "")
         if len(key) < 24 or not hmac.compare_digest(x_admin_key.encode(), key.encode()):
             raise HTTPException(401, "admin key required")
+
+    def tenant_exists(tenant_id: str) -> bool:
+        if drafts is None:
+            return True                     # in-memory mode has no tenant table
+        with drafts.pg.tx(tenant_id) as c:
+            return c.execute("SELECT 1 FROM tenants WHERE tenant_id = %s", (tenant_id,)).fetchone() is not None
+
+    @app.post("/api/v1/auth/dev-token", tags=["auth"])
+    def dev_token(b: DevTokenIn, x_admin_key: str = Header(default="")):
+        """Stopgap login until WhatsApp/mobile OTP exists: whoever holds TAXSETU_ADMIN_KEY can mint a 12 h token. Disabled when unset."""
+        admin_only(x_admin_key)
+        if not tenant_exists(b.tenant_id):
+            raise HTTPException(404, "unknown tenant: create it first with POST /api/v1/auth/tenants")
         return {"token": auth.encode({"tenant_id": b.tenant_id, "role": b.role}, secret, ttl_s=12 * 3600), "expires_in_s": 12 * 3600}
+
+    class TenantIn(BaseModel):
+        legal_name: str = Field(min_length=2, max_length=120)
+        entity_type: str = Field(default="PROPRIETORSHIP", pattern="^(PROPRIETORSHIP|PARTNERSHIP|LLP|PVT_LTD|OPC)$")
+
+    @app.post("/api/v1/auth/tenants", tags=["auth"])
+    def create_tenant(b: TenantIn, x_admin_key: str = Header(default="")):
+        """Onboarding stopgap: admin-key-only, audited. Replaces hand-written SQL."""
+        admin_only(x_admin_key)
+        tid = str(uuid.uuid4())
+        if drafts is not None:
+            with drafts.pg.tx(tid) as c:      # RLS WITH CHECK: the row is only insertable for the tenant id set on this transaction
+                c.execute("INSERT INTO tenants (tenant_id, legal_name, entity_type) VALUES (%s, %s, %s)", (tid, b.legal_name.strip(), b.entity_type))
+        gate.audit.append(tid, "ADMIN", "TENANT_CREATED", legal_name=b.legal_name.strip(), entity_type=b.entity_type)
+        return {"tenant_id": tid, "legal_name": b.legal_name.strip(), "entity_type": b.entity_type}
 
     @app.get("/health")
     def health():

@@ -1,7 +1,7 @@
 """Smoke test of the full Tally flow against a deployed API (Vercel + Neon): sign in, draft, stage, pair the REAL tally_bridge.py,
 approve, post into a FAKE Tally on localhost:19000, then check audit, isolation and revocation.
-Usage: E2E_ADMIN_KEY=... [TAXSETU_API=https://taxsetu-ai.vercel.app] [E2E_TENANT=<uuid of an existing tenant>] python scripts/tally_e2e.py
-It leaves harmless residue (a POSTED batch, a revoked bridge, two synced ledger names) on the tenant it uses. Never prints tokens or keys."""
+Usage: E2E_ADMIN_KEY=... [TAXSETU_API=https://taxsetu-ai.vercel.app] python scripts/tally_e2e.py
+It creates two throwaway tenants (admin endpoint) and leaves harmless residue on them: a POSTED batch, a revoked bridge, two synced ledger names. Never prints tokens or keys."""
 import hashlib
 import json
 import os
@@ -16,7 +16,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 API = os.environ.get("TAXSETU_API", "https://taxsetu-ai.vercel.app").rstrip("/")
-TENANT = os.environ.get("E2E_TENANT", "00000000-0000-4000-8000-0000000000a1")
 COMPANY = "E2E Demo Books"
 BRIDGE = str(Path(__file__).resolve().parent.parent / "apps" / "tally-bridge" / "tally_bridge.py")
 KEY = os.environ["E2E_ADMIN_KEY"]
@@ -80,6 +79,21 @@ def bridge(*args):
     p = subprocess.run([sys.executable, BRIDGE, "--config", str(cfg), *args], capture_output=True, text=True, timeout=120)
     return p.returncode, (p.stdout + p.stderr).strip()
 
+
+# ---- 0. two real tenants (onboarding endpoint) ---------------------------------------------------------------------
+def make_tenant(name):
+    s, r = call("POST", "/api/v1/auth/tenants", {"legal_name": name}, headers={"x-admin-key": KEY})
+    return r.get("tenant_id") if s == 200 else None
+
+
+stamp = time.strftime("%Y%m%d-%H%M%S")
+TENANT, OTHER = make_tenant("E2E Alpha " + stamp), make_tenant("E2E Beta " + stamp)
+if not step("admin creates two real tenants", TENANT and OTHER and TENANT != OTHER):
+    sys.exit(1)
+s, _ = call("POST", "/api/v1/auth/tenants", {"legal_name": "No Key Ltd"})
+step("tenant creation without the admin key is refused", s == 401, f"http {s}")
+s, _ = call("POST", "/api/v1/auth/dev-token", {"tenant_id": "00000000-0000-4000-8000-00000000dead", "role": "OWNER"}, headers={"x-admin-key": KEY})
+step("a token for a tenant that does not exist is refused", s == 404, f"http {s}")
 
 # ---- 1. sign in ---------------------------------------------------------------------------------------------------
 s, r = call("POST", "/api/v1/auth/dev-token", {"tenant_id": TENANT, "role": "OWNER"}, headers={"x-admin-key": KEY})
@@ -145,10 +159,12 @@ step("audit chain valid and complete", s == 200 and log.get("valid") is True and
 btok = c["bridge_token"]
 step("bridge token cannot read the audit log", call("GET", "/api/v1/audit", None, btok)[0] == 403)
 step("bridge token cannot approve", call("POST", f"/api/v1/tally/batches/{bid}/approve", {"payload_sha256": sha}, btok)[0] == 403)
-ghost = call("POST", "/api/v1/auth/dev-token", {"tenant_id": "00000000-0000-4000-8000-0000000000b2", "role": "OWNER"}, headers={"x-admin-key": KEY})[1]["token"]
-step("a different tenant gets 404 for this batch", call("GET", f"/api/v1/tally/batches/{bid}", None, ghost)[0] == 404)
-step("a different tenant sees none of our batches", call("GET", "/api/v1/tally/batches", None, ghost)[1] == {"batches": []})
-step("unknown tenant gets a clear 404 on write, not a 500", call("POST", "/api/v1/tally/batches", {"company": "X", "drafts": [e["draft"]]}, ghost)[0] == 404)
+other = call("POST", "/api/v1/auth/dev-token", {"tenant_id": OTHER, "role": "OWNER"}, headers={"x-admin-key": KEY})[1]["token"]
+step("second REAL tenant gets 404 for the first tenant's batch", call("GET", f"/api/v1/tally/batches/{bid}", None, other)[0] == 404)
+step("second real tenant sees none of the first tenant's batches", call("GET", "/api/v1/tally/batches", None, other)[1] == {"batches": []})
+step("second real tenant cannot approve the first tenant's batch", call("POST", f"/api/v1/tally/batches/{bid}/approve", {"payload_sha256": sha}, other)[0] == 404)
+step("second real tenant cannot read the first tenant's ledgers or audit", call("GET", "/api/v1/tally/ledgers", None, other)[1] == {"ledgers": []} and call("GET", "/api/v1/audit", None, other)[1]["events"][0]["action"] == "TENANT_CREATED")
+step("second real tenant can stage its own batch", call("POST", "/api/v1/tally/batches", {"company": "Beta Books", "drafts": [e["draft"]]}, other)[0] == 200)
 s, _ = call("DELETE", f"/api/v1/tally/bridges/{br['bridge_id']}", None, owner)
 step("owner revokes the bridge", s == 200, f"http {s}")
 step("revoked bridge is cut off", call("GET", "/api/v1/tally/bridge/pending", None, btok)[0] == 401)

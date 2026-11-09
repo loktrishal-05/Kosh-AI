@@ -198,6 +198,9 @@ def parse_reply(raw):
         response = root if root.tag in ("RESPONSE", "IMPORTRESULT") else root.find(".//RESPONSE")
         if response is None:
             response = root.find(".//IMPORTRESULT")
+        if response is None and root.findtext("HEADER/STATUS", "").strip() == "1" and not lines:
+            result["ok"] = True          # Tally's documented success envelope carries no counters; a false failure would invite a duplicate re-send
+            return result
         if response is None:
             result["errors"] = lines or ["Tally returned no import counters"]
             return result

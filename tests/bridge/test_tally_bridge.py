@@ -361,3 +361,9 @@ def test_classic_import_data_envelope_is_accepted_and_empty_import_is_not_succes
     assert not nothing["ok"] and "created nothing" in nothing["errors"][0]
     wrapped = bridge.parse_reply("<ENVELOPE><BODY><DATA><IMPORTRESULT><CREATED>1</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS></IMPORTRESULT></DATA></BODY></ENVELOPE>")
     assert wrapped["ok"] and wrapped["created"] == 1
+
+
+def test_documented_success_envelope_without_counters_is_ok_and_lineerror_still_fails():
+    assert bridge.parse_reply("<ENVELOPE><HEADER><VERSION>1</VERSION><STATUS>1</STATUS></HEADER><BODY><DATA/></BODY></ENVELOPE>")["ok"]
+    bad = bridge.parse_reply("<ENVELOPE><HEADER><STATUS>1</STATUS></HEADER><BODY><DATA><LINEERROR>No such ledger</LINEERROR></DATA></BODY></ENVELOPE>")
+    assert not bad["ok"] and bad["errors"] == ["No such ledger"]

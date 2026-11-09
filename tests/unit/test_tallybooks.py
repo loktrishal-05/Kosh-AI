@@ -261,3 +261,12 @@ def test_daybook_skips_bad_items_without_losing_good_ones():
         return f'<VOUCHER><DATE>{day}</DATE><VOUCHERTYPENAME>Receipt</VOUCHERTYPENAME><AMOUNT>{amount}</AMOUNT></VOUCHER>'
     xml = "<ENVELOPE>" + voucher(day="20260230") + voucher(amount="garbage") + voucher(amount="Infinity") + voucher() + "</ENVELOPE>"
     assert books.parse_daybook_export(xml) == [dict(date="2026-04-02", vtype="Receipt", number="", party="", amount="10.00")]
+
+
+def test_documented_success_envelope_without_counters_is_success():
+    ok = books.parse_response("<ENVELOPE><HEADER><VERSION>1</VERSION><STATUS>1</STATUS></HEADER><BODY><DATA/></BODY></ENVELOPE>")
+    assert ok["ok"] and ok["errors"] == []
+    bad = books.parse_response("<ENVELOPE><HEADER><VERSION>1</VERSION><STATUS>1</STATUS></HEADER><BODY><DATA><LINEERROR>Ledger missing</LINEERROR></DATA></BODY></ENVELOPE>")
+    assert not bad["ok"] and "Ledger missing" in bad["errors"][0]
+    empty = books.parse_response("<RESPONSE><CREATED>0</CREATED><ALTERED>0</ALTERED><ERRORS>0</ERRORS></RESPONSE>")
+    assert not empty["ok"]                                  # counters present and zero: still "created nothing"

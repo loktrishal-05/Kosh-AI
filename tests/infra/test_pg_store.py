@@ -169,3 +169,25 @@ def test_unknown_tenant_gets_a_clear_404_not_a_500(pg, monkeypatch):
     r = c.post("/api/v1/tally/batches", headers=ghost, json={"company": "X", "drafts": [d]})
     assert r.status_code == 404 and "not set up" in r.json()["detail"]
     assert c.get("/api/v1/tally/batches", headers=ghost).json() == {"batches": []}        # reads stay empty, never another tenant's rows
+
+
+def test_tenant_onboarding_on_postgres_end_to_end(pg, monkeypatch):
+    """Admin creates two real tenants; each can stage, neither can see the other's batch; an unknown tenant cannot even get a token."""
+    monkeypatch.setenv("DATABASE_URL_APP", APP)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.setenv("TAXSETU_ADMIN_KEY", "k" * 32)
+    c = TestClient(create_app(SECRET, b"wa"), raise_server_exceptions=False)
+    admin = {"x-admin-key": "k" * 32}
+    mk = lambda n: c.post("/api/v1/auth/tenants", json={"legal_name": n}, headers=admin).json()["tenant_id"]
+    a, b = mk("Alpha Traders"), mk("Beta Traders")
+    tok = lambda t: {"Authorization": "Bearer " + c.post("/api/v1/auth/dev-token", json={"tenant_id": t, "role": "OWNER"}, headers=admin).json()["token"]}
+    d = {"vtype": "Payment", "date": "2026-04-01", "lines": [{"ledger": "Rent Paid", "amount": "5", "side": "Dr"}, {"ledger": "Bank Account", "amount": "5", "side": "Cr"}]}
+    staged = c.post("/api/v1/tally/batches", headers=tok(a), json={"company": "Alpha", "drafts": [d]})
+    assert staged.status_code == 200
+    bid = staged.json()["batch_id"]
+    assert c.get(f"/api/v1/tally/batches/{bid}", headers=tok(b)).status_code == 404                    # real second tenant, real RLS
+    assert c.get("/api/v1/tally/batches", headers=tok(b)).json() == {"batches": []}
+    assert c.post(f"/api/v1/tally/batches/{bid}/approve", headers=tok(b), json={"payload_sha256": staged.json()["payload_sha256"]}).status_code == 404
+    assert c.get(f"/api/v1/tally/batches/{bid}", headers=tok(a)).status_code == 200
+    assert c.post("/api/v1/auth/dev-token", json={"tenant_id": str(uuid.uuid4()), "role": "OWNER"}, headers=admin).status_code == 404
+    assert c.get("/api/v1/audit", headers=tok(a)).json()["valid"] is True
