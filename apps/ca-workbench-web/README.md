@@ -1,4 +1,4 @@
-# TaxSetu CA Workbench
+# Kosh AI CA Workbench
 
 A standalone Next.js 15 / React 19 exception matrix for Demo CA Associates and 80 deterministic MSME clients. Plain CSS supports system light/dark themes and horizontally scrollable tables on small screens.
 

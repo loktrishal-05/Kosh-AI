@@ -1,4 +1,4 @@
--- TaxSetu AI core schema (report s3.3). Every tenant table is RLS-protected and FORCEd (applies to the table owner too).
+-- Kosh AI core schema (report s3.3). Every tenant table is RLS-protected and FORCEd (applies to the table owner too).
 -- The API connects as taxsetu_app (no BYPASSRLS) and sets: SET app.tenant_id = '<uuid>' per transaction/connection.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 

@@ -35,6 +35,6 @@ test("API reports detail and validation errors, tolerates empty bodies, and expl
     globalThis.fetch = async () => new Response("<html>oops</html>", { status: 200 });
     await assert.rejects(call("test"), /unreadable/);
     globalThis.fetch = async () => { throw new Error("offline"); };
-    await assert.rejects(call("test"), /Cannot reach TaxSetu/);
+    await assert.rejects(call("test"), /Cannot reach Kosh AI/);
   } finally { globalThis.fetch = original; }
 });

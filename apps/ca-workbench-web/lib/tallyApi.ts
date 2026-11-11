@@ -36,17 +36,17 @@ export async function call<T>(path: string, options: { method?: string; body?: u
     response = await fetch(`/api/v1/${path}`, { method: options.method ?? "GET", headers, body: options.body === undefined ? undefined : JSON.stringify(options.body), signal: options.signal });
   } catch (error) {
     if (options.signal?.aborted) throw error;
-    throw new Error("Cannot reach TaxSetu. Check your connection and try again.");
+    throw new Error("Cannot reach Kosh AI. Check your connection and try again.");
   }
   const text = await response.text();
   let data: unknown;
   try { data = text ? JSON.parse(text) : undefined; } catch { data = undefined; }
   if (!response.ok) {
     const detail = data && typeof data === "object" && "detail" in data ? data.detail : undefined;
-    const message = typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map(d => typeof d?.msg === "string" ? d.msg : "Invalid request").join("; ") : `TaxSetu request failed (${response.status}). Please try again.`;
+    const message = typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map(d => typeof d?.msg === "string" ? d.msg : "Invalid request").join("; ") : `Kosh AI request failed (${response.status}). Please try again.`;
     throw new ApiError(message, response.status);
   }
-  if (text && data === undefined) throw new Error("TaxSetu returned an unreadable response. Please try again.");
+  if (text && data === undefined) throw new Error("Kosh AI returned an unreadable response. Please try again.");
   return data as T;
 }
 

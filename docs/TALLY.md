@@ -1,7 +1,7 @@
-# TaxSetu × Tally: "Tally without knowing Tally"
+# Kosh AI × Tally: "Tally without knowing Tally"
 
 Goal: a small business owner (or their part-time accountant) who has never learned Tally can keep their books correct by
-talking to TaxSetu in plain language, forwarding bills and uploading a bank statement. TaxSetu drafts the Tally entries, a human
+talking to Kosh AI in plain language, forwarding bills and uploading a bank statement. Kosh AI drafts the Tally entries, a human
 approves them, and a small program on the Tally PC posts them. The business pays for far less Tally maintenance work.
 
 ## 1. What we learned about Tally (research)
@@ -50,7 +50,7 @@ flowchart LR
   subgraph Owner["Business owner (no Tally knowledge)"]
     W["WhatsApp / web: type, speak, photo, bank CSV"]
   end
-  subgraph Cloud["TaxSetu cloud (Vercel + Neon)"]
+  subgraph Cloud["Kosh AI cloud (Vercel + Neon)"]
     C["Classifier<br/>(rules first, LLM assist)"]
     B["Books engine<br/>voucher + ledger XML, GST split, balance check"]
     Q["Approval queue<br/>(outbox, hash + HMAC)"]

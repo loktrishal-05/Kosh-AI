@@ -1,6 +1,6 @@
 <div align="center">
 
-# TaxSetu AI
+# Kosh AI
 
 **An agentic compliance co-pilot for Indian micro-enterprises.**
 WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP is the only thing that can file.
@@ -14,7 +14,7 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 </div>
 
 > **Problem statement 3.1.** A shop owner with a phone and a shoebox of bills should not need to understand GSTR-2B, Rule 37,
-> Section 194C or Circular 64/38 to stay compliant. TaxSetu AI reads the bills, does the arithmetic, chases the suppliers, drafts the
+> Section 194C or Circular 64/38 to stay compliant. Kosh AI reads the bills, does the arithmetic, chases the suppliers, drafts the
 > replies, and then **stops** — filing stays with the owner or a professional.
 
 ![Sandbox storyline](docs/assets/storyline-1-ingestion.jpg)

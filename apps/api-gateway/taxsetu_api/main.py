@@ -34,7 +34,7 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None, gsp=
     if gsp is None and (cfg := gsp_live.GspConfig.from_env()) is not None:
         gsp = gsp_live.GspSessions(cfg)                       # live GST portal access only when the GSP credentials are configured
     gate = HitlGate(secret, audit=audit, drafts=drafts, portal=gsp_live.LivePortalProvider(secret, gsp) if gsp else None)
-    app = FastAPI(title="TaxSetu AI API", version="0.1.0")
+    app = FastAPI(title="Kosh AI API", version="0.1.0")
     if drafts is not None:
         from fastapi.responses import JSONResponse
         from psycopg.errors import ForeignKeyViolation

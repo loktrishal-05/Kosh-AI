@@ -114,7 +114,7 @@ def test_sandbox_storyline_endpoint_runs_all_agents_and_the_gate():
     from fastapi.testclient import TestClient
     from taxsetu_api.main import create_app
     c = TestClient(create_app(b"s"))
-    assert "TaxSetu AI" in c.get("/").text
+    assert "Kosh AI" in c.get("/").text
     d = c.get("/api/v1/demo/storyline").json()
     assert d["simulated"] and [s["agent"] for s in d["steps"]][-1] == "Human gate" and len(d["steps"]) == 6
     facts = {k: v for s in d["steps"] for k, v in s["facts"]}

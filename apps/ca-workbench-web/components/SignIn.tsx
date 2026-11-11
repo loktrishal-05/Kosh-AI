@@ -43,7 +43,7 @@ export function SignIn() {
   }
 
   return <div className="signin">
-    <p className="eyebrow">TAXSETU AI · EVALUATION BUILD</p>
+    <p className="eyebrow">KOSH AI · EVALUATION BUILD</p>
     <h1>Sign in</h1>
     <section className="panel tally-step" aria-label="Sign in">
       <div className="signin-demo">

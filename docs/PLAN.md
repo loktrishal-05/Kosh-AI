@@ -1,6 +1,6 @@
-# TaxSetu AI — Build Plan & Schedule
+# Kosh AI — Build Plan & Schedule
 
-Source: *TaxSetu AI Complete Master Report (PS 3.1)*. This file is the working plan; the PDF is not committed.
+Source: *Kosh AI Complete Master Report (PS 3.1)*. This file is the working plan; the PDF is not committed.
 
 ## What we are building
 A WhatsApp-first, multi-agent **pre-filing compliance co-pilot** for Indian micro-enterprises (GST, TDS, e-Way Bill,

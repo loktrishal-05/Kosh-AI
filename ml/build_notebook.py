@@ -137,7 +137,7 @@ files.download("taxsetu_narration_model.zip")
 
 def main():
     cells = [
-        md("# TaxSetu AI: bank-narration classifier\nFine-tunes a small BERT (`prajjwal1/bert-mini`, ~11M parameters) to file a bank-statement row under a ledger head, "
+        md("# Kosh AI: bank-narration classifier\nFine-tunes a small BERT (`prajjwal1/bert-mini`, ~11M parameters) to file a bank-statement row under a ledger head, "
            "exports it as an int8 ONNX model, and re-tests the exported file the way the API will run it.\n\n"
            "**Data:** synthetic (`narration_data.py`); no customer data. The test set uses phrases held out of training. Retrain with real, labelled narrations before relying on it.\n\n"
            "Runtime > Change runtime type > T4 GPU, then Runtime > Run all."),

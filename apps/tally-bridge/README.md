@@ -1,6 +1,6 @@
-# TaxSetu bridge for TallyPrime
+# Kosh AI bridge for TallyPrime
 
-This small program runs on your Windows PC beside TallyPrime. TaxSetu creates
+This small program runs on your Windows PC beside TallyPrime. Kosh AI creates
 drafts for a person to review and approve. The bridge checks the approved,
 signed entries before sending them to the paired company's books. It does not
 file tax returns. It needs Python 3.10 or newer; no extra Python packages.
@@ -10,13 +10,13 @@ file tax returns. It needs Python 3.10 or newer; no extra Python packages.
 2. Open TallyPrime. Press **F1 Help > Settings > Advanced Configuration**.
    Enable the HTTP server, choose port **9000**, and keep your company open.
    Keep this port local to your PC; do not expose it on the internet or router.
-3. In TaxSetu, choose your company and get a bridge pairing code and API address.
+3. In Kosh AI, choose your company and get a bridge pairing code and API address.
    Run `python tally_bridge.py pair --api YOUR_API_ADDRESS --code YOUR_PAIRING_CODE`.
-   Replace the two placeholders with the values shown in TaxSetu. The command
+   Replace the two placeholders with the values shown in Kosh AI. The command
    `python tally_bridge.py pair` needs these two details to complete pairing.
 4. Run `python tally_bridge.py selftest`. A **PASS** means Tally answered and
    the paired company was found. A **FAIL** explains what to check. A successful
-   check also sends your ledger names, groups and GSTINs to your TaxSetu account.
+   check also sends your ledger names, groups and GSTINs to your Kosh AI account.
 5. To check approved entries without importing them, run
    `python tally_bridge.py once --dry-run`. This acknowledges those entries as
    `dry-run`, so they will need new human approval before a real import.
@@ -24,8 +24,8 @@ file tax returns. It needs Python 3.10 or newer; no extra Python packages.
    The bridge checks every 15 seconds, retries network failures with increasing
    waits up to five minutes, and refreshes ledgers every 20 checks.
 
-Only entries already approved in TaxSetu should reach this bridge. Confirm the
-company and amounts in TaxSetu before approval. For a single check instead of
+Only entries already approved in Kosh AI should reach this bridge. Confirm the
+company and amounts in Kosh AI before approval. For a single check instead of
 continuous running, use `python tally_bridge.py once`.
 
 ## Settings and logs
@@ -46,7 +46,7 @@ to each command. The folder must already exist. Use the same location each time.
 Read messages in the command window or open
 `%USERPROFILE%\.taxsetu-bridge.json.log` with Notepad. An older log is kept as
 `.log.1`. Logs mask the token and signing key. Refused entries have a detailed
-reason in TaxSetu. A network message means check your internet and Tally's HTTP
+reason in Kosh AI. A network message means check your internet and Tally's HTTP
 settings. Ledger sync failures do not stop imports.
 
 The adjacent `.taxsetu-bridge.json.posted.json` file is the import history.
@@ -66,7 +66,7 @@ Press **Ctrl+C** in the command window to stop. You can restart with the same
 `run` command; saved acknowledgements resume. There is no background service or
 automatic startup to uninstall. Only one bridge may use a settings file at once.
 
-To remove it, stop the bridge, revoke/unpair it in TaxSetu, and delete the folder
+To remove it, stop the bridge, revoke/unpair it in Kosh AI, and delete the folder
 containing `tally_bridge.py`. Retain your settings and import history privately
 until all pending entries are reconciled. Then delete the settings, `.posted.json`,
 `.lock`, `.log` and `.log.1` files from your user folder (or custom location).

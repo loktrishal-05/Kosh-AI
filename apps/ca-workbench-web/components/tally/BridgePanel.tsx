@@ -29,7 +29,7 @@ export function BridgePanel({ token, company }: { token: string; company: string
   }, [code]);
   return <section className="panel tally-step"><h2>Connect your Tally</h2><p>A bridge is a small program on your Tally computer. It collects only the content you approve here.</p>
     <ol><li>In Tally, open F1 Help &gt; Settings &gt; Advanced Configuration. Turn on the HTTP port and use port 9000. Keep your company open.</li>
-    <li>Download the bridge from <code>apps/tally-bridge</code> in the TaxSetu repository onto that computer. Python must be installed.</li>
+    <li>Download the bridge from <code>apps/tally-bridge</code> in the Kosh AI repository onto that computer. Python must be installed.</li>
     <li>Create a pairing code below, then run <code className="tally-code">python tally_bridge.py pair --api {site} --code &lt;code&gt;</code>Replace &lt;code&gt; with your pairing code.</li>
     <li>Run <code>python tally_bridge.py run</code>. Keep it running to collect approved entries.</li></ol>
     <div className="tally-actions"><button disabled={busy || !company.trim() || !!code} onClick={() => run(async () => { setCode((await tallyApi.createBridge(company.trim(), token)).pairing_code); setMessage("Pairing code created. Copy it now; it is shown only in this tab."); await refresh(); })}>Create pairing code</button><button disabled={busy} onClick={() => run(refresh)}>Refresh bridges</button></div>
