@@ -115,9 +115,18 @@ def urllib_transport(method: str, url: str, headers: dict, body: dict | None) ->
         raise GspError("the GST portal could not be reached")
 
 
+def send_otp(url: str, token: str, tenant_id: str, draft_id: str, otp: str, transport=urllib_transport) -> None:
+    """Hand the approval OTP to the operator's SMS/WhatsApp gateway (a webhook that knows the tenant's owner phone). Fails closed: no delivery, no OTP."""
+    if not url.startswith("https://"):
+        raise GspError("the OTP delivery webhook must be https")
+    status, _ = transport("POST", url, {"Authorization": f"Bearer {token}"} if token else {}, {"tenant_id": tenant_id, "draft_id": draft_id, "otp": otp})
+    if not 200 <= status < 300:
+        raise GspError("the OTP could not be delivered")
+
+
 # ---- one taxpayer's portal session ---------------------------------------------------------------------------------------------------------------
 class GspSession:
-    def __init__(self, cfg: GspConfig, gstin: str, username: str, transport=urllib_transport, clock=time.time):
+    def __init__(self, cfg: GspConfig, gstin: str, username: str, transport=urllib_transport, clock=time.time, on_change=None):
         if not gst.is_valid_gstin(gstin):
             raise GspError("invalid GSTIN")
         if not username or len(username) > 60 or any(ord(c) < 32 for c in username):
@@ -127,6 +136,22 @@ class GspSession:
         self._token = ""
         self._sek = b""
         self._expires = 0.0
+        self._on_change = on_change                                   # the session store saves every change, so any server process can pick the session up
+
+    def to_state(self) -> bytes:
+        return json.dumps({"gstin": self.gstin, "username": self.username, "app_key": b64(self._app_key), "token": self._token,
+                           "sek": b64(self._sek), "expires": self._expires}).encode()
+
+    @classmethod
+    def from_state(cls, cfg: GspConfig, state: bytes, transport=urllib_transport, clock=time.time, on_change=None):
+        d = json.loads(state)
+        s = cls(cfg, d["gstin"], d["username"], transport, clock, on_change)
+        s._app_key, s._token, s._sek, s._expires = unb64(d["app_key"]), d["token"], unb64(d["sek"]), float(d["expires"])
+        return s
+
+    def _save(self) -> None:
+        if self._on_change:
+            self._on_change(self)
 
     def _headers(self, extra: dict | None = None) -> dict:
         n = self.cfg.header_names
@@ -149,6 +174,7 @@ class GspSession:
         """GSTN sends the OTP to the taxpayer's registered mobile; this process never sees it."""
         self._app_key = secrets.token_bytes(32)
         self._post(self.cfg.auth_path, self._headers(), {"action": "OTPREQUEST", "username": self.username, "app_key": b64(rsa_encrypt(self.cfg.public_key_pem, self._app_key))})
+        self._save()
 
     def verify_otp(self, otp: str) -> None:
         if not self._app_key:
@@ -164,6 +190,7 @@ class GspSession:
         except (KeyError, ValueError, TypeError):
             raise GspError("the portal's login reply was not understood")
         self._app_key = b""                                           # single use
+        self._save()
 
     def call(self, action: str, kind: str, period: str, body: dict, method: str = "PUT") -> dict:
         """An encrypted, HMAC-signed call to a returns API. Returns the decrypted JSON reply."""
@@ -185,18 +212,56 @@ class GspSession:
             raise GspError("the portal's reply was not understood")
 
 
+class MemorySessionStore:
+    """Per-process (tests, a single long-running host). Use PgSessionStore wherever more than one process may serve a request, e.g. Vercel."""
+    def __init__(self):
+        self._d = {}
+
+    def load(self, tenant: str, gstin: str):
+        return self._d.get((tenant, gstin))
+
+    def save(self, tenant: str, gstin: str, state: bytes, expires: float) -> None:
+        self._d[(tenant, gstin)] = state
+
+
+class PgSessionStore:
+    """Portal sessions in Postgres (table gsp_sessions, RLS by tenant), sealed with Fernet under a key derived from the server secret: the database never holds a usable session key."""
+    def __init__(self, pg, secret: bytes):
+        from cryptography.fernet import Fernet
+        self.pg, self._f = pg, Fernet(base64.urlsafe_b64encode(hashlib.sha256(b"gsp-session|" + secret).digest()))
+
+    def load(self, tenant: str, gstin: str):
+        with self.pg.tx(tenant) as c:
+            r = c.execute("SELECT state FROM gsp_sessions WHERE gstin = %s", (gstin,)).fetchone()
+        return r and self._f.decrypt(r[0].encode())
+
+    def save(self, tenant: str, gstin: str, state: bytes, expires: float) -> None:
+        with self.pg.tx(tenant) as c:
+            c.execute("INSERT INTO gsp_sessions (tenant_id, gstin, state, expires_at) VALUES (%s,%s,%s,to_timestamp(%s))"
+                      " ON CONFLICT (tenant_id, gstin) DO UPDATE SET state = EXCLUDED.state, expires_at = EXCLUDED.expires_at, updated_at = now()",
+                      (tenant, gstin, self._f.encrypt(state).decode(), expires or time.time() + SESSION_TTL_S))
+
+
 class GspSessions:
-    """Sessions per (tenant, GSTIN), in this process's memory only. A tenant can only use a session it created itself."""
-    def __init__(self, cfg: GspConfig, transport=urllib_transport, clock=time.time):
-        self.cfg, self._transport, self._clock, self._by = cfg, transport, clock, {}
+    """Sessions per (tenant, GSTIN). A tenant can only use a session it created itself (the store is keyed, and in Postgres isolated, by tenant)."""
+    def __init__(self, cfg: GspConfig, transport=urllib_transport, clock=time.time, store=None):
+        self.cfg, self._transport, self._clock, self._store = cfg, transport, clock, store or MemorySessionStore()
+
+    def _make(self, tenant: str, gstin: str, username: str = "", state: bytes | None = None) -> GspSession:
+        def persist(s):
+            self._store.save(tenant, s.gstin, s.to_state(), s._expires)
+        if state is not None:
+            return GspSession.from_state(self.cfg, state, self._transport, self._clock, persist)
+        return GspSession(self.cfg, gstin, username, self._transport, self._clock, persist)
 
     def start(self, tenant: str, gstin: str, username: str) -> GspSession:
-        s = self._by[(tenant, gstin)] = GspSession(self.cfg, gstin, username, self._transport, self._clock)
+        s = self._make(tenant, gstin, username)
         s.request_otp()
         return s
 
     def get(self, tenant: str, gstin: str):
-        return self._by.get((tenant, gstin))
+        state = self._store.load(tenant, gstin)
+        return self._make(tenant, gstin, state=state) if state else None
 
 
 # ---- the provider --------------------------------------------------------------------------------------------------------------------------------

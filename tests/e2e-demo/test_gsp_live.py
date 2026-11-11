@@ -215,3 +215,43 @@ def test_api_without_gsp_reports_it_is_off(monkeypatch):
     h = {"Authorization": "Bearer " + auth.encode({"tenant_id": "t", "role": "OWNER"}, SECRET)}
     assert c.get("/api/v1/gsp/status", headers=h).json()["live"] is False
     assert c.post("/api/v1/gsp/otp", headers=h, json={"gstin": gstin(), "username": "u"}).status_code == 503
+
+
+def test_a_session_survives_a_new_server_process_and_is_isolated_per_tenant(gstn, sessions):
+    g, t = gstin(), str(uuid.uuid4())
+    sessions.start(t, g, "u")                                          # process 1 asks for the OTP ...
+    second = gsp_live.GspSessions(sessions.cfg, transport=gstn, store=sessions._store)   # ... process 2 (a fresh serverless instance) has no memory of it
+    s = second.get(t, g)
+    s.verify_otp(OTP)
+    ack = file_live(gsp_live.LivePortalProvider(SECRET, sessions), t, "GSTR3B", draft_payload(g))     # process 1 sees the login process 2 completed
+    assert ack["ack_type"] == "RETSAVE"
+    assert second.get("someone-else", g) is None
+
+
+def test_the_approval_otp_is_delivered_by_webhook_and_never_echoed(monkeypatch, gstn, sessions):
+    sent = []
+    monkeypatch.setattr(gsp_live, "send_otp", lambda url, token, tenant, draft, otp: sent.append((url, token, tenant, draft, otp)))
+    monkeypatch.setenv("TAXSETU_OTP_WEBHOOK_URL", "https://sms.example/hook")
+    c = TestClient(create_app(secret=SECRET, wa_secret=b"x", gsp=sessions))
+    t = str(uuid.uuid4())
+    h = {"Authorization": "Bearer " + auth.encode({"tenant_id": t, "role": "OWNER"}, SECRET)}
+    did = c.app.state.gate.agent_tools.stage(t, "GSTR3B", draft_payload(gstin()))["draft_id"]
+    r = c.post(f"/api/v1/hitl/request-otp/{did}", headers=h)
+    assert r.json() == {"sent": True} and len(sent) == 1 and sent[0][2] == t and sent[0][4].isdigit()
+
+
+def test_live_mode_without_a_delivery_channel_refuses_instead_of_echoing_the_otp(monkeypatch, gstn, sessions):
+    monkeypatch.delenv("TAXSETU_OTP_WEBHOOK_URL", raising=False)
+    c = TestClient(create_app(secret=SECRET, wa_secret=b"x", gsp=sessions))
+    t = str(uuid.uuid4())
+    h = {"Authorization": "Bearer " + auth.encode({"tenant_id": t, "role": "OWNER"}, SECRET)}
+    did = c.app.state.gate.agent_tools.stage(t, "GSTR3B", draft_payload(gstin()))["draft_id"]
+    r = c.post(f"/api/v1/hitl/request-otp/{did}", headers=h)
+    assert r.status_code == 503 and "mock_otp" not in r.text
+
+
+def test_send_otp_requires_https_and_fails_closed():
+    with pytest.raises(gsp_live.GspError, match="https"):
+        gsp_live.send_otp("http://x", "", "t", "d", "123456")
+    with pytest.raises(gsp_live.GspError, match="delivered"):
+        gsp_live.send_otp("https://x", "", "t", "d", "123456", transport=lambda *a: (500, {}))

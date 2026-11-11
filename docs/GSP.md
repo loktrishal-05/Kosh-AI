@@ -15,11 +15,14 @@ Code: `apps/api-gateway/taxsetu_api/gsp_live.py`, routes in `main.py` (`/api/v1/
   so no client was written (guessing it would be worse than nothing). ITR and e-way bills stay on the mock and are marked `simulated: true`.
 * **Verification against a real GSP.** The client was tested against a protocol **simulator** that plays GSTN's side (RSA-wrapped app key, OTP, session key, AES-256 envelope, HMAC), written from what
   GSP vendors publish. Field names and routes differ slightly between GSPs; routes and header names are configurable, but **compatibility with a real GSP is unproven** until it is run against a sandbox.
-* **Sessions are held in one process's memory.** On Vercel's serverless functions a session will not survive between requests; run live mode on a long-running host (`render.yaml` exists) or add a session store first.
-* The mock approval OTP (`/hitl/request-otp`) is still echoed in the response; before real use it must be delivered by SMS/WhatsApp.
+* **Sessions** are kept in Postgres (table `gsp_sessions`, migration 0007, RLS by tenant, sealed with Fernet under a key derived from `HITL_SIGNING_SECRET`), so they survive serverless invocations; without a database they stay in one process's memory. **Apply migration 0007 to Neon before switching live mode on.**
+* **Approval OTP delivery.** In live mode `/hitl/request-otp` never returns the OTP. Set `TAXSETU_OTP_WEBHOOK_URL` (https) and optionally `TAXSETU_OTP_WEBHOOK_TOKEN`: the server POSTs `{tenant_id, draft_id, otp}` to it and your SMS/WhatsApp gateway texts the owner. No webhook in live mode means a 503, not an echo. The demo/mock mode (no GSP configured, no webhook) still echoes the OTP.
 
 ## Going live (what a person has to do)
 1. Contract a GSP and get **sandbox** credentials (client id, client secret, GSTN's public key/certificate, base URL and the route names for authenticate and returns).
 2. Set on the server: `TAXSETU_GSP_BASE_URL`, `TAXSETU_GSP_CLIENT_ID`, `TAXSETU_GSP_CLIENT_SECRET`, `TAXSETU_GSP_PUBLIC_KEY` (PEM text or a file path); optionally `TAXSETU_GSP_AUTH_PATH`, `TAXSETU_GSP_RETURN_PATH` (use `{kind}`), `TAXSETU_GSP_IP_USR`.
 3. Run a GSTR-3B save against the GSP's **sandbox** GSTIN, compare the reply shapes with `FakeGstn` in the test file and adjust.
 4. Only then move to production credentials.
+
+## Sandbox run
+With sandbox credentials set (step 2 above): `python scripts/gsp_sandbox_check.py <SANDBOX_GSTIN> <portal_user> <MMYYYY>`. It requests the OTP, asks you to type it, saves a minimal GSTR-3B **draft** (never files) and prints OK / FAIL / DIFF per step plus the reply's keys. Fix route differences with `TAXSETU_GSP_AUTH_PATH` / `TAXSETU_GSP_RETURN_PATH`; header or reply-field differences need a small edit in `gsp_live.py` (`GspConfig.header_names`, `LivePortalProvider.file`).

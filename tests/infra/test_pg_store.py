@@ -191,3 +191,15 @@ def test_tenant_onboarding_on_postgres_end_to_end(pg, monkeypatch):
     assert c.get(f"/api/v1/tally/batches/{bid}", headers=tok(a)).status_code == 200
     assert c.post("/api/v1/auth/dev-token", json={"tenant_id": str(uuid.uuid4()), "role": "OWNER"}, headers=admin).status_code == 404
     assert c.get("/api/v1/audit", headers=tok(a)).json()["valid"] is True
+
+
+def test_gsp_session_is_sealed_in_postgres_shared_across_processes_and_isolated_by_rls(pg):
+    from taxsetu_api.gsp_live import PgSessionStore
+    a, b = new_tenant(pg), new_tenant(pg)
+    store = PgSessionStore(pg, SECRET)
+    store.save(a, "29ABCDE1234F1Z5", b'{"sek":"SECRET-KEY-MATERIAL"}', 0)
+    assert PgSessionStore(pg, SECRET).load(a, "29ABCDE1234F1Z5") == b'{"sek":"SECRET-KEY-MATERIAL"}'     # a second process reads it
+    assert store.load(b, "29ABCDE1234F1Z5") is None                                                        # RLS: another tenant sees nothing
+    with pg.tx(a) as c:
+        raw = c.execute("SELECT state FROM gsp_sessions").fetchone()[0]
+    assert "SECRET-KEY-MATERIAL" not in raw                                                                # sealed at rest

@@ -32,7 +32,7 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None, gsp=
     if drafts is not None and secret == b"dev-only-change-me":
         raise RuntimeError("refusing to run on Postgres with the default HITL_SIGNING_SECRET: tokens would be forgeable")
     if gsp is None and (cfg := gsp_live.GspConfig.from_env()) is not None:
-        gsp = gsp_live.GspSessions(cfg)                       # live GST portal access only when the GSP credentials are configured
+        gsp = gsp_live.GspSessions(cfg, store=gsp_live.PgSessionStore(drafts.pg, secret) if drafts is not None else None)                       # live GST portal access only when the GSP credentials are configured
     gate = HitlGate(secret, audit=audit, drafts=drafts, portal=gsp_live.LivePortalProvider(secret, gsp) if gsp else None)
     app = FastAPI(title="Kosh AI API", version="0.1.0")
     if drafts is not None:
@@ -237,7 +237,15 @@ def create_app(secret: bytes | None = None, wa_secret: bytes | None = None, gsp=
             otp = gate.request_otp(c["tenant_id"], draft_id)
         except PortalError as e:
             raise HTTPException(404, str(e))
-        return {"sent": True, "mock_otp": otp}   # ponytail: mock mode echoes the OTP; live mode must never return it
+        if hook := os.environ.get("TAXSETU_OTP_WEBHOOK_URL"):     # deliver to the owner's phone through the operator's SMS/WhatsApp gateway; never echo
+            try:
+                gsp_live.send_otp(hook, os.environ.get("TAXSETU_OTP_WEBHOOK_TOKEN", ""), c["tenant_id"], draft_id, otp)
+            except PortalError as e:
+                raise HTTPException(502, str(e))
+            return {"sent": True}
+        if gsp is not None:
+            raise HTTPException(503, "live filing is on but no OTP delivery is configured (TAXSETU_OTP_WEBHOOK_URL)")
+        return {"sent": True, "mock_otp": otp}   # mock/demo mode only: no live portal and no delivery channel configured
 
     @app.post("/api/v1/hitl/authorize-filing")
     def authorize(b: AuthIn, c: dict = Depends(need("OWNER", "EMPLOYEE"))):    # CA cannot self-sign for the client
