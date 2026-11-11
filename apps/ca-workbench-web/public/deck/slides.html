@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Kosh AI - Tech4Bharat deck</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#05100d;font-family:"Segoe UI",Arial,sans-serif;color:#eaf6ef}
+.page{width:1920px;height:1080px;position:relative;overflow:hidden;padding:84px 110px 0;background:radial-gradient(1300px 760px at 10% 6%,#14463a 0%,rgba(20,70,58,0) 60%),radial-gradient(1100px 760px at 96% 98%,#1b3a5c 0%,rgba(27,58,92,0) 56%),#0b1714;margin:0 auto 20px}
+.eyebrow{font-size:24px;letter-spacing:6px;font-weight:700;color:#86dbb5;margin-bottom:18px}
+h1{font-size:68px;line-height:1.08;font-weight:700;letter-spacing:-2px;color:#f4fbf7}
+h2{font-size:34px;font-weight:700;color:#f4fbf7;margin-bottom:10px}
+p,li{font-size:32px;line-height:1.45;color:#c4dccf}
+.lead{font-size:36px;color:#9fc4b4;margin-top:18px;line-height:1.4}
+ul{list-style:none}
+li{margin-bottom:18px;padding-left:38px;position:relative}
+li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;border-radius:50%;background:#86dbb5}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border:2px solid rgba(255,255,255,.18);border-radius:28px;box-shadow:0 24px 54px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.22);padding:34px 40px}
+.amber{border-color:rgba(255,210,149,.6)}.green{border-color:rgba(134,219,181,.6)}.blue{border-color:rgba(157,198,255,.55)}
+.row{display:flex;gap:44px}.row>.glass{min-height:var(--h,0);display:flex;flex-direction:column;justify-content:center}
+.foot{position:absolute;left:110px;right:110px;bottom:34px;display:flex;justify-content:space-between;font-size:20px;color:#6f968a}
+.big{font-size:104px;font-weight:800;letter-spacing:-4px;color:#86dbb5;line-height:1}
+.big.a{color:#ffd295}.big.b{color:#9dc6ff}
+.cap{font-size:26px;color:#9fc4b4;margin-top:8px}
+.shot{border-radius:20px;border:2px solid rgba(255,255,255,.2);box-shadow:0 30px 60px rgba(0,0,0,.55);display:block}
+.full{width:1920px;height:1080px;padding:0}
+.full img{width:1920px;height:1080px;display:block}
+</style></head><body>
+
+<section class="page" data-document-role="page" data-label="Title" data-speaker-notes="Kosh AI. The work arrives done, a human files. Built for problem 3.1, Agentic AI track.">
+ <div class="eyebrow" style="margin-top:80px">GAVS TECH4BHARAT  ·  MSME FINANCE AND COMPLIANCE  ·  PROBLEM 3.1</div>
+ <h1 style="font-size:150px;letter-spacing:-6px;margin-top:20px">Kosh AI</h1>
+ <h1 style="font-size:78px;color:#86dbb5;margin-top:18px">Compliance that arrives done.</h1>
+ <p class="lead" style="max-width:860px;margin-top:40px">An agentic co-pilot for India's micro-enterprises. It reads the bills, does the arithmetic, chases the suppliers, explains the result in the owner's language, and then stops. A human files.</p>
+ <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/clients.png" width="760" height="475" style="position:absolute;left:1060px;top:535px" alt="Kosh AI CA workbench">
+ <div class="glass green" style="position:absolute;left:110px;bottom:96px;padding:24px 36px"><p style="font-size:28px;color:#eaf6ef">Live demo: <b>taxsetu-workbench.vercel.app</b>  ·  one-click demo sign-in</p></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="The problem" data-speaker-notes="All four numbers come from the problem statement.">
+ <div class="eyebrow">THE PROBLEM</div><h1>Paperwork eats the profit</h1>
+ <p class="lead">Problem 3.1: micro enterprises lose time and profit to compliance paperwork.</p>
+ <div class="row" style="margin-top:60px;--h:440px">
+  <div class="glass green" style="flex:1"><div class="big">₹1.5-3k</div><h2 style="margin-top:20px">per GST filing</h2><p>through an accountant</p></div>
+  <div class="glass amber" style="flex:1"><div class="big a">8-12%</div><h2 style="margin-top:20px">of annual profit</h2><p>goes to compliance</p></div>
+  <div class="glass blue" style="flex:1"><div class="big b">15-20</div><h2 style="margin-top:20px">hours every month</h2><p>on paperwork, TDS and e-way bills</p></div>
+ </div>
+ <p style="margin-top:44px;font-size:30px">And consignments sit at checkpoints when one document is missed.</p>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span>Source: hackathon problem statement 3.1</span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Who and how today" data-speaker-notes="Traders, small manufacturers, transporters, services just above the GST threshold.">
+ <div class="eyebrow">WHO LIVES WITH THIS</div><h1>A shoebox of bills and a deadline</h1>
+ <p class="lead">Traders, small manufacturers, transporters and service businesses just above the GST threshold.</p>
+ <div class="row" style="margin-top:56px;--h:500px">
+  <div class="glass" style="flex:1.2"><h2>How it is handled today</h2><ul style="margin-top:20px"><li>Bills pile up in a bag or a WhatsApp chat</li><li>E-way bills are made at the last minute</li><li>Notices arrive before anyone notices a problem</li></ul></div>
+  <div class="glass amber" style="flex:1"><h2>What it costs</h2><ul style="margin-top:20px"><li>Late fees and interest</li><li>Input credit lost when a supplier files badly</li><li>An owner who cannot read the return filed in their name</li></ul></div>
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Our answer" data-speaker-notes="Four roles. The model never computes and never files.">
+ <div class="eyebrow">OUR ANSWER</div><h1>The work arrives done. A human still files.</h1>
+ <div class="row" style="margin-top:60px;--h:440px">
+  <div class="glass green" style="flex:1"><h2>Owner</h2><p>Sends bills. Reads a plain status in their language. Approves.</p></div>
+  <div class="glass green" style="flex:1"><h2>Agents</h2><p>Extract, reconcile, chase suppliers, draft, explain.</p></div>
+  <div class="glass amber" style="flex:1"><h2>Rules engine</h2><p>Every rupee of arithmetic. No AI guessing.</p></div>
+  <div class="glass blue" style="flex:1"><h2>Human</h2><p>The only one who can file, with a single-use OTP.</p></div>
+ </div>
+ <p class="lead" style="margin-top:56px">Five agents, a deterministic engine with no LLM in it, and a gate that fails closed.</p>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Product: CA workbench" data-speaker-notes="Live on the evaluator URL. Eighty demo clients, ranked by priority and deadline.">
+ <div class="eyebrow">LIVE PRODUCT  ·  CA WORKBENCH</div><h1>One queue for every client</h1>
+ <div class="row" style="margin-top:36px;align-items:flex-start">
+  <div style="width:560px"><p>The CA sees 80 clients ranked by priority and deadline.</p><p style="margin-top:20px">Half the sorting arrives done, so one accountant carries more clients without more hours.</p><div class="glass green" style="margin-top:34px"><p style="color:#86dbb5;font-weight:700">Ready to file: 16<br>With exceptions: 64</p></div></div>
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/clients.png" width="1100" height="688" alt="Exception matrix of 80 clients">
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Product: reconciliation" data-speaker-notes="Register against GSTR-2B. Rule 37 and RCM applied by the engine.">
+ <div class="eyebrow">LIVE PRODUCT  ·  RECONCILIATION</div><h1>Supplier mismatches, found and explained</h1>
+ <div class="row" style="margin-top:36px;align-items:flex-start">
+  <div style="width:560px"><p>Purchase register against GSTR-2B: exact, fuzzy, mismatch, missing.</p><p style="margin-top:20px">Rule 37 and reverse-charge adjustments come from the engine, not a model.</p><div class="glass amber" style="margin-top:34px"><p style="color:#ffd295;font-weight:700">Supplier nudges: at most 3 per invoice, 48 hours apart.</p></div></div>
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/client-detail.png" width="1100" height="688" alt="Reconciliation diff against GSTR-2B">
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Product: owner view" data-speaker-notes="Low literacy, low-cost phone. English, Hindi, Kannada, read aloud. Hindi and Kannada wording awaits native review.">
+ <div class="eyebrow">LIVE PRODUCT  ·  OWNER VIEW</div><h1>Built for low literacy and low-cost phones</h1>
+ <div class="row" style="margin-top:30px;align-items:flex-start;gap:34px">
+  <div style="width:560px"><ul style="margin-top:10px"><li>One idea per card, large type</li><li>English, Hindi and Kannada</li><li>Every card can be read aloud</li><li>About 107 kB first load: no charts, no tables</li></ul><p style="font-size:24px;color:#8fb5a4;margin-top:20px">Hindi and Kannada wording is pending native-speaker review.</p></div>
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-en.png" width="318" height="688" alt="Owner view in English">
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-hi.png" width="318" height="688" alt="Owner view in Hindi">
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-kn.png" width="318" height="688" alt="Owner view in Kannada">
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page full" data-document-role="page" data-label="Workflow" data-speaker-notes="Eight steps. The owner touches two: send the bills, approve the result."><img src="https://taxsetu-workbench.vercel.app/deck/workflow.png" alt="Eight-step workflow"></section>
+<section class="page full" data-document-role="page" data-label="System architecture" data-speaker-notes="Four layers. The model is never allowed to do arithmetic or to file."><img src="https://taxsetu-workbench.vercel.app/deck/architecture.png" alt="Four-layer system architecture"></section>
+<section class="page full" data-document-role="page" data-label="System design" data-speaker-notes="Six rules, each enforced in code and covered by tests."><img src="https://taxsetu-workbench.vercel.app/deck/trust.png" alt="Six design rules"></section>
+
+<section class="page" data-document-role="page" data-label="Prepare vs file" data-speaker-notes="The brief says filing is simulated. That is how we built it.">
+ <div class="eyebrow">THE LINE</div><h1>Preparing a return is not filing it</h1>
+ <p class="lead">The brief says filing stays with the owner or a professional and is simulated in the hackathon. We built it that way.</p>
+ <div class="row" style="margin-top:48px;--h:520px">
+  <div class="glass amber" style="flex:1"><ul><li>Agents hold only stage and get. No file, authorize or otp tool can be registered</li><li>A single-use OTP is bound to the SHA-256 of the exact bytes the owner saw</li></ul></div>
+  <div class="glass green" style="flex:1"><ul><li>Edit the draft after approving and the OTP is void</li><li>The GSP path saves a draft only and never files</li><li>Every step lands in a hash-chained audit log</li></ul></div>
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Books and Tally" data-speaker-notes="Verified against real TallyPrime 7.2, approved entries only.">
+ <div class="eyebrow">LIVE PRODUCT  ·  BOOKS AND TALLY</div><h1>Tally without knowing Tally</h1>
+ <div class="row" style="margin-top:34px;gap:34px">
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/books.png" width="760" height="475" alt="Books from a notebook">
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/tally.png" width="760" height="475" alt="Tally assistant">
+ </div>
+ <div class="row" style="margin-top:34px"><p style="flex:1">Notebook entries become double-entry books, checked ledger by ledger.</p><p style="flex:1">Verified against a real TallyPrime 7.2. Only approved entries reach Tally.</p></div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Impact model" data-speaker-notes="A model from the statement's own figures, not a measured result.">
+ <div class="eyebrow">IMPACT MODEL</div><h1>What is half the sorting worth?</h1>
+ <div class="row" style="margin-top:34px;align-items:flex-start">
+  <div style="width:640px"><div class="glass green"><div class="big">9 hrs</div><p class="cap">saved by the owner each month</p></div><div class="glass blue" style="margin-top:26px"><div class="big b">2x</div><p class="cap">clients one accountant can carry</p></div><p style="font-size:24px;color:#8fb5a4;margin-top:22px">At 50% of sorting done, from the statement's own figures. A model, not a measured result: a pilot must measure the real share.</p></div>
+  <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/impact.png" width="1040" height="650" alt="Impact model page">
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Path to a venture" data-speaker-notes="These are hypotheses to validate in a pilot, not proven numbers.">
+ <div class="eyebrow">PATH TO A VENTURE</div><h1>Sell capacity to the people who already hold the client</h1>
+ <p class="lead">Hypotheses to validate in a pilot, not proven numbers.</p>
+ <div class="row" style="margin-top:40px;--h:460px">
+  <div class="glass green" style="flex:1"><h2>Customer</h2><p>CA and accounting firms serving micro-enterprises. They gain capacity without hiring.</p></div>
+  <div class="glass amber" style="flex:1"><h2>Charge</h2><p>A per-client monthly subscription, priced below the per-filing fee owners pay today.</p></div>
+  <div class="glass blue" style="flex:1"><h2>Moat</h2><p>A deterministic engine and a human gate that CAs and regulators can trust.</p></div>
+ </div>
+ <p style="margin-top:40px">Why now: GST filing is monthly and unavoidable, and the pain is documented in the brief itself.</p>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Honest status" data-speaker-notes="What is built, and what needs outside credentials or registration.">
+ <div class="eyebrow">HONEST STATUS</div><h1>What runs today, and what needs the outside world</h1>
+ <div class="row" style="margin-top:44px;--h:540px">
+  <div class="glass green" style="flex:1"><h2>Built and running</h2><ul style="margin-top:14px"><li>Engine and five agents</li><li>CA workbench and owner view</li><li>Books, Tally, human gate</li><li>Postgres isolation, audit log</li></ul></div>
+  <div class="glass amber" style="flex:1.15"><h2>Needs credentials or registration</h2><ul style="margin-top:14px"><li>Live GSP sandbox run</li><li>Income-tax ERI integration</li><li>Live bill reading and WhatsApp</li><li>Real sign-in, native-language review, a pilot</li></ul></div>
+ </div>
+ <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
+</section>
+
+<section class="page" data-document-role="page" data-label="Try it" data-speaker-notes="Open the evaluator URL and tap the demo button.">
+ <div class="eyebrow" style="margin-top:100px">TRY IT NOW</div><h1 style="font-size:96px;letter-spacing:-4px">The work arrives done.<br><span style="color:#86dbb5">A human files.</span></h1>
+ <div class="glass green" style="margin-top:70px;display:inline-block"><p style="font-size:36px;color:#eaf6ef">taxsetu-workbench.vercel.app<br><span style="font-size:28px;color:#9fc4b4">Tap "Demo admin: sign in with one click"</span></p></div>
+ <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/signin.png" width="720" height="450" style="position:absolute;left:1090px;top:430px" alt="One-click demo sign-in">
+ <p style="margin-top:34px;font-size:28px">Code and documentation: github.com/loktrishal-05/taxsetu-ai</p>
+</section>
+</body></html>
