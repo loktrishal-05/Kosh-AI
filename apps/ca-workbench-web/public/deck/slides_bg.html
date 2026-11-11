@@ -22,7 +22,7 @@ li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;b
 .shot{border-radius:20px;border:2px solid rgba(255,255,255,.2);box-shadow:0 30px 60px rgba(0,0,0,.55);display:block}
 .full{width:1920px;height:1080px;padding:0}
 .full img{width:1920px;height:1080px;display:block}
-*{color:transparent!important;text-shadow:none!important}</style></head><body>
+.item{margin-bottom:22px}*{color:transparent!important;text-shadow:none!important}</style></head><body>
 
 <section class="page" data-document-role="page" data-label="Title" data-speaker-notes="Kosh AI. The work arrives done, a human files. Built for problem 3.1, Agentic AI track.">
  <div class="eyebrow" style="margin-top:80px">GAVS TECH4BHARAT  ·  MSME FINANCE AND COMPLIANCE  ·  PROBLEM 3.1</div>
@@ -49,8 +49,8 @@ li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;b
  <div class="eyebrow">WHO LIVES WITH THIS</div><h1>A shoebox of bills and a deadline</h1>
  <p class="lead">Traders, small manufacturers, transporters and service businesses just above the GST threshold.</p>
  <div class="row" style="margin-top:56px;--h:500px">
-  <div class="glass" style="flex:1.2"><h2>How it is handled today</h2><ul style="margin-top:20px"><li>Bills pile up in a bag or a WhatsApp chat</li><li>E-way bills are made at the last minute</li><li>Notices arrive before anyone notices a problem</li></ul></div>
-  <div class="glass amber" style="flex:1"><h2>What it costs</h2><ul style="margin-top:20px"><li>Late fees and interest</li><li>Input credit lost when a supplier files badly</li><li>An owner who cannot read the return filed in their name</li></ul></div>
+  <div class="glass" style="flex:1.2"><h2>How it is handled today</h2><div style="margin-top:20px"><p class="item">Bills pile up in a bag or a WhatsApp chat</p><p class="item">E-way bills are made at the last minute</p><p class="item">Notices arrive before anyone notices a problem</p></div></div>
+  <div class="glass amber" style="flex:1"><h2>What it costs</h2><div style="margin-top:20px"><p class="item">Late fees and interest</p><p class="item">Input credit lost when a supplier files badly</p><p class="item">An owner who cannot read the return filed in their name</p></div></div>
  </div>
  <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
 </section>
@@ -88,7 +88,7 @@ li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;b
 <section class="page" data-document-role="page" data-label="Product: owner view" data-speaker-notes="Low literacy, low-cost phone. English, Hindi, Kannada, read aloud. Hindi and Kannada wording awaits native review.">
  <div class="eyebrow">LIVE PRODUCT  ·  OWNER VIEW</div><h1>Built for low literacy and low-cost phones</h1>
  <div class="row" style="margin-top:30px;align-items:flex-start;gap:34px">
-  <div style="width:560px"><ul style="margin-top:10px"><li>One idea per card, large type</li><li>English, Hindi and Kannada</li><li>Every card can be read aloud</li><li>About 107 kB first load: no charts, no tables</li></ul><p style="font-size:24px;color:#8fb5a4;margin-top:20px">Hindi and Kannada wording is pending native-speaker review.</p></div>
+  <div style="width:560px"><div style="margin-top:10px"><p class="item">One idea per card, large type</p><p class="item">English, Hindi and Kannada</p><p class="item">Every card can be read aloud</p><p class="item">About 107 kB first load: no charts, no tables</p></div><p style="font-size:24px;color:#8fb5a4;margin-top:20px">Hindi and Kannada wording is pending native-speaker review.</p></div>
   <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-en.png" width="318" height="688" alt="Owner view in English">
   <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-hi.png" width="318" height="688" alt="Owner view in Hindi">
   <img class="shot" src="https://taxsetu-workbench.vercel.app/deck/owner-mobile-kn.png" width="318" height="688" alt="Owner view in Kannada">
@@ -104,8 +104,8 @@ li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;b
  <div class="eyebrow">THE LINE</div><h1>Preparing a return is not filing it</h1>
  <p class="lead">The brief says filing stays with the owner or a professional and is simulated in the hackathon. We built it that way.</p>
  <div class="row" style="margin-top:48px;--h:520px">
-  <div class="glass amber" style="flex:1"><ul><li>Agents hold only stage and get. No file, authorize or otp tool can be registered</li><li>A single-use OTP is bound to the SHA-256 of the exact bytes the owner saw</li></ul></div>
-  <div class="glass green" style="flex:1"><ul><li>Edit the draft after approving and the OTP is void</li><li>The GSP path saves a draft only and never files</li><li>Every step lands in a hash-chained audit log</li></ul></div>
+  <div class="glass amber" style="flex:1"><div><p class="item">Agents hold only stage and get. No file, authorize or otp tool can be registered</p><p class="item">A single-use OTP is bound to the SHA-256 of the exact bytes the owner saw</p></div></div>
+  <div class="glass green" style="flex:1"><div><p class="item">Edit the draft after approving and the OTP is void</p><p class="item">The GSP path saves a draft only and never files</p><p class="item">Every step lands in a hash-chained audit log</p></div></div>
  </div>
  <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
 </section>
@@ -144,8 +144,8 @@ li::before{content:"";position:absolute;left:0;top:17px;width:14px;height:14px;b
 <section class="page" data-document-role="page" data-label="Honest status" data-speaker-notes="What is built, and what needs outside credentials or registration.">
  <div class="eyebrow">HONEST STATUS</div><h1>What runs today, and what needs the outside world</h1>
  <div class="row" style="margin-top:44px;--h:540px">
-  <div class="glass green" style="flex:1"><h2>Built and running</h2><ul style="margin-top:14px"><li>Engine and five agents</li><li>CA workbench and owner view</li><li>Books, Tally, human gate</li><li>Postgres isolation, audit log</li></ul></div>
-  <div class="glass amber" style="flex:1.15"><h2>Needs credentials or registration</h2><ul style="margin-top:14px"><li>Live GSP sandbox run</li><li>Income-tax ERI integration</li><li>Live bill reading and WhatsApp</li><li>Real sign-in, native-language review, a pilot</li></ul></div>
+  <div class="glass green" style="flex:1"><h2>Built and running</h2><div style="margin-top:14px"><p class="item">Engine and five agents</p><p class="item">CA workbench and owner view</p><p class="item">Books, Tally, human gate</p><p class="item">Postgres isolation, audit log</p></div></div>
+  <div class="glass amber" style="flex:1.15"><h2>Needs credentials or registration</h2><div style="margin-top:14px"><p class="item">Live GSP sandbox run</p><p class="item">Income-tax ERI integration</p><p class="item">Live bill reading and WhatsApp</p><p class="item">Real sign-in, native-language review, a pilot</p></div></div>
  </div>
  <div class="foot"><span>Kosh AI  ·  Tech4Bharat 3.1</span><span></span></div>
 </section>
