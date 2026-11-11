@@ -1,0 +1,14 @@
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{font-family:"Segoe UI",Arial,sans-serif;color:#eaf6ef;background:radial-gradient(1200px 700px at 12% 8%,#14463a 0%,transparent 60%),radial-gradient(1000px 700px at 95% 95%,#1b3a5c 0%,transparent 55%),#0b1714;padding:44px 72px 0}
+h1{font-size:50px;font-weight:700;letter-spacing:-1.5px}
+.sub{font-size:26px;color:#9fc4b4;margin-top:8px}
+.eyebrow{font-size:18px;letter-spacing:4px;font-weight:700;color:#86dbb5;margin-bottom:12px}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1.5px solid rgba(255,255,255,.16);border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.18);padding:22px 26px}
+.glass h3{font-size:25px;font-weight:700;margin-bottom:6px}
+.glass p,.glass li{font-size:19px;color:#b9d4c8;line-height:1.4}
+.glass ul{list-style:none;padding:0}
+.tag{display:inline-block;font-size:15px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:999px;margin-bottom:10px}
+.t-green{background:rgba(134,219,181,.18);color:#86dbb5}.t-amber{background:rgba(255,210,149,.18);color:#ffd295}.t-blue{background:rgba(157,198,255,.18);color:#9dc6ff}.t-red{background:rgba(255,140,140,.18);color:#ff9d9d}
+.accent-amber{border-color:rgba(255,210,149,.55)}.accent-green{border-color:rgba(134,219,181,.55)}.accent-blue{border-color:rgba(157,198,255,.5)}
+.foot{display:none}

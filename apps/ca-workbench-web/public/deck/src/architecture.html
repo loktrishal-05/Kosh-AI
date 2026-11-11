@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.grid{display:grid;grid-template-columns:330px 1fr 380px;gap:34px;margin-top:22px}
+.col{display:flex;flex-direction:column;gap:16px}
+.mid{display:flex;flex-direction:column;gap:12px}
+.agents{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.agents div{background:rgba(134,219,181,.10);border:1px solid rgba(134,219,181,.4);border-radius:14px;padding:14px 10px;text-align:center;font-size:18px;font-weight:600}
+.agents small{display:block;font-weight:400;font-size:14px;color:#9fc4b4;margin-top:4px}
+.mcp{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mcp span{background:rgba(157,198,255,.10);border:1px solid rgba(157,198,255,.35);border-radius:12px;padding:10px;font-size:16px;text-align:center}
+.arrow{text-align:center;color:#86dbb5;font-size:30px;line-height:1;margin:-6px 0}
+</style></head><body>
+<div class="eyebrow">SYSTEM ARCHITECTURE</div><h1>Agents prepare. Rules compute. A human files.</h1>
+<div class="sub">Four layers, and the model is never allowed to do arithmetic or to file.</div>
+<div class="grid">
+ <div class="col">
+  <div class="glass accent-green"><span class="tag t-green">CHANNELS</span><h3>Shop owner</h3><p>WhatsApp voice and photos, owner view in English, Hindi, Kannada with read-aloud</p></div>
+  <div class="glass accent-green"><span class="tag t-green">CHANNELS</span><h3>CA workbench</h3><p>Exception matrix for 80 clients, reconciliation diff, books, Tally assistant</p></div>
+  <div class="glass accent-green"><span class="tag t-green">CHANNELS</span><h3>TallyPrime bridge</h3><p>Approved entries only, over an outbound paired link</p></div>
+ </div>
+ <div class="mid">
+  <div class="glass"><span class="tag t-green">API GATEWAY - FASTAPI ON VERCEL</span><p>Signed tokens, roles, per-tenant isolation, audited routes. The only entry point.</p></div>
+  <div class="arrow">&#9660;</div>
+  <div class="glass accent-green"><span class="tag t-green">LAYER 1 - FIVE AGENTS (LLM: EXTRACT, CLASSIFY, DRAFT ONLY)</span>
+   <div class="agents" style="margin-top:10px"><div>Ingestion<small>bills to fields</small></div><div>Reconcile + chase<small>2B vs register</small></div><div>E-way bill<small>generate / defend</small></div><div>Direct tax<small>TDS, ITR draft</small></div><div>Explainer<small>plain language</small></div></div></div>
+  <div class="arrow">&#9660;</div>
+  <div class="glass accent-amber"><span class="tag t-amber">LAYER 2 - DETERMINISTIC ENGINE (NO LLM IMPORT)</span><p>GST, TDS, e-way, Rule 37, RCM, ITR, single-entry to double-entry. Decimal money, HALF_UP rounding, effective-dated statute corpus.</p></div>
+  <div class="arrow">&#9660;</div>
+  <div class="glass"><span class="tag t-blue">LAYER 3 - MCP MESH (TOOLS AGENTS MAY CALL)</span>
+   <div class="mcp" style="margin-top:8px"><span>GSTN / NIC</span><span>Income-tax TRACES</span><span>MCA / Labour</span><span>UPI / Account Aggregator</span><span>Tally XML</span><span>WhatsApp voice</span><span>Statutory RAG</span><span>Workspace sync</span></div>
+   <p style="margin-top:10px">Any tool named like file, authorize or otp is refused at registration.</p></div>
+ </div>
+ <div class="col">
+  <div class="glass accent-amber" style="border-width:2.5px"><span class="tag t-amber">LAYER 4 - HUMAN GATE</span><h3>Single-use OTP</h3><p>Bound to SHA-256 of the exact bytes the owner saw. Any edit voids it. Agents hold only stage and get.</p></div>
+  <div class="glass accent-blue"><span class="tag t-blue">PORTAL</span><h3>GST portal via GSP</h3><p>Saves a draft only. Filing stays with the taxpayer (EVC or DSC). Simulated in the hackathon, as the brief requires.</p></div>
+  <div class="glass"><span class="tag t-green">DATA</span><h3>Postgres, row-level security</h3><p>FORCE RLS on app.tenant_id, non-bypass role. Hash-chained audit log.</p></div>
+ </div>
+</div>
+<div class="foot">Kosh AI - built for GAVS Tech4Bharat, problem 3.1 (Agentic AI)</div>
+</body></html>

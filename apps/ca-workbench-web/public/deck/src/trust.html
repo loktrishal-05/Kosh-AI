@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:40px}
+.glass{min-height:380px}.glass p{font-size:24px!important}.glass h3{font-size:30px!important}.big{margin-top:6px}
+.big{font-size:60px;font-weight:800;color:#86dbb5;letter-spacing:-2px;margin-bottom:8px}
+.big.a{color:#ffd295}.big.b{color:#9dc6ff}
+</style></head><body>
+<div class="eyebrow">SYSTEM DESIGN</div><h1>Why a regulator, a CA and an owner can all trust it</h1>
+<div class="sub">Six design rules, each enforced in code and covered by automated tests (900+ Python, 43 workbench).</div>
+<div class="grid">
+ <div class="glass accent-green"><div class="big">1</div><h3>Neuro-symbolic split</h3><p>The model reads and drafts. The deterministic engine does every rupee of arithmetic and has no LLM import.</p></div>
+ <div class="glass accent-amber"><div class="big a">2</div><h3>Agents cannot file</h3><p>Agents get stage and get. The tool mesh refuses to register anything named file, authorize or otp.</p></div>
+ <div class="glass accent-blue"><div class="big b">3</div><h3>Non-repudiation</h3><p>OTP is single-use and bound to SHA-256 of the payload. The portal re-checks an HMAC token. Audit events are hash-chained.</p></div>
+ <div class="glass accent-green"><div class="big">4</div><h3>Exact money</h3><p>Decimal end to end, HALF_UP rounding, money serialised as strings so a float never touches a rupee.</p></div>
+ <div class="glass accent-amber"><div class="big a">5</div><h3>No invented law</h3><p>A citation counts only if it resolves in the effective-dated statute corpus. Circular relief unlocks through a deterministic gate first.</p></div>
+ <div class="glass accent-blue"><div class="big b">6</div><h3>Isolation in the database</h3><p>Postgres FORCE row-level security keyed on tenant, with a non-bypass application role. App bugs cannot leak across firms.</p></div>
+</div>
+<div class="foot">Kosh AI - built for GAVS Tech4Bharat, problem 3.1 (Agentic AI)</div>
+</body></html>

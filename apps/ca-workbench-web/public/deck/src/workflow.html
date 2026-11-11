@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:40px}
+.step{position:relative;min-height:310px}.step p{font-size:22px!important}.step h3{font-size:28px!important}.row2{margin-top:56px}.band{margin-top:48px!important}.band p{font-size:22px!important}
+.num{position:absolute;top:-22px;left:22px;width:46px;height:46px;border-radius:50%;background:#86dbb5;color:#0b1714;font-weight:800;font-size:24px;display:grid;place-items:center;box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.step h3{margin-top:18px}
+.step .who{margin-top:14px;font-size:16px;font-weight:700;letter-spacing:1.4px;color:#86dbb5}
+.step.human .who{color:#ffd295}.step.human .num{background:#ffd295}
+.step:not(:last-child)::after{content:"\25B6";position:absolute;right:-27px;top:46%;color:#86dbb5;font-size:22px}
+.row2 .step:nth-child(4)::after{display:none}
+.band{margin-top:36px;display:flex;gap:26px}
+.band .glass{flex:1}
+</style></head><body>
+<div class="eyebrow">WORKFLOW</div><h1>From a bag of bills to a return that a human files</h1>
+<div class="sub">Eight steps. The owner touches two of them: send the bills, approve the result.</div>
+<div class="row">
+ <div class="step glass"><div class="num">1</div><h3>Bills arrive</h3><p>Photo or voice note on WhatsApp, Tally export, or notebook entries. No form to learn.</p><div class="who">OWNER</div></div>
+ <div class="step glass"><div class="num">2</div><h3>Read the bill</h3><p>Model extracts printed fields. Its output is untrusted: GSTIN checksum, tax and total are recomputed.</p><div class="who">AGENT + RULES</div></div>
+ <div class="step glass"><div class="num">3</div><h3>Match with GSTR-2B</h3><p>Exact, fuzzy, mismatch, missing. Rule 37 and reverse-charge adjustments applied by the engine.</p><div class="who">ENGINE</div></div>
+ <div class="step glass"><div class="num">4</div><h3>Chase the supplier</h3><p>Drafts the nudge. At most 3 per invoice, 48 hours apart, enforced in the tool and the engine.</p><div class="who">AGENT</div></div>
+</div>
+<div class="row row2">
+ <div class="step glass"><div class="num">5</div><h3>Check the rest</h3><p>Cash-ledger cover, TDS due dates and interest, e-way bill validity and block status.</p><div class="who">ENGINE</div></div>
+ <div class="step glass"><div class="num">6</div><h3>Explain in the owner's language</h3><p>Plain English, Hindi or Kannada, read aloud on request. Cited to the statute corpus or not said.</p><div class="who">AGENT</div></div>
+ <div class="step glass human accent-amber"><div class="num">7</div><h3>Human approves</h3><p>Owner or CA sees the exact draft and enters a single-use OTP bound to its hash.</p><div class="who">HUMAN ONLY</div></div>
+ <div class="step glass"><div class="num">8</div><h3>Save, never file</h3><p>Portal draft saved via GSP (simulated here). Hash-chained audit event written.</p><div class="who">SYSTEM</div></div>
+</div>
+<div class="band">
+ <div class="glass accent-amber"><p><b style="color:#ffd295">Fail-closed.</b> No approval token, no save. Edit the draft after approving and the OTP is void.</p></div>
+ <div class="glass accent-green"><p><b style="color:#86dbb5">Bounded.</b> Every agent graph has a hard step cap. Nudges are capped. Money is never a float.</p></div>
+</div>
+<div class="foot">Kosh AI - built for GAVS Tech4Bharat, problem 3.1 (Agentic AI)</div>
+</body></html>
