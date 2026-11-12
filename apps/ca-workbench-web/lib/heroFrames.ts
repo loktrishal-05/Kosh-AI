@@ -2,6 +2,16 @@
 export const FRAME_COUNT = 220;
 export const frameUrl = (i: number) => `/hero/f_${String(i + 1).padStart(3, "0")}.webp`;
 
+/** Failed or stalled frames settle too, so the opening progress bar always finishes. */
+export function loadFrame(i: number): Promise<HTMLImageElement | undefined> {
+  return new Promise(resolve => {
+    const im = new Image(); im.decoding = "async";
+    const finish = () => { clearTimeout(timeout); im.onload = im.onerror = null; resolve(im.complete && im.naturalWidth ? im : undefined); };
+    const timeout = setTimeout(finish, 8000);
+    im.onload = im.onerror = finish; im.src = frameUrl(i);
+  });
+}
+
 /** Scroll progress 0..1 -> frame index, clamped. */
 export function frameAt(progress: number, count = FRAME_COUNT): number {
   return Math.min(count - 1, Math.max(0, Math.round(progress * (count - 1))));
