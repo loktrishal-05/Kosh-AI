@@ -1,6 +1,31 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { FRAME_COUNT, bump, frameAt, frameUrl, nearestLoaded } from "./heroFrames.ts";
+import { FRAME_COUNT, bump, frameAt, frameUrl, loadFrame, nearestLoaded } from "./heroFrames.ts";
+
+test("frame loading settles on success, error and timeout and clears its handlers", async t => {
+  class Frame {
+    decoding = ""; src = ""; complete = false; naturalWidth = 0;
+    onload: (() => void) | null = null; onerror: (() => void) | null = null;
+    constructor() { images.push(this); }
+  }
+  const images: Frame[] = [], original = Object.getOwnPropertyDescriptor(globalThis, "Image");
+  Object.defineProperty(globalThis, "Image", { configurable: true, value: Frame });
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  try {
+    const success = loadFrame(0), first = images[0];
+    assert.equal(first.src, "/hero/f_001.webp");
+    first.complete = true; first.naturalWidth = 1280; first.onload!();
+    assert.equal(await success, first);
+    const failure = loadFrame(1); images[1].onerror!();
+    assert.equal(await failure, undefined);
+    const stalled = loadFrame(2); t.mock.timers.tick(8000);
+    assert.equal(await stalled, undefined);
+    for (const im of images) { assert.equal(im.onload, null); assert.equal(im.onerror, null); }
+  } finally {
+    t.mock.timers.reset();
+    if (original) Object.defineProperty(globalThis, "Image", original); else Reflect.deleteProperty(globalThis, "Image");
+  }
+});
 
 test("progress maps to a clamped frame index", () => {
   assert.equal(frameAt(-0.5), 0);
