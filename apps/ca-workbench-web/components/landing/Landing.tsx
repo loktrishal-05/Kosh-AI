@@ -1,17 +1,12 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Fraunces, Instrument_Sans, Noto_Sans_Devanagari, Noto_Sans_Kannada } from "next/font/google";
 import { clients } from "../../lib/mock";
 import { priorityScore } from "../../lib/priority";
 import { FRAME_COUNT, bump, frameAt, frameUrl, nearestLoaded } from "../../lib/heroFrames";
 import { LAND, LAND_LANGS, type LandLang } from "../../lib/landingText";
 import "./landing.css";
 
-const display = Fraunces({ subsets: ["latin"], variable: "--f-display", axes: ["opsz", "SOFT"], display: "swap" });
-const text = Instrument_Sans({ subsets: ["latin"], variable: "--f-text", display: "swap" });
-const hi = Noto_Sans_Devanagari({ subsets: ["devanagari"], variable: "--f-hi", display: "swap" });
-const kn = Noto_Sans_Kannada({ subsets: ["kannada"], variable: "--f-kn", display: "swap" });
 const REPO = "https://github.com/loktrishal-05/taxsetu-ai";
 const PROOF_TARGETS = [974, 3, 107, 3];
 const BEAT_CENTERS = [0.22, 0.47, 0.72];
@@ -120,7 +115,7 @@ export function Landing() {
   }, [reduced]);
 
   const words = t.statement.split(" ");
-  return <div ref={root} className={`kw ${display.variable} ${text.variable} ${hi.variable} ${kn.variable}`} lang={lang}>
+  return <div ref={root} className="kw" lang={lang}>
     <a className="kw-skip" href="#kw-main">Skip to content</a>
     <nav className="kw-nav" aria-label="Main">
       <Link className="kw-brand" href="/welcome" aria-label="Kosh AI home"><KMark /><span>Kosh AI</span></Link>

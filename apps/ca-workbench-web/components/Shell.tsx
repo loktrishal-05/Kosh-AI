@@ -3,10 +3,10 @@ import { usePathname } from "next/navigation";
 import { AuthGate } from "./AuthGate";
 import { WorkbenchHeader } from "./WorkbenchHeader";
 
-/** The workbench chrome (header, sign-in gate, footer). The public landing page at /welcome brings its own nav and needs no sign-in. */
+/** Public pages bring their own navigation; the workbench keeps its chrome and sign-in gate. */
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
-  if (path === "/welcome") return <>{children}</>;
+  if (path === "/welcome" || path === "/signin" || path === "/signup") return <>{children}</>;
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
     <WorkbenchHeader />
