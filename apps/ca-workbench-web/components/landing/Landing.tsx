@@ -69,13 +69,7 @@ export function Landing() {
       gsap.registerPlugin(ScrollTrigger);
       const ctx = gsap.context(() => {
         const q = gsap.utils.selector(root.current);
-        // proof counters run in every mode; they only need the section to enter
-        q<HTMLElement>("[data-count]").forEach(el => {
-          const target = Number(el.dataset.count), o = { v: reduced ? target : 0 };
-          if (reduced) { el.textContent = String(target); return; }
-          gsap.to(o, { v: target, duration: 1.6, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", once: true }, onUpdate: () => { el.textContent = String(Math.round(o.v)); } });
-        });
-        if (reduced) return;
+        if (reduced) { q<HTMLElement>("[data-count]").forEach(el => { el.textContent = el.dataset.count!; }); return; }
 
         const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
         lenis.on("scroll", ScrollTrigger.update);
@@ -99,7 +93,7 @@ export function Landing() {
           if (key !== size) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); size = key; drawn = -1; }
           const want = frameAt(cur), use = nearestLoaded(want, frames.current); if (use < 0 || use === drawn) return;
           const im = frames.current[use]!, s = Math.max(cv.width / im.naturalWidth, cv.height / im.naturalHeight);      // cover, biased right: the action sits in the right two thirds of the footage
-          c2.clearRect(0, 0, cv.width, cv.height); c2.drawImage(im, (cv.width - im.naturalWidth * s) * 0.7, (cv.height - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s); drawn = use;
+          c2.imageSmoothingQuality = "high"; c2.clearRect(0, 0, cv.width, cv.height); c2.drawImage(im, (cv.width - im.naturalWidth * s) * 0.7, (cv.height - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s); drawn = use;
         };
         redraw.current = () => { drawn = -1; draw(); };
         const intro = root.current!.querySelector<HTMLElement>(".kw-intro")!, beats = [...root.current!.querySelectorAll<HTMLElement>(".kw-beat")];
@@ -108,23 +102,31 @@ export function Landing() {
         target = cur = film.progress;
         const frameTick = () => {
           cur += (target - cur) * 0.14; if (Math.abs(target - cur) < 0.0004) cur = target; draw();
-          const lift = Math.min(1, cur / 0.1); intro.style.opacity = String(1 - lift); intro.style.transform = `translateY(${-lift * 60}px) scale(${1 - lift * 0.08})`; intro.inert = lift > 0.6;
-          beats.forEach((el, i) => { const v = bump(cur, BEAT_CENTERS[i] - 0.1, BEAT_CENTERS[i] - 0.04, BEAT_CENTERS[i] + 0.04, BEAT_CENTERS[i] + 0.1), dir = cur < BEAT_CENTERS[i] ? 1 : -1; el.style.opacity = String(v); el.style.transform = `translateY(${(1 - v) * 40 * dir}px)`; });
+          const lift = Math.min(1, cur / 0.1); intro.style.opacity = String(1 - lift); intro.style.transform = lift ? `translateY(${-lift * 60}px) scale(${1 - lift * 0.08})` : "none"; intro.inert = lift > 0.6;
+          beats.forEach((el, i) => { const v = bump(cur, BEAT_CENTERS[i] - 0.1, BEAT_CENTERS[i] - 0.04, BEAT_CENTERS[i] + 0.04, BEAT_CENTERS[i] + 0.1), dir = cur < BEAT_CENTERS[i] ? 1 : -1; el.style.opacity = String(v); el.style.transform = v < 1 ? `translateY(${(1 - v) * 40 * dir}px)` : "none"; });
           veil.style.opacity = String(Math.max(0, (cur - 0.9) * 4));
         };
         gsap.ticker.add(frameTick); cleanups.push(() => gsap.ticker.remove(frameTick));
-        gsap.fromTo(".kw-intro > *", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.12, delay: 0.15 });
+        gsap.fromTo(".kw-intro > *", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.12, delay: 0.15, clearProps: "transform" });
         cleanups.push(() => { intro.removeAttribute("style"); intro.inert = false; beats.forEach(el => el.removeAttribute("style")); veil.removeAttribute("style"); });
 
         // ---- statement: words rise from faint to ink as they cross the viewport
         gsap.fromTo(q(".kw-word"), { opacity: 0.12 }, { opacity: 1, ease: "none", stagger: 0.1, scrollTrigger: { trigger: ".kw-statement", start: "top 72%", end: "bottom 55%", scrub: 0.6 } });
 
         // ---- the workbench rises out of the page, then the flow path draws; pinned only where there is room
+        const grow = (tl: gsap.core.Timeline, at: number, dur: number) => {
+          q<HTMLElement>(".kw-bar i").forEach(b => { tl.fromTo(b, { scaleX: 0 }, { scaleX: 1, ease: "none", duration: dur }, at); });
+          q<HTMLElement>("[data-to]").forEach(el => { const to = Number(el.dataset.to), o = { v: 0 }; tl.fromTo(o, { v: 0 }, { v: to, ease: "none", duration: dur, onUpdate: () => { el.textContent = String(Math.round(o.v)); } }, at); });
+        };
         const mm = gsap.matchMedia();
+        mm.add("(max-width: 899px)", () => { grow(gsap.timeline({ scrollTrigger: { trigger: ".kw-dash", start: "top 85%", end: "top 30%", scrub: 0.6 } }), 0, 1); });
         mm.add("(min-width: 900px)", () => {
-          gsap.timeline({ scrollTrigger: { trigger: ".kw-rise", start: "top top", end: "+=110%", pin: true, scrub: 0.6 } })
+          const rise = gsap.timeline({ scrollTrigger: { trigger: ".kw-rise", start: "top top", end: "+=110%", pin: true, scrub: 0.6 } });
+          rise
             .fromTo(".kw-dash", { rotateX: 52, scale: 0.82, y: 40 }, { rotateX: 0, scale: 1, y: 0, ease: "power3.inOut", duration: 1 })
             .fromTo(".kw-kpi, .kw-row", { opacity: 0.35, y: 24 }, { opacity: 1, y: 0, ease: "expo.out", stagger: 0.08, duration: 0.6 }, 0.35);
+          grow(rise, 0.3, 0.9);
+          rise.eventCallback("onComplete", () => { gsap.set(".kw-dash", { clearProps: "transform" }); });      // settled: drop the 3D transform so the text is pixel-sharp
           const section = q<HTMLElement>(".kw-agents")[0], viewport = q<HTMLElement>(".kw-agent-window")[0], track = q<HTMLElement>(".kw-agent-track")[0];
           section.classList.add("kw-agents-pinned");
           const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
@@ -135,6 +137,12 @@ export function Landing() {
         });
         gsap.from(".kw-step", { opacity: 0, y: 40, duration: 0.9, ease: "expo.out", stagger: 0.08, scrollTrigger: { trigger: ".kw-steps", start: "top 82%", once: true } });
         cleanups.push(() => mm.revert());
+        // proof counters follow the scroll; created after the pinned sections so their start positions include the pin spacing
+        q<HTMLElement>("[data-count]").forEach(el => {
+          const target = Number(el.dataset.count), o = { v: 0 };
+          el.textContent = "0";
+          gsap.to(o, { v: target, ease: "none", scrollTrigger: { trigger: el, start: "top 92%", end: "top 55%", scrub: 0.6 }, onUpdate: () => { el.textContent = String(Math.round(o.v)); } });
+        });
         ScrollTrigger.refresh();
         void document.fonts.ready.then(() => { if (!cancelled) ScrollTrigger.refresh(); });
       }, root);
@@ -179,8 +187,8 @@ export function Landing() {
           <p className="kw-kicker">{t.riseKicker}</p><h2>{t.riseTitle}</h2><p className="kw-sub">{t.riseBody}</p>
           <div className="kw-persp"><div className="kw-dash" role="img" aria-label={`${t.sandbox} ${dash.total} ${t.kpi[0]}, ${dash.ready} ${t.kpi[1]}, ${dash.withEx} ${t.kpi[2]}`}>
             <div className="kw-dash-bar"><KMark /><b>Kosh AI</b><span>{t.sandbox}</span></div>
-            <div className="kw-kpis">{[dash.total, dash.ready, dash.withEx, dash.ex].map((v, i) => <div key={i} className="kw-kpi"><small>{t.kpi[i]}</small><strong>{v}</strong></div>)}</div>
-            <div className="kw-rows">{dash.rows.map(c => <div key={c.id} className="kw-row"><span>{c.businessName}<small>{c.gstin}</small></span><span className="kw-bar"><i style={{ width: `${Math.min(100, c.exceptions * 4)}%` }} /></span><b>{c.exceptions}</b><small>{t.due} {c.deadline}</small></div>)}</div>
+            <div className="kw-kpis">{[dash.total, dash.ready, dash.withEx, dash.ex].map((v, i) => <div key={i} className="kw-kpi"><small>{t.kpi[i]}</small><strong data-to={v}>{v}</strong></div>)}</div>
+            <div className="kw-rows">{dash.rows.map(c => <div key={c.id} className="kw-row"><span>{c.businessName}<small>{c.gstin}</small></span><span className="kw-bar"><i style={{ width: `${Math.min(100, c.exceptions * 4)}%` }} /></span><b data-to={c.exceptions}>{c.exceptions}</b><small>{t.due} {c.deadline}</small></div>)}</div>
           </div></div>
         </div>
       </section>
