@@ -1,6 +1,6 @@
 # Kosh AI: Design Direction (Phase A, awaiting approval)
 
-Status: **proposal.** Nothing in the app has been changed for this yet. Items marked `ASK` need your answer (listed at the end).
+Status: **approved with option C and the landing at `/welcome`**, and built. The light re-theme covers the landing page only; the workbench keeps its current theme until you ask for more. Quality report: `docs/LANDING_QA.md`. The hero film is a rendered animation (option B), swappable for real footage later.
 
 ## 0. Brief, as I filled it in
 

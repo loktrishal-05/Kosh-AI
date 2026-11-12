@@ -1,0 +1,127 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Kosh AI hero film (frame source)</title>
+<style>html,body{margin:0;background:#F4EEE1}svg{display:block;width:1600px;height:900px}</style></head>
+<body>
+<svg id="s" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <radialGradient id="ground" cx="38%" cy="30%" r="95%"><stop offset="0" stop-color="#F9F5EA"/><stop offset=".6" stop-color="#F4EEE1"/><stop offset="1" stop-color="#F4EEE1"/></radialGradient>
+  <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2B861"/><stop offset=".5" stop-color="#B98A34"/><stop offset="1" stop-color="#8A6420"/></linearGradient>
+  <linearGradient id="cover" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D3A34"/><stop offset="1" stop-color="#1D2421"/></linearGradient>
+  <filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+  <filter id="blurS" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
+ </defs>
+ <rect width="1600" height="900" fill="url(#ground)"/>
+ <g id="grain" opacity=".05"></g>
+ <g id="cam">
+  <!-- ledger -->
+  <g id="ledger">
+   <rect x="772" y="120" width="696" height="660" rx="16" fill="#000" opacity=".22" filter="url(#blur)" transform="translate(0,16)"/>
+   <rect x="772" y="120" width="696" height="660" rx="16" fill="url(#cover)"/>
+   <rect x="792" y="138" width="656" height="624" rx="8" fill="#FBF8F0"/>
+   <rect x="1112" y="138" width="16" height="624" fill="#000" opacity=".07"/>
+   <g id="rules"></g>
+   <g id="rowfills"></g>
+  </g>
+  <!-- shoebox -->
+  <g id="box" transform="translate(300 470) rotate(-4)">
+   <rect x="-210" y="-160" width="420" height="320" rx="10" fill="#000" opacity=".2" filter="url(#blur)" transform="translate(6,18)"/>
+   <rect x="-210" y="-160" width="420" height="320" rx="10" fill="#D6C29B"/>
+   <rect x="-188" y="-138" width="376" height="276" rx="6" fill="#BFA77C"/>
+   <rect x="-188" y="-138" width="376" height="26" rx="6" fill="#000" opacity=".12"/>
+  </g>
+  <g id="threads" fill="none" stroke-linecap="round"></g>
+  <g id="bills"></g>
+  <g id="impression" opacity="0" transform="translate(1290 640)">
+   <g filter="url(#ink)"><circle r="46" fill="none" stroke="#BC3A22" stroke-width="6"/><rect x="-26" y="-18" width="52" height="7" rx="3" fill="#BC3A22"/><rect x="-26" y="-3" width="52" height="7" rx="3" fill="#BC3A22"/><rect x="-26" y="12" width="34" height="7" rx="3" fill="#BC3A22"/></g>
+  </g>
+  <g id="stamp">
+   <ellipse id="stShadow" rx="64" ry="64" fill="#000" opacity=".25" filter="url(#blur)"/>
+   <circle r="58" fill="url(#brass)"/><circle r="44" fill="none" stroke="#6E4E16" stroke-width="3" opacity=".55"/><circle r="22" fill="#F5D58B" opacity=".55"/>
+  </g>
+ </g>
+</svg>
+<script>
+const NS="http://www.w3.org/2000/svg", $=id=>document.getElementById(id);
+const mk=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||document.getElementById('s')).appendChild(e);return e};
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), lerp=(a,b,t)=>a+(b-a)*t;
+const expoOut=t=>t>=1?1:1-Math.pow(2,-10*t), inOut=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, outCubic=t=>1-Math.pow(1-t,3);
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+const R=rng(20261112);
+
+// ruled lines (both pages) and row geometry
+const rules=$('rules');
+for(let i=0;i<10;i++){const y=214+i*52;mk('line',{x1:818,x2:1092,y1:y,y2:y,stroke:'#D9D0BC','stroke-width':2},rules);mk('line',{x1:1148,x2:1424,y1:y,y2:y,stroke:'#D9D0BC','stroke-width':2},rules)}
+const ROWS=6, rowY=k=>214+k*52-22, rowTarget=k=>({x:1286,y:rowY(k)+10});
+const rowfills=$('rowfills'), rowEls=[];
+for(let k=0;k<ROWS;k++){const g=mk('g',{opacity:0},rowfills);const y=rowY(k);
+ mk('rect',{x:1152,y:y,width:44,height:14,rx:5,fill:'#9AA39C'},g);mk('rect',{x:1208,y:y,width:128,height:14,rx:5,fill:'#1D2421',opacity:.78},g);mk('rect',{x:1350,y:y,width:62,height:14,rx:5,fill:k===ROWS-1?'#2F6B4F':'#566159'},g);rowEls.push(g)}
+// paper grain
+const grain=$('grain');for(let i=0;i<140;i++){mk('circle',{cx:R()*1600,cy:R()*900,r:R()*1.6+.4,fill:'#6B5A3A'},grain)}
+
+// bills
+const N=14, bills=[], billLayer=$('bills'), threadLayer=$('threads');
+for(let i=0;i<N;i++){
+ const a=R()*Math.PI*2, d=R()*135;
+ const start={x:300+Math.cos(a)*d*1.25,y:470+Math.sin(a)*d*.9-10};
+ const rot0=(R()-.5)*70;
+ const row=Math.min(ROWS-1,Math.floor(i*ROWS/N));
+ const stage={x:640+(i%2)*10,y:176+i*38};   // staged, aligned column
+ const g=mk('g',{},billLayer);
+ mk('rect',{x:-60,y:-80,width:120,height:160,rx:7,fill:'#000',opacity:.2,filter:'url(#blurS)',class:'sh',transform:'translate(4,6)'},g);
+ mk('rect',{x:-60,y:-80,width:120,height:160,rx:7,fill:'#FBF8F0',stroke:'#D9D0BC','stroke-width':2},g);
+ mk('rect',{x:-44,y:-64,width:56,height:10,rx:4,fill:'#1D2421',opacity:.7},g);
+ for(let b=0;b<5;b++)mk('rect',{x:-44,y:-40+b*20,width:60+R()*32,height:7,rx:3,fill:'#CFC5AE'},g);
+ if(i%3===0)mk('rect',{x:-44,y:56,width:34,height:8,rx:4,fill:'#BC3A22'},g);
+ bills.push({g,start,stage,rot0,row,delay:i*0.011});
+ mk('path',{stroke:i%4===0?'#BC3A22':'#1D2421','stroke-width':i%4===0?2.2:1.5,opacity:0,d:''},threadLayer);
+}
+const threads=[...threadLayer.children];
+
+function setT(t){
+ // camera push-in
+ const z=lerp(.9,.945,t); $('cam').setAttribute('transform',`translate(${1500*(1-z)} ${450*(1-z)}) scale(${z})`);
+ const landed=new Array(ROWS).fill(0), landedMax=new Array(ROWS).fill(0);
+ bills.forEach((b,i)=>{
+  const lift=expoOut(seg(t,.20+b.delay,.34+b.delay));
+  const toStage=inOut(seg(t,.30+b.delay,.58+b.delay));
+  const toRow=inOut(seg(t,.58+b.delay,.80+b.delay));
+  const tgt=rowTarget(b.row);
+  let x=lerp(b.start.x,b.stage.x,toStage), y=lerp(b.start.y,b.stage.y,toStage)-Math.sin(toStage*Math.PI)*34;
+  x=lerp(x,tgt.x,toRow); y=lerp(y,tgt.y,toRow);
+  const rot=lerp(lerp(b.rot0,0,toStage),0,toRow);
+  const sc=lerp(1,1.08,lift)*lerp(1,.34,toRow);
+  const op=1-seg(t,.76+b.delay,.82+b.delay);
+  b.g.setAttribute('transform',`translate(${x} ${y}) rotate(${rot}) scale(${sc})`);
+  b.g.setAttribute('opacity',op);
+  b.g.firstChild.setAttribute('opacity',.2+.22*lift);
+  b.pos={x,y,tgt};
+  landed[b.row]+=seg(t,.74+b.delay,.80+b.delay);
+  // thread
+  const tv=threads[i], dr=seg(t,.36+b.delay,.62+b.delay), fade=1-seg(t,.70,.78);
+  const cx=(x+tgt.x)/2, cy=Math.min(y,tgt.y)-60;
+  tv.setAttribute('d',`M ${x} ${y} Q ${cx} ${cy} ${tgt.x} ${tgt.y}`);
+  tv.setAttribute('pathLength',1);tv.setAttribute('stroke-dasharray','1 1');tv.setAttribute('stroke-dashoffset',1-dr);
+  tv.setAttribute('opacity',dr>0?.55*fade:0);
+ });
+ // rows appear
+ rowEls.forEach((g,k)=>{const per=bills.filter(b=>b.row===k).length;g.setAttribute('opacity',clamp(landed[k]/per))});
+ // stamp
+ const down=expoOut(seg(t,.86,.925)), up=outCubic(seg(t,.955,1));
+ const hit=t>=.925;
+ const sx=1290, sy0=-170, sy1=640;
+ let y=lerp(sy0,sy1,down); if(up>0)y=lerp(sy1,-190,up);
+ const scale=lerp(1.5,1.2,down)*(up>0?lerp(1,1.12,up):1);
+ const st=$('stamp'); st.setAttribute('transform',`translate(${sx+ (up>0?up*40:0)} ${y}) scale(${scale})`);
+ st.setAttribute('opacity',t<.855?0:1);
+ const sh=$('stShadow'); sh.setAttribute('transform',`translate(${lerp(46,5,down)} ${lerp(64,8,down)})`); sh.setAttribute('opacity',(.12+.14*(1-down))*(up>0?1-up:1));
+ // impression
+ const im=$('impression'), ip=seg(t,.925,.965);
+ im.setAttribute('opacity',hit?clamp(ip*1.4):0);
+ im.setAttribute('transform',`translate(1290 640) scale(${lerp(.92,1,expoOut(ip))*1.3})`);
+ // landing thump: tiny shake
+ if(t>.925&&t<.945){const k=1-(t-.925)/.02;$('cam').setAttribute('transform',`translate(${1500*(1-z)+Math.sin(t*900)*2.4*k} ${450*(1-z)+Math.cos(t*800)*2.4*k}) scale(${z})`)}
+}
+window.setT=setT; setT(0);
+</script></body></html>

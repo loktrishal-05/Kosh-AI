@@ -603,7 +603,7 @@ Entry for GAVS Tech4Bharat, theme MSME Finance and Compliance, problem 3.1 (*Mic
 | Does the owner understand the return filed in their name | Plain-language cards and the explainer agent |
 | What is it worth | `/impact`: a model built only from the brief's figures (15 to 20 hours a month, 1,500 to 3,000 rupees per filing); **a model, not a measured result** |
 
-The presentation deck is authored as HTML in `apps/ca-workbench-web/public/deck/slides.html` (screenshots, diagrams and background art alongside).
+A public landing page lives at `/welcome` (scroll-scrubbed ledger film, English/Hindi/Kannada, light theme; see [`DESIGN_DIRECTION.md`](DESIGN_DIRECTION.md) and [`docs/LANDING_QA.md`](docs/LANDING_QA.md)). The presentation deck is authored as HTML in `apps/ca-workbench-web/public/deck/slides.html` (screenshots, diagrams and background art alongside).
 
 **Honest gaps for this entry:** Hindi and Kannada wording is a first draft awaiting a native speaker; owner-side bill reading needs a live model key and has only run on a fake model; the live GSP path is simulator-tested only and ERI is not built; savings figures are not from a pilot.
 
