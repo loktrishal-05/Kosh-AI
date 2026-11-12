@@ -7,12 +7,14 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 
 [![tests](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml/badge.svg)](https://github.com/loktrishal-05/taxsetu-ai/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
-![tests](https://img.shields.io/badge/tests-940%20passing-2ea44f)
+![tests](https://img.shields.io/badge/tests-967%20passing-2ea44f)
 ![money](https://img.shields.io/badge/money-Decimal%20only-0b6b57)
 ![filing](https://img.shields.io/badge/filing-human%20OTP%20only-b60205)
 
 </div>
 
+> *Naming: the product is **Kosh AI**. The GitHub repository, the Vercel projects and the Python packages (`taxsetu_*`) keep their original `taxsetu` names so nothing breaks; only visible text was renamed.*
+>
 > **Problem statement 3.1.** A shop owner with a phone and a shoebox of bills should not need to understand GSTR-2B, Rule 37,
 > Section 194C or Circular 64/38 to stay compliant. Kosh AI reads the bills, does the arithmetic, chases the suppliers, drafts the
 > replies, and then **stops** — filing stays with the owner or a professional.
@@ -39,7 +41,8 @@ WhatsApp-first for the owner · multi-client workbench for the CA · a human OTP
 14. [Deployment](#deployment)
 15. [Tally Assistant](#tally-assistant)
 16. [Books from your notebook](#books-from-your-notebook)
-17. [Status, limits and roadmap](#status-limits-and-roadmap)
+17. [Hackathon fit: Tech4Bharat problem 3.1](#hackathon-fit-tech4bharat-problem-31)
+18. [Status, limits and roadmap](#status-limits-and-roadmap)
 
 ---
 
@@ -353,7 +356,12 @@ Paths below are relative to `/api/v1` unless they start with `/health` or `/`. A
 | GET | `/refund-pathway` | OWNER, CA, EMPLOYEE | Which of the six refund pathways applies |
 | POST | `/hitl/request-otp/{draft_id}` | OWNER, EMPLOYEE, CA | Issue the single-use OTP |
 | POST | `/hitl/authorize-filing` | OWNER, EMPLOYEE | Verify OTP + hash, file to the mock portal |
+| GET | `/gsp/status` | OWNER, CA, EMPLOYEE | Is live GST portal access configured on this server |
+| POST | `/gsp/otp` | OWNER, CA | Ask the GST portal to text the taxpayer's mobile an OTP (live mode only) |
+| POST | `/gsp/session` | OWNER, CA | Open the portal session with that OTP; sessions persist in Postgres |
 | GET | `/audit` | OWNER, CA | Tenant-scoped, hash-chained events |
+
+**Approval OTP delivery.** With no live portal and no delivery channel configured (the demo), `/hitl/request-otp` echoes `mock_otp`. In live mode it never does: set `TAXSETU_OTP_WEBHOOK_URL` (https, optional `TAXSETU_OTP_WEBHOOK_TOKEN`) and the server posts the tenant, draft and OTP to your SMS/WhatsApp gateway; with no webhook it answers 503.
 
 ---
 
@@ -370,10 +378,10 @@ taxsetu-ai/
 │   └── tally-xml-bridge/           (reserved: TallyPrime bridge)
 ├── apps/
 │   ├── api-gateway/                FastAPI edge, HITL gate, mock portal, audit, sandbox
-│   ├── ca-workbench-web/           Next.js 15 CA console (mock data)
+│   ├── ca-workbench-web/           Next.js 15 CA console (mock client matrix), owner view, impact model, Tally and Books pages
 │   ├── tally-bridge/               Program for the customer PC: posts approved XML into TallyPrime (stdlib only)
 │   └── mock-gov-portals/           (planned) portal UIs
-├── infra/                          Postgres RLS migrations (0001 core, 0002 drafts + audit detail), docker-compose
+├── infra/                          Postgres RLS migrations (0001 core ... 0006 books GST, 0007 GSP sessions), docker-compose
 ├── tests/                          unit · adversarial · e2e-demo · infra · mcp · agents
 ├── docs/                           PLAN.md, screenshots
 ├── index.py                        Vercel entrypoint
@@ -438,8 +446,8 @@ the sign-in page, token format and role checks stay as they are. The browser-sid
 | `tests/agents` | 49 | Each agent end to end, loop caps, dedup, Rule 138E stop, grounded-number guard, Claude adapter (fake client) |
 | `tests/infra` | 31 | RLS on every table, append-only audit, **live Postgres**: restart survival, tenant isolation, OTP double-spend, audit tamper, concurrent appends, API on Postgres |
 | `tests/bridge` | 36 | Tally bridge against fake Tally and cloud servers: tampered XML, bad signature, wrong company, Delete refused, DOCTYPE refused, double-post guard, dry-run |
-| `apps/ca-workbench-web` | 38 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
-| **Total** | **940 + 38** (+5 opt-in live-Tally tests) | **all passing** |
+| `apps/ca-workbench-web` | 43 | Money formatting, XML escaping, balanced vouchers, priority ordering, Tally flow helpers (`node:test`) |
+| **Total** | **924 Python passing + 43 workbench** (26 skipped locally: Postgres and live-Tally tests need those running; CI runs the Postgres ones) | **all passing** |
 
 CI runs the Python suite on every push (Python 3.10) with a Postgres service container, so the database tests run there too.
 
@@ -582,6 +590,25 @@ Verified on TallyPrime 7.2 Education mode only; Education mode accepts only vouc
 
 ---
 
+## Hackathon fit: Tech4Bharat problem 3.1
+
+Entry for GAVS Tech4Bharat, theme MSME Finance and Compliance, problem 3.1 (*Micro enterprises lose time and profit to compliance paperwork*), Agentic AI track. The brief says filing stays with the owner or a professional and is simulated; that is how this is built.
+
+| What the brief asks for | Where it is |
+|-------------------------|-------------|
+| GST, TDS and e-way bill work taken off the owner | Five agents plus the deterministic engine (see above) |
+| Supplier filings that break input credit | 2B reconciliation, Rule 37 and RCM adjustments, capped supplier nudges |
+| A strict line between preparing and filing | Human OTP gate bound to the payload hash; the GSP path only saves drafts |
+| Works for low literacy, limited connectivity, low-cost phones | `/owner`: large type, one idea per card, English, Hindi and Kannada, read-aloud, about 107 kB first load |
+| Does the owner understand the return filed in their name | Plain-language cards and the explainer agent |
+| What is it worth | `/impact`: a model built only from the brief's figures (15 to 20 hours a month, 1,500 to 3,000 rupees per filing); **a model, not a measured result** |
+
+The presentation deck is authored as HTML in `apps/ca-workbench-web/public/deck/slides.html` (screenshots, diagrams and background art alongside).
+
+**Honest gaps for this entry:** Hindi and Kannada wording is a first draft awaiting a native speaker; owner-side bill reading needs a live model key and has only run on a fake model; the live GSP path is simulator-tested only and ERI is not built; savings figures are not from a pilot.
+
+---
+
 ## Status, limits and roadmap
 
 | Phase | Scope | Status |
@@ -596,12 +623,14 @@ Verified on TallyPrime 7.2 Education mode only; Education mode accepts only vouc
 | 6b | Next.js CA workbench · mock portal UI | 🟡 workbench + Tally Assistant built; Tally Assistant is wired to the API, the client matrix is still mock data · portal UI todo |
 | 8 | Tally Assistant | ✅ verified on a real TallyPrime 7.2 (Education mode) · AI assist built, **not yet run against the live Claude API** |
 | 9 | Books from your notebook (single entry to double entry) | ✅ verified: hand-computed cases, simulated shops, production, and ledger-by-ledger against a real Tally |
-| 7 | Live GSP / ERI integration | 🟡 **GST via a GSP is built** (login with the taxpayer's OTP, save GSTR-1/3B drafts, never files; simulator-tested, **not verified against a real GSP**). **ERI (income tax) is not built**: its API spec is only issued to registered ERIs. See [`docs/GSP.md`](docs/GSP.md) |
+| 7 | Live GSP / ERI integration | 🟡 **GST via a GSP is built** (login with the taxpayer's OTP, save GSTR-1/3B drafts, never files; simulator-tested, **not verified against a real GSP**). **ERI (income tax) is not built**: its API spec is only issued to registered ERIs. Sessions are stored sealed in Postgres (migration 0007) and the approval OTP is delivered by webhook, never echoed in live mode. Sandbox runbook: `scripts/gsp_sandbox_check.py`. See [`docs/GSP.md`](docs/GSP.md) |
+| 10 | Owner view (EN/HI/KN, read-aloud) and impact model | ✅ built on demo data · Hindi and Kannada pending native review |
 
 **Known limitations — stated plainly**
 
 * Agents default to a deterministic **stub** model. `ClaudeLlm` (vision + JSON-schema extraction) exists but has only been tested with a fake client; it needs an API key and a real-bill evaluation before anyone relies on it.
-* The workbench's client matrix runs on generated mock data. Only the Tally Assistant page talks to the API.
+* The workbench's client matrix and owner view run on generated mock data. The Tally Assistant and Books pages talk to the API.
+* The live Tally tests (`tests/live`) need TallyPrime installed locally; it is not part of the repository.
 * Postgres persistence is opt-in. Production on Vercel uses Neon; tenants are created through an admin-key endpoint (migration 0004 adds its audit action) and sign-in is the temporary admin-key token endpoint until real OTP login exists.
 * The Tally XML shape follows Tally's import format but is **unverified** against a live TallyPrime.
 * The HSN rate table is intentionally empty (returns `NOT_FOUND`) rather than guessing rates.
