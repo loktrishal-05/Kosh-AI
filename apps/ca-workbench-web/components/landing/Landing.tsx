@@ -82,8 +82,8 @@ export function Landing() {
           const dpr = Math.min(window.devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight, key = `${w}x${h}x${dpr}`;
           if (key !== size) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); size = key; drawn = -1; }
           const want = frameAt(cur), use = nearestLoaded(want, frames.current); if (use < 0 || use === drawn) return;
-          const im = frames.current[use]!, s = Math.min(cv.width / im.naturalWidth, cv.height / im.naturalHeight);
-          c2.clearRect(0, 0, cv.width, cv.height); c2.drawImage(im, (cv.width - im.naturalWidth * s) / 2, (cv.height - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s); drawn = use;
+          const im = frames.current[use]!, s = Math.max(cv.width / im.naturalWidth, cv.height / im.naturalHeight);      // cover, biased right: the action sits in the right two thirds of the footage
+          c2.clearRect(0, 0, cv.width, cv.height); c2.drawImage(im, (cv.width - im.naturalWidth * s) * 0.7, (cv.height - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s); drawn = use;
         };
         redraw.current = () => { drawn = -1; draw(); };
         const intro = root.current!.querySelector<HTMLElement>(".kw-intro")!, beats = [...root.current!.querySelectorAll<HTMLElement>(".kw-beat")];

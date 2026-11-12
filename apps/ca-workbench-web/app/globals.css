@@ -14,3 +14,13 @@
 
 .owner{max-width:640px;margin:auto}.owner h1{font-size:clamp(32px,8vw,44px)}.owner-pick{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin:18px 0 24px}.owner-pick [role=group]{display:flex;gap:8px}.owner-pick button{font-size:18px;padding:12px 18px;font-weight:700}.owner-pick button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}.owner-cards{list-style:none;padding:0;margin:0}.owner-card{background:var(--surface);border:1px solid var(--border);border-left:6px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}.owner-card.act{border-left-color:var(--warning)}.owner-card p{font-size:clamp(20px,5vw,24px);line-height:1.45;margin:0 0 12px}.owner-listen{font-size:18px;padding:12px 20px;font-weight:700}.owner-listen[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
 .impact{max-width:980px;margin:auto}.impact-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:22px 0}.impact-inputs label{font-size:14px}.impact-inputs input{padding:0;border:0}.impact .summary{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+
+/* sign-in backdrop: two silent looping clips crossfade behind a light veil; reduced motion shows the still */
+.signin-bg{position:fixed;inset:0;z-index:-1;background:#F4EEE1}
+.signin-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(17,29,25,.9) 0,rgba(17,29,25,.72) 55%,rgba(17,29,25,.55) 100%)}
+.signin-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:signin-fade 24s ease-in-out infinite}
+.signin-vid-a{opacity:1;animation-name:signin-fade-a}.signin-vid-b{animation-name:signin-fade-b}
+@keyframes signin-fade-a{0%,40%{opacity:1}50%,90%{opacity:0}100%{opacity:1}}
+@keyframes signin-fade-b{0%,40%{opacity:0}50%,90%{opacity:1}100%{opacity:0}}
+.signin .panel{background:rgba(17,29,25,.7);backdrop-filter:blur(14px);box-shadow:0 18px 40px -18px rgba(0,0,0,.5)}
+@media (prefers-reduced-motion:reduce){.signin-vid{animation:none;display:none}.signin-bg{background:#F4EEE1 url(/media/signin-1.jpg) center/cover}}

@@ -43,6 +43,10 @@ export function SignIn() {
   }
 
   return <div className="signin">
+    <div className="signin-bg" aria-hidden="true">
+      <video className="signin-vid signin-vid-a" src="/media/signin-1.mp4" poster="/media/signin-1.jpg" autoPlay muted loop playsInline preload="metadata" />
+      <video className="signin-vid signin-vid-b" src="/media/signin-2.mp4" poster="/media/signin-2.jpg" autoPlay muted loop playsInline preload="none" />
+    </div>
     <p className="eyebrow">KOSH AI · EVALUATION BUILD</p>
     <h1>Sign in</h1>
     <section className="panel tally-step" aria-label="Sign in">

@@ -25,7 +25,7 @@ Run on 2026-11-12 against a production build (`next build` then `next start`) in
 - Screen reader pass (VoiceOver / TalkBack / NVDA).
 - Hindi and Kannada wording is a first draft awaiting a native speaker.
 - 768 px tablet width was not screenshotted separately (the 900 px breakpoint switches to the stacked layout).
-- The hero film is an illustrated animation rendered from `scripts/hero/hero.html`, not photographic footage. The frame loader is identical for either, so real footage can replace the 220 frames in `public/hero/` later.
+- The hero film is now real Veo 3 footage (220 webp frames from one 28 s take, `public/hero/`). The source clips were 640x360, so frames are upscaled to 1280 px and look soft on large screens; regenerate at 1080p for a sharper result. Sign-in backdrop clips are in `public/media/`. Not re-run since the swap: the throttled-network, missing-frame and Hindi/Kannada checks.
 
 ## Found by the visual review and fixed
 
